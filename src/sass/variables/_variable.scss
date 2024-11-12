@@ -1,0 +1,352 @@
+
+@mixin maxWidth($value) {
+    @media screen and (max-width: $value) {
+        @content;
+    }
+}
+
+:root {
+    --font-pri: 'Montserrat';
+    // --font-sec: "Beautique Display";
+    // --font-third: '';
+
+
+
+    --wh: 2.4rem;
+    --wh2: 4.8rem;
+    --wh3: 6.2rem;
+    --wh4: 10.4rem;
+    --wh5: 7.2rem;
+    --wh6: 4.2rem;
+    --wh7: 2rem;
+
+
+
+
+
+
+    --size-hd: 10rem;
+
+    --size-pd: 4rem;
+    --size-pdl: 8rem;
+
+    --radius10: 1rem;
+    --radius16: 1.6rem;
+    --radius20: 2rem;
+    --radius24: 2.4rem;
+    --radius04: 0.4rem;
+    --radius42: 4.2rem;
+    --radius40: 4rem;
+
+
+    --radius12: 1.2rem;
+    --radius0: 0.8rem;
+    --radius04: 0.4rem;
+    --radius06: 0.6rem;
+    --radius100: 10rem;
+    --radius120: 12rem;
+
+
+
+
+    --size-pdh: 9rem;
+
+    --columnContent4: 4rem;
+    --columnContent36: 3.6rem;
+    --columnContent32: 3.2rem;
+    --columnContent24: 2.4rem;
+    --columnContent2: 2rem;
+    --columnContent12: 1.2rem;
+    --columnContent16: 1.6rem;
+    --columnContent0: 0.8rem;
+
+
+    --rowContent0: 0.8rem;
+    --rowContent2: 2rem;
+    --rowContent12: 1.2rem;
+    --rowContent14: 1.4rem;
+    --rowContent16: 1.6rem;
+    --rowContent24: 2.4rem;
+    --rowContent32: 3.2rem;
+    --rowContent36: 3.6rem;
+    --rowContent4: 4rem;
+    --rowContent6: 6rem;
+    --rowContent8: 8rem;
+
+
+
+
+
+
+
+    @include maxWidth(1200px) {
+
+        --wh: 2.2rem;
+        --wh2: 4.6rem;
+
+
+
+        --wh3: 5.2rem;
+        --wh4: 8.4rem;
+        --wh5: 6.2rem;
+        --wh6: 3.2rem;
+        --wh7: 1.8rem;
+
+
+        --size-hd: 8rem;
+
+
+        --size-pd: 3rem;
+        --size-pdl: 6rem;
+
+        --radius12: 0.8rem;
+        --radius20: 1.8rem;
+        --radius0: 0.4rem;
+        --radius100: 8rem;
+        --radius120: 10rem;
+        --radius10: 0.8rem;
+        --radius16: 1.4rem;
+        --radius04: 0.4rem;
+        --radius42: 3.6rem;
+        --radius40: 3rem;
+
+
+
+        --columnContent36: 3rem;
+        --columnContent32: 2.4rem;
+        --columnContent24: 2rem;
+        --columnContent12: 1rem;
+        --columnContent16: 1.2rem;
+        --columnContent0: 0.6rem;
+        --columnContent4: 3rem;
+
+
+
+        --rowContent0: 0.6rem;
+        --rowContent2: 1.6rem;
+        --rowContent12: 1rem;
+        --rowContent14: 1rem;
+        --rowContent16: 1.2rem;
+        --rowContent2: 1.6rem;
+        --rowContent24: 2rem;
+        --rowContent32: 2.4rem;
+        --rowContent36: 3rem;
+        --rowContent4: 3rem;
+        --rowContent6: 5rem;
+
+
+    }
+
+
+    @include maxWidth(800px) {
+
+        --wh: 2rem;
+        --wh2: 4.2rem;
+
+        --wh3: 4.2rem;
+        --wh4: 6.4rem;
+        --wh5: 4.2rem;
+        --wh6: 2.6rem;
+        --wh7: 1.6rem;
+
+        --size-hd: 7.5rem;
+
+
+        --size-pd: 2.4rem;
+        --size-pdl: 4.4rem;
+
+
+        --radius100: 6rem;
+        --radius120: 8rem;
+
+
+        --radius10: 0.8rem;
+        --radius16: 1.2rem;
+        --radius20: 1.6rem;
+        --radius04: 0.4rem;
+        --radius42: 3rem;
+        --radius40: 2rem;
+
+
+        --columnContent36: 2.4rem;
+        --columnContent32: 2rem;
+        --columnContent24: 1.6rem;
+        --columnContent2: 1.2rem;
+        --columnContent12: 0.8rem;
+        --columnContent16: 1rem;
+        --columnContent0: 0.6rem;
+        --columnContent4: 2rem;
+
+
+
+        --rowContent0: 0.6rem;
+        --rowContent2: 1.4rem;
+        --rowContent12: 0.8rem;
+        --rowContent14: 0.8rem;
+        --rowContent16: 1rem;
+        --rowContent24: 1.6rem;
+        --rowContent32: 2rem;
+        --rowContent36: 2.4rem;
+        --rowContent6: 4rem;
+
+
+    }
+
+    @include maxWidth(600px) {
+
+        --wh: 2rem;
+        --wh2: 3.6rem;
+
+        --wh3: 4rem;
+        --wh4: 4.4rem;
+        --wh5: 3.2rem;
+        --wh6: 2rem;
+        --wh7: 1.4rem;
+
+        --size-hd: 7rem;
+
+        --size-pd: 2rem;
+        --size-pdl: 4rem;
+
+        --radius12: 0.6rem;
+        --radius0: 0.2rem;
+        --radius100: 4rem;
+        --radius120: 6rem;
+
+
+        --radius10: 0.6rem;
+        --radius16: 1rem;
+        --radius20: 1.4rem;
+        --radius04: 0.4rem;
+        --radius42: 2.4rem;
+        --radius40: 1rem;
+
+
+        --columnContent36: 2rem;
+        --columnContent32: 1.6rem;
+        --columnContent24: 1.2rem;
+        --columnContent2: 1rem;
+        --columnContent12: 0.6rem;
+        --rowContent14: 0.6rem;
+        --columnContent16: 0.8rem;
+        --columnContent0: 0.4rem;
+        --columnContent4: 1rem;
+
+
+
+        --rowContent0: 0.6rem;
+        --rowContent2: 1rem;
+        --rowContent12: 0.6rem;
+        --rowContent16: 0.8rem;
+        --rowContent24: 1.2rem;
+        --rowContent32: 1.6rem;
+        --rowContent36: 2rem;
+        --rowContent4: 2rem;
+        --rowContent6: 3rem;
+
+
+    }
+
+    @include maxWidth(460px) {
+        // --size-hd: 6.5rem;
+
+        --wh: 1.8rem;
+        --wh2: 3.2rem;
+
+        --wh3: 4rem;
+        --wh4: 3.8rem;
+        --wh5: 2.4rem;
+        --wh6: 1.6rem;
+        --wh7: 1.2rem;
+
+        --size-pd: 1.6rem;
+        --size-pdl: 3.2rem;
+
+        --radius12: 0.6rem;
+        --radius120: 4rem;
+
+        --radius10: 0.6rem;
+        --radius16: 0.8rem;
+        --radius20: 1rem;
+        --radius04: 0.4rem;
+        --radius42: 2rem;
+
+        --radius0: 0.6rem;
+
+        --rowContent4: 1.6rem;
+
+        --columnContent2: 0.8rem;
+
+        --rowContent6: 2rem;
+
+
+    }
+
+    @include maxWidth(360px) {
+        // --size-hd: 6rem;
+
+        --wh2: 3rem;
+
+
+        --size-pd: 1.6rem;
+        --size-pdl: 3.2rem;
+
+        --radius12: 0.6rem;
+        --radius0: 0.5rem;
+        --radius20: 0.8rem;
+
+
+        --rowContent4: 1.6rem;
+
+        --columnContent2: 0.8rem;
+
+
+    }
+
+}
+
+$color-pri: #004524;
+$color-second: #8FAF3E;
+$color-third: #FFF7F0;
+$color-four: #F9FAFB;
+$color-five: #143957;
+
+$color-text: #101010;
+$color-text2: #1E1E1E;
+$color-text3: #8C8C8C;
+$color-text4: #15191E;
+
+
+
+$color-white: #ffffff;
+$color-white2: #F7F6F5;
+$color-white3: #c5c2bb;
+
+
+
+
+
+$color-black: #000000;
+$color-black2: #15191E;
+
+
+$color-gray: #F3F4F6;
+$color-gray2: #65758B;
+$color-gray3: #64748B;
+$color-gray4: #F5F5F5;
+$color-gray5: #8C8982;
+$color-gray6: #595959;
+$color-gray7: #F2F0ED;
+$color-gray8: #E5E7EB;
+$color-gray9: #6B7280;
+
+
+
+
+
+
+$color-ogr: #FCB247;
+$color-red: #F73131;
+$color-green: #009033;
+$color-green2: #10B981;
+$color-linear: linear-gradient(234.87deg, #004524 37.42%, #02873D 97.28%);

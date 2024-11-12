@@ -1,0 +1,16 @@
+
+@use "variables/variable" as *;
+@use "components/header" as *;
+@use "components/footer" as *;
+@use "components/menu" as *;
+@use "./core/reset" as *;
+@use "./core/base" as *;
+@use "./core/mona" as *;
+
+
+
+
+
+// import font
+@import "../assets/fonts/Montserrat/stylesheet.css";
+

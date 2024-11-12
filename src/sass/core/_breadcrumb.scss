@@ -1,0 +1,360 @@
+@use "../variables/variable" as *;
+@use "../mixins/mixin" as *;
+@use "./font" as *;
+
+.breadcrumbs {
+    overflow: hidden;
+    width: 100%;
+
+
+
+    &-wrap {
+        // padding: var(--rowContent24) 0;
+    }
+
+    &-list {
+        @include flex;
+        align-items: center;
+        column-gap: 3.6rem;
+
+        // padding: 2.4rem 0;
+        @include max(1200px) {
+            column-gap: 3rem;
+        }
+
+        @include max(800px) {
+            column-gap: 2.4rem;
+        }
+
+
+        @include max(600px) {
+            column-gap: 2rem;
+        }
+
+        @include max(460px) {
+            column-gap: 1.6rem;
+        }
+
+        .separator {
+            display: none !important;
+        }
+
+
+
+    }
+
+    &-item {
+        position: relative;
+        // padding: 0 1rem;
+        height: 2.4rem;
+        @include mid-flex;
+
+
+
+        &.current-item {
+            a {
+                color: $color-second !important;
+                pointer-events: none;
+                // text-transform: uppercase;
+                font-weight: 700;
+                -webkit-line-clamp: 1;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+
+                display: -webkit-box;
+            }
+        }
+
+        &:last-child {
+            padding: 0 0.05rem;
+
+            a {
+                color: $color-second !important;
+                pointer-events: none;
+                // text-transform: uppercase;
+                font-weight: 700;
+                -webkit-line-clamp: 1;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+
+                display: -webkit-box;
+            }
+        }
+
+        &:not(:last-child) {
+            &::before {
+                content: "";
+                // background-image: url(../../assets/images/bric.png);
+                color: $color-white;
+                width: 1.6rem;
+                height: 1.6rem;
+                background-size: 100% 100%;
+                position: absolute;
+                background-repeat: no-repeat;
+                top: 55%;
+                transform: translateY(-50%);
+                right: -2.6rem;
+
+                @include max(1200px) {
+                    right: -2.4rem;
+                }
+
+
+                @include max(800px) {
+                    right: -2rem;
+                    width: 1.4rem;
+                    height: 1.4rem;
+                }
+
+                @include max(600px) {
+                    right: -1.9rem;
+                }
+
+                @include max(460px) {
+                    right: -1.6rem;
+                }
+
+            }
+
+
+        }
+
+        .last {
+            @include fz-14;
+            line-height: 1.5;
+            color: $color-white;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            letter-spacing: 0.005em;
+            font-weight: 600;
+        }
+
+        a {
+            @include fz-14;
+            line-height: 1.5;
+            color: $color-white;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            letter-spacing: 0.005em;
+            // font-family: var(--font-sec) !important;
+
+            // max-width: 9rem;
+
+            @include hover {
+                color: $color-pri;
+            }
+
+            img {
+                width: 1.4rem;
+            }
+
+            @include min(1201px) {
+                &:hover {
+                    color: $color-second !important;
+                }
+            }
+
+            @include max(600px) {
+                font-size: 1.2rem;
+            }
+        }
+
+        &.active {
+            a {
+                opacity: 1;
+
+                @include min(1201px) {
+                    &:hover {
+                        color: $color-black;
+                    }
+                }
+            }
+        }
+
+        &:not(:last-child) {
+            a {
+                width: max-content;
+            }
+        }
+    }
+
+    &.pd-t {
+        padding-top: 1.5rem;
+    }
+
+    &.other {
+        padding: var(--rowContent24) 0;
+        // background-color: $color-pri;
+        width: 100%;
+
+        &.ab {
+            position: absolute;
+            top: calc(var(--size-hd) + 1.2rem);
+        }
+
+        // height: 100%;
+        a {
+            font-weight: 600;
+            @include fz-14;
+            line-height: 1.5;
+
+            color: $color-gray2;
+
+            @include hover {
+                color: $color-pri !important;
+            }
+        }
+
+        span {
+            color: white;
+        }
+
+        .breadcrumbs-list {
+            position: relative;
+            height: 100%;
+            padding: 0;
+            justify-content: start;
+            // padding-bottom: 1.6rem;
+
+            // &::before {
+            //     position: absolute;
+            //     content: "";
+            //     width: 100vw;
+            //     bottom: 0;
+            //     left: 50%;
+            //     transform: translateX(-50%);
+            //     border-bottom: 0.1rem solid #d1d8dc;
+            // }
+        }
+
+        .breadcrumbs-item {
+
+            a {
+                color: $color-text;
+                @include fz-14;
+                font-weight: 700;
+            }
+
+            &:not(:last-child) {
+                &::before {
+                    color: $color-text;
+                }
+            }
+
+            .last {
+                font-weight: 500;
+                color: $color-text;
+            }
+
+            &.current-item {
+                a {
+                    color: $color-gray !important;
+                    pointer-events: none;
+                    font-weight: 400;
+
+                    display: -webkit-box;
+                    -webkit-line-clamp: 1;
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
+                }
+            }
+        }
+    }
+
+    &Sec.section {
+        padding-top: var(--pdGen);
+        overflow: hidden;
+    }
+}
+
+.box-breadcrumbs {
+    background: $color-pri;
+    height: 12.5rem;
+    display: flex;
+    width: 100%;
+    // align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    &-wrap {
+        height: 100%;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        row-gap: 0.8rem;
+        justify-content: center;
+
+        @media screen and (max-width: 1200px) {
+            row-gap: 0.2rem;
+        }
+
+        &::before {
+            content: "";
+            // background-image: url(../assets/images/icBr.svg);
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            left: -2rem;
+            width: 10rem;
+            height: 10rem;
+            background-repeat: no-repeat;
+            background-size: 100%;
+            z-index: 1;
+            pointer-events: none;
+
+            @media screen and (max-width: 1200px) {
+                width: 6rem;
+                height: 6rem;
+                left: -1rem;
+            }
+        }
+
+        .title-sm {
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+
+            @media screen and (max-width:600px) {
+                font-size: 2rem;
+            }
+        }
+    }
+
+    @media screen and (max-width: 1200px) {
+        height: 8rem;
+    }
+}
+
+.breadcrumbs-inside {
+    position: relative;
+
+    .breadcrumbs {
+        position: absolute;
+        width: 100%;
+        top: 0;
+        left: 0;
+    }
+
+    .breadcrumbs.other .breadcrumbs-list::before {
+        display: none;
+    }
+}
+
+.breadcrumbs-white {
+    .breadcrumbs.other a {
+        color: white;
+
+        @include hover {
+            color: $color-third;
+        }
+    }
+
+    .breadcrumbs-item:not(:last-child)::before {
+        filter: brightness(0) invert(1);
+    }
+}

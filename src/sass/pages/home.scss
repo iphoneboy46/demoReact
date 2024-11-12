@@ -1,0 +1,15 @@
+
+@use "../mixins/mixin" as *;
+@use "../core/font" as *;
+@use "../core/component" as *;
+
+
+.home{
+    padding-top: var(--size-pd);
+    padding-bottom: var(--size-pd);
+
+    .title-lg{
+        // @include fz-12;
+    }
+}
+

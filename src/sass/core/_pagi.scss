@@ -1,0 +1,170 @@
+@use "../variables/variable" as *;
+@use "../mixins/mixin" as *;
+@use "./font" as *;
+
+.page-numbers {
+  @include flex;
+  align-items: center;
+  justify-content: center;
+
+
+  &.m-top {
+    margin-top: 3rem;
+  }
+
+  .dot {
+    width: 5.3rem;
+    height: 0.1rem;
+    background: $color-text;
+  }
+
+  >li {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    &:not(:first-child) {
+      margin-left: 1.6rem;
+
+      @include max(460px) {
+        margin-left: 0.6rem;
+      }
+
+      @include max(360px) {
+        margin-left: 0.3rem;
+      }
+    }
+
+    &>.page-numbers {
+      line-height: 1.5;
+      font-weight: 500;
+      color: $color-white;
+      @include mid-flex;
+      cursor: pointer;
+      border-radius: 50%;
+      transition: 0.3s ease-in-out;
+      width: var(--wh2);
+      height: var(--wh2);
+      // border: 0.1rem solid $color-gray;
+      @include fz-16;
+
+
+      @include hover {
+        // background-color: $color-pri;
+
+        color: $color-white;
+        background: $color-second;
+
+
+        // i {
+        //   color: white;
+        // }
+      }
+
+      // @include max(1200px) {
+      //   width: 4rem;
+      //   height: 4rem;
+      //   // font-size: 1.4rem;
+      // }
+
+
+      // @include max(800px) {
+      //   width: 3.6rem;
+      //   height: 3.6rem;
+      //   // font-size: 1.4rem;
+      // }
+
+      @include max(600px) {
+        // width: 3.2rem;
+        // height: 3.2rem;
+        font-size: 1.4rem;
+      }
+
+      @include max(460px) {
+        // width: 2.8rem;
+        // height: 2.8rem;
+        font-size: 1.3rem;
+      }
+
+      @include max(360px) {
+        // width: 2.4rem;
+        // height: 2.4rem;
+        font-size: 1.2rem;
+      }
+
+      // &:hover {
+      //   @include min(1201px) {}
+      // }
+
+      &.current {
+        background: $color-second;
+        color: $color-white;
+      }
+
+      &.dot {
+        pointer-events: none;
+      }
+
+      .icon {
+        font-weight: 400;
+      }
+    }
+  }
+
+  .page-numbers.next,
+  .page-numbers.prev {
+    width: fit-content;
+    border-radius: 0 !important;
+    padding: 0.5rem;
+    cursor: pointer;
+    display: flex;
+    column-gap: var(--columnContent12);
+    align-items: center;
+    background: transparent !important;
+    border-color: transparent !important;
+
+    i {
+      @include fz-14;
+      font-weight: 400;
+      color: $color-white;
+      transition: all 0.3s linear;
+
+    }
+
+    .note-text {
+      transition: all 0.3s linear;
+      color: $color-white;
+
+    }
+
+    >.page-numbers {}
+
+    @include hover {
+      i {
+        color: $color-second !important;
+
+      }
+
+      .note-text {
+        color: $color-second !important;
+
+      }
+
+
+    }
+
+    .icon {
+      font-weight: 900 !important;
+
+      cursor: pointer;
+      transition: all 0.3s linear;
+    }
+  }
+}
+
+.pagination {
+  &.center {
+    .page-numbers {
+      justify-content: center;
+    }
+  }
+}
