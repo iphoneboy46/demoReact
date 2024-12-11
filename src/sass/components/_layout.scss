@@ -1,0 +1,344 @@
+@use "../variables/variable" as *;
+@use "../mixins/mixin" as *;
+@use "../core/font" as *;
+.layoutMain {
+    position: relative;
+    --w: 11rem;
+    @include max(1200px) {
+        --w: 8rem;
+    }
+    @include max(600px) {
+        --w: 6rem;
+    }
+    @include max(360px) {
+        --w: 5.5rem;
+    }
+    &_btn {
+        width: var(--wh2);
+        height: var(--wh2);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 50%;
+        background: $color-white;
+        position: absolute;
+        top: 50%;
+        right: calc(var(--wh2) / -2);
+        transform: translateY(-50%);
+        box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+        z-index: 5;
+        border: 0.1rem solid $color-pri;
+        svg {
+            width: 40%;
+            height: 40%;
+            filter: brightness(0) saturate(100%) invert(31%) sepia(51%) saturate(4126%) hue-rotate(200deg) brightness(102%) contrast(110%);
+        }
+        display: none;
+        @media screen and (max-width: 1200px) {
+            display: flex;
+            width: 3.2rem;
+            height: 3.2rem;
+            right: -1.6rem;
+        }
+        @media screen and (max-width: 800px) {
+            display: flex;
+            width: 2.8rem;
+            height: 2.8rem;
+            right: -1.4rem;
+        }
+        @media screen and (max-width: 600px) {
+            display: flex;
+            width: 2.6rem;
+            height: 2.6rem;
+            right: -1.3rem;
+        }
+    }
+    &_wrap {
+        display: flex;
+    }
+    &_lf {
+        position: relative;
+        width: var(--w);
+        transition: 0.4s ease-out;
+        z-index: 10;
+        &--wrap {
+            height: 100svh;
+            overflow: hidden;
+        }
+        @include hover {
+            width: 22rem;
+            .siteBar {
+                background: $color-white;
+                border: 0.1rem solid #D8DCE3;
+                .siteBar_logo--img {
+                    img {
+                        // &:nth-child(1) {
+                        //     opacity: 0;
+                        //     visibility: hidden;
+                        // }
+                        // &:nth-child(2) {
+                        //     opacity: 1;
+                        //     visibility: visible;
+                        // }
+                        filter: brightness(0) saturate(100%)
+                    }
+                }
+                .siteBar_login {
+                    .siteBar_login--img {
+                        margin: unset;
+                    }
+                    .siteBar_login--name {
+                        opacity: 0;
+                        display: block;
+                        animation: anHien 0.3s 0.15s linear forwards;
+                        .note-text {
+                            color: $color-pri;
+                        }
+                    }
+                }
+                .siteBar_logout {
+                    .menu-link {
+                        width: 100%;
+                        justify-content: center;
+                        .menu-link-wrap {
+                            .note-text {
+                                display: block;
+                                opacity: 0;
+                                color: $color-red;
+                                animation: anHien 0.3s 0.1s ease-out forwards;
+                            }
+                            .ic {
+                                svg {
+                                    filter: brightness(0) saturate(100%) invert(27%) sepia(81%) saturate(2151%) hue-rotate(345deg) brightness(85%) contrast(102%);
+                                }
+                            }
+                        }
+                        @include hover {
+                            background: rgba($color: $color-red, $alpha: 0.1);
+                            .menu-link-wrap {
+                                .note-text {
+                                    color: $color-red;
+                                }
+                                .ic {
+                                    img {
+                                        filter: brightness(0) saturate(100%) invert(31%) sepia(51%) saturate(4126%) hue-rotate(200deg) brightness(102%) contrast(110%);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                .menu-list {
+                    .menu-item {
+                        margin: unset;
+                        .menu-link {
+                            .menu-link-wrap {
+                                .note-text {
+                                    display: block;
+                                    opacity: 0;
+                                    color: $color-gray;
+                                    animation: anHien 0.3s 0.1s ease-out forwards;
+                                }
+                                .ic {
+                                    img {
+                                        filter: brightness(0) saturate(100%) invert(47%) sepia(31%) saturate(321%) hue-rotate(175deg) brightness(88%) contrast(86%);
+                                    }
+                                }
+                            }
+                            @include hover {
+                                background: $color-third;
+                                .menu-link-wrap {
+                                    .note-text {
+                                        color: $color-pri;
+                                    }
+                                    .ic {
+                                        img {
+                                            filter: brightness(0) saturate(100%) invert(31%) sepia(51%) saturate(4126%) hue-rotate(200deg) brightness(102%) contrast(110%);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        &.actived {
+                            .menu-link {
+                                background: $color-third;
+                                .menu-link-wrap {
+                                    .note-text {
+                                        color: $color-pri;
+                                    }
+                                    .ic {
+                                        img {
+                                            filter: brightness(0) saturate(100%) invert(31%) sepia(51%) saturate(4126%) hue-rotate(200deg) brightness(102%) contrast(110%);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        @include max(1200px) {
+            position: fixed;
+            left: 0;
+            top: 0;
+        }
+        &.actived {
+            width: 22rem;
+            // position: fixed;
+            top: 0;
+            left: 0;
+            transition: 0.4s ease-out;
+            .siteBar_login {
+                .siteBar_login--img {
+                    margin: unset;
+                }
+                .siteBar_login--name {
+                    opacity: 0;
+                    display: block;
+                    animation: anHien 0.3s 0.15s linear forwards;
+                    .note-text {
+                        color: $color-pri;
+                    }
+                }
+            }
+            .siteBar {
+                background: $color-white;
+                border: 0.1rem solid #D8DCE3;
+                .siteBar_logo--img {
+                    img {
+                        // &:nth-child(1) {
+                        //     opacity: 0;
+                        //     visibility: hidden;
+                        // }
+                        // &:nth-child(2) {
+                        //     opacity: 1;
+                        //     visibility: visible;
+                        // }
+                        filter: brightness(0) saturate(100%)
+                    }
+                }
+                .menu-list {
+                    .menu-item {
+                        margin: unset;
+                        .menu-link {
+                            .menu-link-wrap {
+                                .note-text {
+                                    display: block;
+                                    opacity: 0;
+                                    color: $color-gray;
+                                    animation: anHien 0.3s 0.1s ease-out forwards;
+                                }
+                                .ic {
+                                    img {
+                                        filter: brightness(0) saturate(100%) invert(47%) sepia(31%) saturate(321%) hue-rotate(175deg) brightness(88%) contrast(86%);
+                                    }
+                                }
+                            }
+                            @include hover {
+                                background: $color-third;
+                                .menu-link-wrap {
+                                    .note-text {
+                                        color: $color-pri;
+                                    }
+                                    .ic {
+                                        img {
+                                            filter: brightness(0) saturate(100%) invert(31%) sepia(51%) saturate(4126%) hue-rotate(200deg) brightness(102%) contrast(110%);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        &.actived {
+                            .menu-link {
+                                background: $color-third;
+                                .menu-link-wrap {
+                                    .note-text {
+                                        color: $color-pri;
+                                    }
+                                    .ic {
+                                        img {
+                                            filter: brightness(0) saturate(100%) invert(31%) sepia(51%) saturate(4126%) hue-rotate(200deg) brightness(102%) contrast(110%);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            .layoutMain_btn {
+                transform: translateY(-50%) rotate(-180deg);
+            }
+            .siteBar_logout {
+                .menu-link {
+                    width: 100%;
+                    justify-content: center;
+                    .menu-link-wrap {
+                        .note-text {
+                            display: block;
+                            opacity: 0;
+                            color: $color-red;
+                            animation: anHien 0.3s 0.1s ease-out forwards;
+                        }
+                        .ic {
+                            svg {
+                                filter: brightness(0) saturate(100%) invert(27%) sepia(81%) saturate(2151%) hue-rotate(345deg) brightness(85%) contrast(102%);
+                            }
+                        }
+                    }
+                    @include hover {
+                        background: rgba($color: $color-red, $alpha: 0.1);
+                        .menu-link-wrap {
+                            .note-text {
+                                color: $color-red;
+                            }
+                            .ic {
+                                img {
+                                    filter: brightness(0) saturate(100%) invert(31%) sepia(51%) saturate(4126%) hue-rotate(200deg) brightness(102%) contrast(110%);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            @include max(460px) {
+                width: 60%;
+            }
+        }
+    }
+    &_rt {
+        width: 100%;
+        flex: 1;
+        transition: 0.4s ease-out;
+        &--wrap {
+            padding: 2.4rem;
+            height: 100svh;
+            overflow-y: auto;
+        }
+        @include max(1200px) {
+            padding-left: var(--w);
+        }
+    }
+    &_modal {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba($color: #000000, $alpha: 0.5);
+        z-index: 5;
+        transition: 0.15s linear;
+        opacity: 0;
+        pointer-events: none;
+        visibility: hidden;
+        display: none;
+        @include max(1200px) {
+            display: block;
+        }
+        &.showed {
+            opacity: 1;
+            pointer-events: visible;
+            visibility: visible;
+        }
+    }
+}

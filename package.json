@@ -1,54 +1,79 @@
 {
-  "name": "sourcedemo",
-  "version": "0.1.0",
-  "private": true,
-  "homepage": "./",
-  "dependencies": {
-    "@apollo/client": "^3.11.10",
-    "@fortawesome/free-brands-svg-icons": "^6.6.0",
-    "@fortawesome/free-solid-svg-icons": "^6.6.0",
-    "@fortawesome/react-fontawesome": "^0.2.2",
-    "@testing-library/jest-dom": "^5.17.0",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
-    "graphql": "^16.9.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-router-dom": "^6.28.0",
-    "react-toastify": "^10.0.6",
-    "swiper": "^6.8.4",
-    "web-vitals": "^2.1.4"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-    "postcss-loader": "^8.1.1",
-    "react-scripts": "^5.0.1",
-    "resolve-url-loader": "^5.0.0",
-    "sass": "^1.32.0",
-    "sass-loader": "^16.0.3"
-  }
+    "name": "sourcedemo",
+    "version": "0.1.0",
+    "private": true,
+    "homepage": "./",
+    "dependencies": {
+        "@apollo/client": "^3.11.10",
+        "@date-io/date-fns": "^3.0.0",
+        "@emotion/react": "^11.13.3",
+        "@emotion/style": "^0.8.0",
+        "@emotion/styled": "^11.13.0",
+        "@fortawesome/fontawesome-svg-core": "^6.6.0",
+        "@fortawesome/free-brands-svg-icons": "^6.6.0",
+        "@fortawesome/free-solid-svg-icons": "^6.6.0",
+        "@fortawesome/react-fontawesome": "^0.2.2",
+        "@tanstack/react-query": "^5.61.0",
+        "@testing-library/jest-dom": "^5.17.0",
+        "@testing-library/react": "^13.4.0",
+        "@testing-library/user-event": "^13.5.0",
+        "apexcharts": "^3.54.1",
+        "axios": "^1.7.7",
+        "chart.js": "^4.4.6",
+        "chartjs-plugin-annotation": "^3.1.0",
+        "date-fn": "^0.0.2",
+        "dayjs": "^1.11.13",
+        "formik": "^2.4.6",
+        "graphql": "^16.9.0",
+        "jquery": "^3.7.1",
+        "react": "^18.3.1",
+        "react-apexcharts": "^1.5.0",
+        "react-chartjs-2": "^5.2.0",
+        "react-date-range": "^2.0.1",
+        "react-datepicker": "^7.5.0",
+        "react-dom": "^18.3.1",
+        "react-modal": "^3.16.1",
+        "react-paginate": "^8.2.0",
+        "react-router-dom": "^6.28.0",
+        "react-select": "^5.8.3",
+        "react-spinners": "^0.14.1",
+        "react-toastify": "^10.0.6",
+        "recharts": "^2.13.3",
+        "select2": "^4.1.0-rc.0",
+        "swiper": "^6.8.4",
+        "web-vitals": "^2.1.4",
+        "yup": "^1.4.0"
+    },
+    "scripts": {
+        "start": "react-scripts start",
+        "build": "react-scripts build",
+        "test": "react-scripts test",
+        "eject": "react-scripts eject"
+    },
+    "eslintConfig": {
+        "extends": [
+            "react-app",
+            "react-app/jest"
+        ]
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    },
+    "devDependencies": {
+        "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+        "postcss-loader": "^8.1.1",
+        "react-scripts": "^5.0.1",
+        "resolve-url-loader": "^5.0.0",
+        "sass": "^1.32.0",
+        "sass-loader": "^16.0.3"
+    }
 }

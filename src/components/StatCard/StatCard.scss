@@ -1,0 +1,95 @@
+@use "../../sass/mixins/mixin" as *;
+@use "../../sass/core/font" as *;
+@use "../../sass/core/component" as *;
+@use "../../sass/variables/variable" as *;
+.stat_card {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--rowContent12);
+    box-shadow: 0px 8px 32px 0px #3326AE14;
+    padding: var(--rowContent24);
+    background: $color-white;
+    &--wrap {
+        display: flex;
+        align-items: end;
+        column-gap: var(--columnContent32);
+    }
+    &--lf {
+        width: 100%;
+        flex: 1;
+        flex-shrink: 0;
+    }
+    &--rt {
+        width: 50%;
+        // flex: 1;
+    }
+    &--chart {
+        width: 100%;
+        canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+    }
+    &--info {
+        display: flex;
+        flex-direction: column;
+        row-gap: var(--rowContent0);
+    }
+    &--ic {
+        width: 2rem;
+        height: 2rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-shrink: 0;
+        svg {
+            width: 100%;
+            height: 100%;
+            object-fit: contain
+        }
+    }
+    &--trend {
+        @include fz-14;
+        font-weight: 500;
+        display: flex;
+        column-gap: 0.4rem;
+        &.positive {
+            .stat_card--percentage {
+                color: $color-green;
+            }
+            .stat_card--ic {
+                svg {
+                    filter: brightness(0) saturate(100%) invert(44%) sepia(63%) saturate(7276%) hue-rotate(143deg) brightness(95%) contrast(94%);
+                }
+            }
+        }
+        &.negative {
+            .stat_card--percentage {
+                color: $color-red;
+            }
+            .stat_card--ic {
+                svg {
+                    filter: brightness(0) saturate(100%) invert(23%) sepia(73%) saturate(1832%) hue-rotate(351deg) brightness(124%) contrast(87%);
+                }
+            }
+        }
+    }
+    .recharts-default-tooltip {
+        padding: 0.4rem var(--rowContent0) !important;
+        background: $color-white;
+        border: unset !important;
+        box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px !important;
+        .recharts-tooltip-label {
+            @include fz-12;
+        }
+        .recharts-tooltip-item-list {
+            display: flex;
+            flex-direction: column;
+            row-gap: 0.2rem;
+        }
+        .recharts-tooltip-item {
+            padding: unset !important;
+            font-size: 1.2rem !important;
+        }
+    }
+}

@@ -1,0 +1,214 @@
+@use "../../sass/mixins/mixin" as *;
+@use "../../sass/core/font" as *;
+@use "../../sass/core/component" as *;
+@use "../../sass/variables/variable" as *;
+.chooseDate {
+    padding: var(--rowContent12) var(--columnContent16);
+    border: 0.1rem solid $color-gray3 !important;
+    position: relative;
+    cursor: pointer;
+    min-width: 30rem;
+    transition: 0.3s linear;
+    &:focus {
+        border-color: $color-pri !important;
+    }
+    @include hover {
+        border-color: $color-pri !important;
+    }
+    &_wrap {
+        display: flex;
+        column-gap: var(--columnContent0);
+        justify-content: space-between;
+        user-select: none;
+    }
+    &_title {
+        display: flex;
+        align-items: end;
+        column-gap: 0.2rem;
+    }
+    &_ic {
+        width: 1.6rem;
+        height: 1.6rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-shrink: 0;
+        margin-top: 0.25rem;
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+    }
+    &_dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+        width: 100%;
+        z-index: 5;
+        transition: 0.3s ease-out;
+        // clip-path: inset(0 0 100% 0);
+        transform: translateY(-5%);
+        opacity: 0;
+        pointer-events: none;
+        visibility: hidden;
+        &.showed {
+            transform: translateY(0%);
+            opacity: 1;
+            // clip-path: inset(0 0 0 0);
+            pointer-events: visible;
+            visibility: visible;
+        }
+        &--wrap {}
+        &--tabs {
+            display: flex;
+        }
+        &--tab {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: $color-gray;
+            text-align: center;
+            @include fz-14;
+            position: relative;
+            width: 50%;
+            padding: var(--columnContent16);
+            position: relative;
+            transition: 0.3s linear;
+            font-weight: 500;
+            @include hover {
+                color: $color-pri;
+                &::before {
+                    background: $color-pri;
+                }
+            }
+            &.actived {
+                color: $color-pri;
+                &::before {
+                    background: $color-pri;
+                }
+            }
+            &::before {
+                content: "";
+                width: 100%;
+                height: 0.3rem;
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                transition: 0.3s linear;
+                background: #d8dce3;
+            }
+        }
+        &--list {
+            display: flex;
+            flex-direction: column;
+            background: $color-white;
+        }
+        &--item {
+            display: none;
+            opacity: 0;
+            &.showed {
+                animation: anHien 0.3s 0.15s linear forwards;
+                display: block;
+            }
+            &-wrap {
+                display: flex;
+                flex-direction: column;
+                row-gap: var(--rowContent16);
+            }
+            &-box {
+                display: flex;
+                flex-direction: column;
+                max-height: 32svh;
+                overflow-y: auto;
+            }
+            &-btn {
+                display: flex;
+                justify-content: space-between;
+                padding: var(--columnContent16);
+                border-top: 0.1rem solid #E4E7EC;
+                column-gap: var(--columnContent12);
+                .btn {
+                    width: 50%;
+                }
+            }
+        }
+        &--sl {
+            display: flex;
+            flex-direction: column;
+        }
+        &--title {
+            padding: var(--rowContent12);
+            .note-sm {
+                text-align: start;
+            }
+        }
+        &--op {
+            &-wrap {
+                display: flex;
+                column-gap: var(--columnContent12);
+                .box {
+                    width: 2rem;
+                    height: 2rem;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    overflow: hidden;
+                    border-radius: 50%;
+                    border: 0.1rem solid #D0D5DD;
+                    transition: 0.3s linear;
+                    background: transparent;
+                    position: relative;
+                    margin-top: 0.1rem;
+                    &::before {
+                        content: "";
+                        width: 50%;
+                        height: 50%;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%) scale(0);
+                        border-radius: 50%;
+                        display: block;
+                        transition: 0.3s linear;
+                        background: $color-white;
+                        position: absolute;
+                    }
+                }
+            }
+        }
+        &--lb {
+            padding: var(--rowContent12);
+            display: block;
+            cursor: pointer;
+            input {
+                display: none;
+                &:checked~.chooseDate_dropdown--op-wrap {
+                    .box {
+                        background: $color-pri;
+                        &::before {
+                            transform: translate(-50%, -50%) scale(1);
+                        }
+                    }
+                }
+            }
+        }
+        &--date {
+            .rdrCalendarWrapper {
+                width: 100% !important;
+            }
+            .rdrMonthAndYearWrapper {
+                width: 100% !important;
+            }
+            .rdrMonth {
+                width: 100% !important;
+                padding: unset !important;
+                ;
+            }
+            .rdrMonthPicker,
+            .rdrYearPicker {
+                margin: unset !important;
+            }
+        }
+    }
+}

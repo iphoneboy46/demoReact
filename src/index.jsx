@@ -2,19 +2,17 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { BrowserRouter } from "react-router-dom";
-import { ApolloProvider } from "@apollo/client";
-import client from './api/ApolloClient';
+import { BrowserRouter, HashRouter } from "react-router-dom";
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 
 root.render(
   <React.StrictMode>
-    {/* <ApolloProvider client={client}> */}
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    {/* </ApolloProvider> */}
+
+    <HashRouter >
+      <App />
+    </HashRouter >
   </React.StrictMode>
 );
 

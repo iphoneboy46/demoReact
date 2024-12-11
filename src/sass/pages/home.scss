@@ -1,15 +1,21 @@
-
 @use "../mixins/mixin" as *;
 @use "../core/font" as *;
 @use "../core/component" as *;
-
-
-.home{
-    padding-top: var(--size-pd);
-    padding-bottom: var(--size-pd);
-
-    .title-lg{
-        // @include fz-12;
+@use "../variables/variable" as *;
+.home {
+    &_wrap {
+        display: flex;
+        flex-direction: column;
+        row-gap: var(--rowContent24);
+        .layoutStat {
+            &_list {
+                row-gap: var(--rowContent32);
+            }
+            &_item {
+                @include max(1200px) {
+                    width: calc(100% / 2);
+                }
+            }
+        }
     }
 }
-

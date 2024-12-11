@@ -1,7 +1,15 @@
-import { ApolloClient, InMemoryCache } from '@apollo/client';
+import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client';
+
+const token = localStorage.getItem('authToken');
+// console.log(token)
 
 const client = new ApolloClient({
-    uri: '', // Đổi URL này thành URL trang WordPress của bạn
+    link: createHttpLink({
+        uri: 'https://managewoostore.monamedia.net/graphql', // Kiểm tra URI này
+        headers: {
+            Authorization: `Bearer ${token}`  // Thêm token vào header
+        }
+    }),
     cache: new InMemoryCache(),
 });
 
