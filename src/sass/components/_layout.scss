@@ -3,6 +3,8 @@
 @use "../core/font" as *;
 .layoutMain {
     position: relative;
+    height: 100svh;
+    overflow: hidden;
     --w: 11rem;
     @include max(1200px) {
         --w: 8rem;
@@ -311,13 +313,30 @@
         width: 100%;
         flex: 1;
         transition: 0.4s ease-out;
+        height: 100svh;
+        overflow: hidden;
         &--wrap {
             padding: 2.4rem;
             height: 100svh;
             overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            row-gap: var(--rowContent24);
+            @include max(1200px) {
+                padding: 2rem;
+            }
+            @include max(800px) {
+                padding: 1.6rem;
+            }
+            @include max(600px) {
+                padding: 1.2rem;
+            }
         }
         @include max(1200px) {
             padding-left: var(--w);
+        }
+        &--bottom {
+            padding: 0 var(--rowContent12);
         }
     }
     &_modal {

@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ToastContainer } from "react-toastify";
 import { ApolloProvider } from "@apollo/client";
 import client from "./api/ApolloClient";
+import ScrollToTop from "./components/ScrollToTop/ScrollToTop";
 
 const queryClient = new QueryClient();
 export const ThemeContext = createContext();
@@ -57,9 +58,10 @@ function App() {
 
     return (
         <ApolloProvider client={client}>
-            <ThemeContext.Provider value={{ user, setUser, totalProduct, setTotalProduct ,totalProductAo, setTotalProductAo, totalProductDraft, setTotalProductDraft , totalProductTrash, setTotalProductTrash }} >
+            <ThemeContext.Provider value={{ user, setUser, totalProduct, setTotalProduct, totalProductAo, setTotalProductAo, totalProductDraft, setTotalProductDraft, totalProductTrash, setTotalProductTrash }} >
                 <QueryClientProvider client={queryClient}>
                     <div className="App">
+                        <ScrollToTop />
                         <Routes>
                             {publicRoutes.map((publicRoute, index) => {
                                 const Page = publicRoute.components;

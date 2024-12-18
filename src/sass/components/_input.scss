@@ -52,10 +52,10 @@
         background: #f2f2f2;
         display: flex;
         align-items: center;
-        height: 4.8rem;
+        height: 4.6rem;
         padding: var(--rowContent12) var(--columnContent16);
         border-radius: 0.6rem;
-        border: 0.1rem solid #e8e8e8 !important;
+        border: 0.1rem solid #D8DCE3 !important;
         color: $color-text;
         @include fz-16;
         position: relative;
@@ -63,6 +63,9 @@
         // border-radius: 0;
         overflow: hidden;
         user-select: none;
+        @include max(600px) {
+            height: 4.2rem;
+        }
         @include max(800px) {
             @include fz-14;
         }
@@ -75,15 +78,6 @@
         }
         &:focus {
             border-color: $color-pri !important;
-        }
-        @include max(1200px) {
-            height: 4.4rem;
-        }
-        @include max(800px) {
-            height: 4rem;
-        }
-        @include max(600px) {
-            height: 3.8rem;
         }
     }
     &-tx {
@@ -189,15 +183,9 @@
         &~.select2-container {
             height: 4.6rem;
             width: 100% !important;
-            // @include max(1200px) {
-            //     height: 4.4rem;
-            // }
-            // @include max(800px) {
-            //     height: 4rem;
-            // }
-            // @include max(600px) {
-            //     height: 3.8rem;
-            // }
+            @include max(600px) {
+                height: 4.2rem;
+            }
         }
         &~.select2-container--default .select2-selection--single .select2-selection__placeholder {
             color: #A7B1BF !important;

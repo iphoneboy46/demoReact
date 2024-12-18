@@ -1,0 +1,124 @@
+@use "../../sass/mixins/mixin" as *;
+@use "../../sass/core/font" as *;
+@use "../../sass/core/component" as *;
+@use "../../sass/variables/variable" as *;
+.popupPrice {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1.1);
+    z-index: 1002;
+    transition: 0.5s linear;
+    visibility: hidden;
+    opacity: 0;
+    &.showed {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+        visibility: visible;
+        &~.popupPrice_modal {
+            opacity: 1;
+            visibility: visible;
+        }
+    }
+    &_wrap {
+        padding: var(--columnContent24);
+        background: $color-white;
+        border-radius: var(--radius16);
+        overflow: hidden;
+        position: relative;
+        width: 45rem;
+        display: flex;
+        flex-direction: column;
+        row-gap: var(--rowContent24);
+    }
+    &_ip {
+        display: flex;
+        position: relative;
+        border: 0.1rem solid #D8DCE3;
+        border-radius: 0.4rem;
+        .form-item-ip {
+            background: unset;
+            height: 4.6rem;
+            border: unset !important;
+            border-radius: unset !important;
+            border-right: 0.1rem solid #D8DCE3 !important;
+            &:focus {
+                border-color: #D8DCE3 !important;
+            }
+        }
+        .form-item-op {
+            &~.select2-container {
+                width: 25% !important;
+            }
+            &~.select2-container--default .select2-selection--single {
+                border: unset !important;
+                border-radius: unset;
+            }
+        }
+    }
+    &_ex {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 3.6rem;
+        height: 3.6rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        svg {
+            width: 2rem;
+            height: 2rem;
+            object-fit: contain;
+        }
+        @include hover {
+            svg {
+                filter: brightness(0) saturate(100%) invert(55%) sepia(89%) saturate(6408%) hue-rotate(200deg) brightness(101%) contrast(103%);
+            }
+        }
+    }
+    &_top {
+        display: flex;
+        flex-direction: column;
+        row-gap: var(--rowContent0);
+        .title-mn2 {
+            display: flex;
+            align-items: start;
+            column-gap: 0.4rem;
+            .number {
+                display: inline-block;
+                // margin-top: -0.5rem;
+            }
+        }
+    }
+    &_center {
+        display: flex;
+        flex-direction: column;
+        row-gap: var(--rowContent24);
+        .note-sm {
+            strong {
+                margin-left: -0.8rem;
+            }
+        }
+    }
+    &_bottom {}
+    &_btns {
+        display: flex;
+        column-gap: var(--columnContent12);
+        width: 100%;
+        .btn {
+            width: 50%;
+        }
+    }
+    &_modal {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        background: rgba($color: #000000, $alpha: 0.5);
+        inset: 0;
+        z-index: 1000;
+        transition: 0.5s linear;
+        opacity: 0;
+        visibility: hidden;
+    }
+}

@@ -65,26 +65,23 @@
             top: 50% !important;
         }
     }
-    // &.trans {
-    //     background: transparent;
-    //     border: 0.1rem solid #D8DCE3;
-    //     .btn-text {
-    //         color: $color-gray;
-    //     }
-    //     .btn-ic i {
-    //         color: $color-pri;
-    //     }
-    //     @include hover {
-    //         background: $color-second;
-    //         border-color: $color-second;
-    //         .btn-text {
-    //             color: $color-white;
-    //         }
-    //         .btn-ic i {
-    //             color: $color-white;
-    //         }
-    //     }
-    // }
+    &.trans {
+        background: transparent;
+        border: 0.1rem solid $color-pri;
+        .btn-text {
+            color: $color-pri;
+        }
+        @include hover {
+            background: $color-second;
+            border-color: $color-second;
+            .btn-text {
+                color: $color-white;
+            }
+            .btn-ic i {
+                color: $color-white;
+            }
+        }
+    }
     // &.tran2s {
     //     background: transparent;
     //     border: 0.1rem solid rgba($color: $color-white, $alpha: 0.7);
@@ -111,6 +108,18 @@
         background: $color-five;
         @include hover {
             background: $color-second;
+        }
+    }
+    &.cl-3 {
+        background: #D8DCE3;
+        .btn-text {
+            color: #65758B;
+        }
+        @include hover {
+            background: $color-red;
+            .btn-text {
+                color: $color-white;
+            }
         }
     }
     &.gg {

@@ -3,11 +3,12 @@ import "../../sass/components/_layout.scss"
 import SiteBar from '../Menu/SiteBar'
 import { faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import ScrollToTopInContainer from '../ScrollToTop/ScrollToTopInContainer'
 const Layout = ({ children }) => {
 
-    
 
-    const [menu,setMenu] = useState(false)
+
+    const [menu, setMenu] = useState(false)
     const handleMenu = () => {
         setMenu(!menu)
     }
@@ -26,12 +27,13 @@ const Layout = ({ children }) => {
 
             const list = siteBar.querySelector(".siteBar_bottom .menu-list");
 
-            const total = siteBar.clientHeight - top.clientHeight - parseInt(style.rowGap) - parseInt(style2.paddingBottom) -  parseInt(style2.paddingTop) - login?.clientHeight - parseInt(style3.rowGap);
+            const total = siteBar.clientHeight - top.clientHeight - parseInt(style.rowGap) - parseInt(style2.paddingBottom) - parseInt(style2.paddingTop) - login?.clientHeight - parseInt(style3.rowGap);
 
             list.style.maxHeight = total + "px";
-            
+
         }
-    },[menu])
+    }, [menu])
+
 
     return (
         <div className="layoutMain">
@@ -46,12 +48,17 @@ const Layout = ({ children }) => {
                     </div>
                 </div>
                 <div className="layoutMain_rt">
+                    <ScrollToTopInContainer />
                     <div className="layoutMain_rt--wrap">
                         {children}
+                        <div className="layoutMain_rt--bottom">
+                            <p className="note-sm t-center cl-gray6">eCommerce Platform @ 2020. All right reserved</p>
+                        </div>
                     </div>
+
                 </div>
             </div>
-            <div className={`layoutMain_modal ${menu ? "showed" : ""}` }></div>
+            <div className={`layoutMain_modal ${menu ? "showed" : ""}`}></div>
         </div>
     )
 }

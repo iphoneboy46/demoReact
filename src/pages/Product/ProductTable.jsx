@@ -1,6 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import "../../sass/pages/product.scss"
-import ImgDemo from "../../assets/images/proDemo.png"
 import { useMutation, useQuery } from '@apollo/client';
 import { GET_ALL_PRODUCT_TOTAL, GET_DRAFT_PRODUCT_TOTAL, GET_PRODUCT_ALL, GET_PUBLISHER_PRODUCT_TOTAL, GET_TRASH_PRODUCT_TOTAL } from '../../Query/getPosts';
 import ReactPaginate from 'react-paginate';
@@ -8,10 +7,11 @@ import { UPDATE_PRODUCT_STATUS } from '../../Query/update';
 import { toast } from 'react-toastify';
 import { ScaleLoader } from 'react-spinners';
 import { ThemeContext } from '../../App';
-import { data } from 'jquery';
-import { object } from 'yup';
+import { Link } from 'react-router-dom';
+import edit from "../../assets/images/edit.png"
+import { Tooltip } from 'react-tooltip';
 
-const ProductTable = ({ list, changeBl, selectedValueSl, valueSearch }) => {
+const ProductTable = ({ list, changeBl, selectedValueSl, valueSearch, setListCheckBoxPro, listCheckBoxPro, setSelectedValueHd, setSelectedValueHd2 }) => {
     const [page, setPage] = useState(() => {
         // Lấy giá trị page từ localStorage khi khởi tạo state
         return Number(localStorage.getItem("pagePagi")) || 0;
@@ -28,8 +28,9 @@ const ProductTable = ({ list, changeBl, selectedValueSl, valueSearch }) => {
     const [statusPro, setStatusPro] = useState("null");
     const [typePro, setTypePro] = useState("");
 
-    console.log(selectedValueSl)
+    const [checkBoxPro, setCheckBoxPro] = useState("null")
 
+    // const [checkAll, setCheckAll] = useState(false)
 
     // Gọi GraphQL với Apollo Client, truyền offset, size, và categoryId vào
     const { loading, error, data: productAlls, refetch } = useQuery(GET_PRODUCT_ALL, {
@@ -43,11 +44,18 @@ const ProductTable = ({ list, changeBl, selectedValueSl, valueSearch }) => {
             ...(selectedValueSl === "za" ? { orderby: [{ field: "NAME", order: "DESC" }] } : ""), // Sắp xếp theo tên giảm dần
             ...(selectedValueSl === "tc" ? { orderby: [{ field: "PRICE", order: "ASC" }] } : ""), // Sắp xếp theo giá tăng dần
             ...(selectedValueSl === "ct" ? { orderby: [{ field: "PRICE", order: "DESC" }] } : ""),  // Sắp xếp theo giá giảm dần
-            ...(valueSearch !== "" ? { search: valueSearch } : ""),
+            ...(valueSearch !== ""
+                ? (/^[a-zA-Z0-9]+$/.test(valueSearch) // Kiểm tra nếu chỉ chứa chữ và số (không có khoảng trắng)
+                    ? { sku: valueSearch }  // Nếu đúng thì tìm theo SKU
+                    : { search: valueSearch })  // Nếu không thì tìm theo từ khóa
+                : ""),
+
         },
         notifyOnNetworkStatusChange: true,  // Đảm bảo cập nhật khi dữ liệu thay đổi
         fetchPolicy: 'network-only',  // Đảm bảo luôn lấy dữ liệu mới mỗi lần thay đổi page
     });
+
+    console.log(productAlls)
 
 
     useEffect(() => {
@@ -137,12 +145,9 @@ const ProductTable = ({ list, changeBl, selectedValueSl, valueSearch }) => {
         localStorage.setItem("pagePagi", selected); // Lưu vào localStorage
         setPage(Number(localStorage.getItem("pagePagi"))); // Cập nhật state
         refetch({ offset: selected * size, size }); // Gọi lại API với offset mới
-        console.log("offset", selected * size)
     };
 
 
-
-    console.log(productAlls)
 
 
     // Mutation để cập nhật trạng thái sản phẩm
@@ -181,6 +186,8 @@ const ProductTable = ({ list, changeBl, selectedValueSl, valueSearch }) => {
             })
             refetchPublisherPro({})
             refetchDraftPro({})
+            refetchTrashPro({})
+            refetchProAll({})
         }).catch(error => {
             setLoadingStatus(false)
             console.error('Error updating product status:', error);
@@ -190,12 +197,167 @@ const ProductTable = ({ list, changeBl, selectedValueSl, valueSearch }) => {
 
         });
     };
-    console.log(productAlls?.products?.found)
+
+    // hàm xử lý bỏ tất cả nhưng thuộc tính checkbox đc chọn vào thùng rác
+    useEffect(() => {
+        if (list.selectedValueHd === "trashPro") {
+            // Set trạng thái loading cho tất cả ID
+            setLoadingStatus((prevState) => {
+                const updatedStatus = { ...prevState };
+                listCheckBoxPro.forEach((id) => {
+                    updatedStatus[id] = true;
+                });
+                return updatedStatus;
+            });
+
+            // Thực hiện mutation cho tất cả ID
+            const mutationPromises = listCheckBoxPro.map((id) =>
+                updateProductStatus({
+                    variables: {
+                        id: id,
+                        status: "TRASH",
+                    },
+                })
+                    .then(() => {
+                        // Hiển thị thông báo thành công
+                        toast.success(`Đã chuyển sản phẩm vào thùng rác thành công`, {
+                            autoClose: 3000,
+                        });
+                    })
+                    .catch((error) => {
+                        // Hiển thị thông báo lỗi
+                        console.error(`Error updating product `, error);
+                        toast.error(`Đã chuyển sản phẩm vào thùng rác thất bại`, {
+                            autoClose: 3000,
+                        });
+                    })
+                    .finally(() => {
+                        // Tắt trạng thái loading cho từng sản phẩm
+                        setLoadingStatus((prevState) => ({
+                            ...prevState,
+                            [id]: false,
+                        }));
+                    })
+            );
+
+            // Chờ tất cả mutation hoàn thành
+            Promise.all(mutationPromises)
+                .then(() => {
+                    // Làm mới dữ liệu
+                    refetchPublisherPro();
+                    refetchDraftPro();
+                    refetch({});
+                    refetchTrashPro({});
+                    refetchProAll({});
+                })
+                .finally(() => {
+                    // Reset trạng thái và danh sách checkbox
+                    setSelectedValueHd("null"); // Reset giá trị cho phép thao tác tiếp
+                    list.selectedValueHd = "null";
+                    setListCheckBoxPro([]); // Xóa danh sách checkbox
+                });
+        }
+    }, [list.selectedValueHd === "trashPro"]);
+
+    // hàm xử lý bỏ tất cả nhưng thuộc tính checkbox đc chọn khôi phục lại
+    useEffect(() => {
+        if (list.selectedValueHd2 === "restorePro") {
+            // Set trạng thái loading cho tất cả ID
+            setLoadingStatus((prevState) => {
+                const updatedStatus = { ...prevState };
+                listCheckBoxPro.forEach((id) => {
+                    updatedStatus[id] = true;
+                });
+                return updatedStatus;
+            });
+
+            // Thực hiện mutation cho tất cả ID
+            const mutationPromises = listCheckBoxPro.map((id) =>
+                updateProductStatus({
+                    variables: {
+                        id: id,
+                        status: "PUBLISH",
+                    },
+                })
+                    .then(() => {
+                        // Hiển thị thông báo thành công
+                        toast.success(`Đã khôi phục sản phẩm thành công`, {
+                            autoClose: 3000,
+                        });
+                    })
+                    .catch((error) => {
+                        // Hiển thị thông báo lỗi
+                        console.error(`Error updating product `, error);
+                        toast.error(`Đã khôi phục sản phẩm thất bại`, {
+                            autoClose: 3000,
+                        });
+                    })
+                    .finally(() => {
+                        // Tắt trạng thái loading cho từng sản phẩm
+                        setLoadingStatus((prevState) => ({
+                            ...prevState,
+                            [id]: false,
+                        }));
+                    })
+            );
+
+            // Chờ tất cả mutation hoàn thành
+            Promise.all(mutationPromises)
+                .then(() => {
+                    // Làm mới dữ liệu
+                    refetchPublisherPro();
+                    refetchDraftPro();
+                    refetch({});
+                    refetchTrashPro({});
+                    refetchProAll({});
+                })
+                .finally(() => {
+                    // Reset trạng thái và danh sách checkbox
+                    setSelectedValueHd2("null"); // Reset giá trị cho phép thao tác tiếp
+                    list.selectedValueHd2 = "null";
+                    setListCheckBoxPro([]); // Xóa danh sách checkbox
+                });
+        }
+    }, [list.selectedValueHd2 === "restorePro"]);
 
 
+    // hàm xét đki nếu checked đc thêm vào list ko thì xóa
+    function handleChangeCheckBox(e, id) {
+        if (e.target.checked) {
+            setListCheckBoxPro((prevList) => {
+                return [id, ...prevList];
+            });
+
+        } else {
+            setListCheckBoxPro((prevList) => {
+                const newArray = prevList.filter((item) => item !== id);
+                return newArray;
+            });
+        }
+    }
+
+    function handleChangeCheckBoxAll(e) {
+
+        if (e.target.checked) {
+            const table = document.querySelector(".product_table")
+            const items = table.querySelectorAll(".product_table--item")
+            items.forEach((item) => {
+                item.querySelector(".boxCk input").checked = true;
+            });
+            const allIds = productAlls?.products?.edges.map((data) => data.node.id);
+            setListCheckBoxPro(allIds);
 
 
+        } else {
+            const table = document.querySelector(".product_table")
+            const items = table.querySelectorAll(".product_table--item")
+            items.forEach((item) => {
+                item.querySelector(".boxCk input").checked = false;
 
+            });
+            setListCheckBoxPro([]);
+        }
+    }
 
 
 
@@ -208,7 +370,9 @@ const ProductTable = ({ list, changeBl, selectedValueSl, valueSearch }) => {
                             <tr>
                                 <th>
                                     <label className='boxCk'>
-                                        <input type="checkbox" name="" id="" />
+                                        <input type="checkbox" checked={listCheckBoxPro.length === 5 ? true : false} onChange={(e) => {
+                                            handleChangeCheckBoxAll(e)
+                                        }} name="" id="" />
                                         <span className="box"></span>
                                     </label>
                                 </th>
@@ -230,6 +394,11 @@ const ProductTable = ({ list, changeBl, selectedValueSl, valueSearch }) => {
                                 <th>
                                     <p className="note-text fw-5 cl-text">
                                         Giá sản phẩm
+                                    </p>
+                                </th>
+                                <th>
+                                    <p className="note-text fw-5 cl-text t-center">
+                                        Hành động
                                     </p>
                                 </th>
                             </tr>
@@ -265,20 +434,6 @@ const ProductTable = ({ list, changeBl, selectedValueSl, valueSearch }) => {
                                             <td>
                                                 <div className="skeleton"></div>
                                             </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div className="skeleton"></div>
-                                            </td>
-                                            <td>
-                                                <div className="skeleton"></div>
-                                            </td>
-                                            <td>
-                                                <div className="skeleton"></div>
-                                            </td>
-                                            <td>
-                                                <div className="skeleton"></div>
-                                            </td>
                                             <td>
                                                 <div className="skeleton"></div>
                                             </td>
@@ -287,20 +442,6 @@ const ProductTable = ({ list, changeBl, selectedValueSl, valueSearch }) => {
                                             <td>
                                                 <div className="skeleton"></div>
                                             </td>
-                                            <td>
-                                                <div className="skeleton"></div>
-                                            </td>
-                                            <td>
-                                                <div className="skeleton"></div>
-                                            </td>
-                                            <td>
-                                                <div className="skeleton"></div>
-                                            </td>
-                                            <td>
-                                                <div className="skeleton"></div>
-                                            </td>
-                                        </tr>
-                                        <tr>
                                             <td>
                                                 <div className="skeleton"></div>
                                             </td>
@@ -333,8 +474,54 @@ const ProductTable = ({ list, changeBl, selectedValueSl, valueSearch }) => {
                                             <td>
                                                 <div className="skeleton"></div>
                                             </td>
+                                            <td>
+                                                <div className="skeleton"></div>
+                                            </td>
                                         </tr>
                                         <tr>
+                                            <td>
+                                                <div className="skeleton"></div>
+                                            </td>
+                                            <td>
+                                                <div className="skeleton"></div>
+                                            </td>
+                                            <td>
+                                                <div className="skeleton"></div>
+                                            </td>
+                                            <td>
+                                                <div className="skeleton"></div>
+                                            </td>
+                                            <td>
+                                                <div className="skeleton"></div>
+                                            </td>
+                                            <td>
+                                                <div className="skeleton"></div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div className="skeleton"></div>
+                                            </td>
+                                            <td>
+                                                <div className="skeleton"></div>
+                                            </td>
+                                            <td>
+                                                <div className="skeleton"></div>
+                                            </td>
+                                            <td>
+                                                <div className="skeleton"></div>
+                                            </td>
+                                            <td>
+                                                <div className="skeleton"></div>
+                                            </td>
+                                            <td>
+                                                <div className="skeleton"></div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div className="skeleton"></div>
+                                            </td>
                                             <td>
                                                 <div className="skeleton"></div>
                                             </td>
@@ -368,20 +555,22 @@ const ProductTable = ({ list, changeBl, selectedValueSl, valueSearch }) => {
                                                     // Kiểm tra nếu không có sản phẩm
 
                                                     return (
-                                                        <tr key={index} id={data.id}>
-                                                            <td>
+                                                        <tr className='product_table--item' key={index} id={data.node.id}>
+                                                            <td data-label="Chọn">
                                                                 <label className='boxCk'>
-                                                                    <input type="checkbox" name="" id="" />
+                                                                    <input type="checkbox" onChange={(e) => {
+                                                                        handleChangeCheckBox(e, data.node.id)
+                                                                    }} />
                                                                     <span className="box"></span>
                                                                 </label>
                                                             </td>
-                                                            <td>
+                                                            <td data-label="Tiêu đề sản phẩm/ Biến thể">
                                                                 <div className="product_table--info">
                                                                     <div className="product_table--info-img">
                                                                         <img src={data?.node?.image?.sourceUrl} alt={data?.node?.name} />
                                                                     </div>
                                                                     <div className="product_table--info-des">
-                                                                        <p className="note-sm cl-text fw-6">
+                                                                        <p className="note-sm title cl-text fw-6">
                                                                             {data?.node?.name}
                                                                         </p>
                                                                         <p className="note-mn cl-text fw-5 quantity">
@@ -406,7 +595,7 @@ const ProductTable = ({ list, changeBl, selectedValueSl, valueSearch }) => {
                                                                     </div>
                                                                 </div>
                                                             </td>
-                                                            <td>
+                                                            <td data-label="Trạng thái">
                                                                 <div className={`product_table--status ${loadingStatus[data?.node?.id] && "load"} `}>
                                                                     {loadingStatus[data?.node?.id] && <ScaleLoader className='product_table--status-load' />}
                                                                     <p className={`note-text ${data?.node?.status === "draft" ? "cl-text" : "cl-gray3"} `}>Tắt</p>
@@ -424,7 +613,7 @@ const ProductTable = ({ list, changeBl, selectedValueSl, valueSearch }) => {
                                                                     <p className={`note-text ${data?.node?.status === "publish" ? "cl-text" : "cl-gray3"} `}>Bật</p>
                                                                 </div>
                                                             </td>
-                                                            <td>
+                                                            <td data-label="Danh mục">
                                                                 <ul className="product_table--dms">
                                                                     {
                                                                         data?.node?.terms?.nodes.map((dataChild1, childIndex1) => {
@@ -437,12 +626,20 @@ const ProductTable = ({ list, changeBl, selectedValueSl, valueSearch }) => {
                                                                     }
                                                                 </ul>
                                                             </td>
-                                                            <td>
+                                                            <td data-label="Giá sản phẩm">
                                                                 <div className="product_table--prices">
-                                                                    <p className="note-sm cl-text fw-5">{data?.node?.price?.replace(/&nbsp;/g, ' ')}</p>
-                                                                    <p className='note-sm cl-red fw-5'>{data?.node?.salePrice?.replace(/&nbsp;/g, ' ')}</p>
+                                                                    <p className="note-sm cl-text fw-5">{data?.node?.regularPrice !== null ? data?.node?.regularPrice?.replace(/&nbsp;/g, ' ') : "NaN"}</p>
+                                                                    <p className='note-sm cl-red fw-5'>{data?.node?.salePrice !== null ? data?.node?.salePrice?.replace(/&nbsp;/g, ' ') : "NaN"}</p>
                                                                 </div>
 
+                                                            </td>
+                                                            <td data-label="Hành động">
+                                                                <div className="product_table--actions">
+                                                                    <Link data-tooltip-id="tooltipEdit" to={`/product/${data.node.id}`} className="product_table--actions-ic">
+                                                                        <img src={edit} alt="edit" />
+                                                                    </Link>
+                                                                    <Tooltip id="tooltipEdit" place="top" content="Chỉnh sửa" />
+                                                                </div>
                                                             </td>
 
                                                         </tr>
@@ -470,7 +667,7 @@ const ProductTable = ({ list, changeBl, selectedValueSl, valueSearch }) => {
                                     pageCount={totalPages}
                                     onPageChange={({ selected }) => handlePageChange(selected)}  // Gọi hàm khi chuyển trang
                                     pageRangeDisplayed={2}
-                                    marginPagesDisplayed={2}
+                                    marginPagesDisplayed={1}
                                     previousLabel="←"  // Mũi tên trái
                                     nextLabel="→"      // Mũi tên phải
                                     containerClassName="pagination"

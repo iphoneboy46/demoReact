@@ -9,9 +9,13 @@
     html {
         font-size: 10px;
         scroll-behavior: smooth;
-        @media screen and (min-width: 2000px) {
-            font-size: 100%;
-        }
+        // @media screen and (min-width: 2000px) {
+        //     font-size: 100%;
+        // }
+    }
+    
+    html {
+        font-size: 10px;
     }
     
     body {
@@ -21,7 +25,7 @@
         font-weight: 400;
         -webkit-tap-highlight-color: transparent;
         color: $color-text;
-        background: $color-white;
+        background: #fbfafd;
         // background: $color-pri;
         @media screen and (min-width: 2000px) {
             font-size: 100%;
@@ -117,11 +121,11 @@
     }
     
      ::-webkit-scrollbar-thumb {
-        background: $color-second;
+        background: $color-pri;
     }
     
      ::-webkit-scrollbar-track {
-        background: $color-white !important;
+        background: rgba($color: $color-pri, $alpha: 0.3) !important;
         border-radius: 0rem !important;
     }
     
@@ -776,15 +780,58 @@
         display: flex;
         flex-direction: column;
         row-gap: var(--rowContent24);
+        &--br {
+            .skeleton {
+                width: 45rem;
+                height: 6rem;
+            }
+        }
+        &--pagis {
+            display: flex;
+            align-items: center;
+            column-gap: 0.4rem;
+        }
+        &--pagi {
+            width: 4.6rem;
+            height: 4.6rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 0.4rem;
+            border: 0.1rem solid #D8DCE3;
+            &.disable {
+                opacity: 0.5;
+                pointer-events: none;
+            }
+            @include hover {
+                background: $color-pri;
+                svg {
+                    filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(7454%) hue-rotate(2deg) brightness(101%) contrast(94%);
+                }
+            }
+            svg {
+                filter: brightness(0) saturate(100%) invert(46%) sepia(14%) saturate(637%) hue-rotate(175deg) brightness(95%) contrast(89%);
+                width: 40%;
+                height: 40%;
+                object-fit: contain;
+            }
+        }
         &--title {
             display: flex;
             column-gap: 0.2rem;
+            width: fit-content;
+            position: relative;
+            .skeleton {
+                width: 45rem;
+                height: 6rem;
+            }
             .ic {
                 width: 3.2rem;
                 height: 3.2rem;
                 display: flex;
                 justify-content: center;
                 align-items: center;
+                margin-top: -0.15rem;
                 img {
                     width: 100%;
                     height: 100%;
@@ -807,15 +854,51 @@
             align-items: center;
             justify-content: space-between;
             column-gap: var(--rowContent16);
-            row-gap: var(--rowContent0);
+            row-gap: var(--rowContent2);
             flex-wrap: wrap;
-            &-lf {}
+            overflow: hidden;
+            &.proCt {
+                .skeleton {
+                    height: 6rem;
+                }
+                .layout_top--pro-btns {
+                    &.d-wrap {
+                        margin-left: -0.8rem;
+                        margin-right: -0.8rem;
+                    }
+                }
+                .layout_top--pro-btn {
+                    &.d-item {
+                        padding-left: 0.8rem;
+                        padding-right: 0.8rem;
+                    }
+                }
+            }
+            &-lf {
+                flex: 1;
+                width: 100%;
+            }
             &-btns {
-                display: flex;
-                align-items: center;
-                flex-wrap: wrap;
-                column-gap: var(--rowContent16);
-                row-gap: var(--rowContent0);
+                position: relative;
+                &.d-wrap {
+                    margin-left: -0.8rem;
+                    margin-right: -0.8rem;
+                }
+                .swiper {
+                    width: 100%;
+                    margin: unset;
+                }
+                .swiper-slide {
+                    width: fit-content;
+                    &.d-item {
+                        padding-left: 0.8rem;
+                        padding-right: 0.8rem;
+                    }
+                }
+                .swiper-scrollbar {
+                    left: 0;
+                    width: calc(100% - 1rem) !important;
+                }
             }
         }
     }
@@ -859,6 +942,9 @@
         min-width: 24rem;
         justify-content: center;
         padding: var(--rowContent12);
+        @include max(600px) {
+            height: 4.2rem;
+        }
         &-title {
             display: flex;
             align-items: center;
@@ -1036,6 +1122,9 @@
             padding-left: calc(var(--wh2));
             border-color: $color-gray3 !important;
             border-radius: 0.4rem;
+            @include max(600px) {
+                height: 4.2rem;
+            }
             &:focus {
                 border-color: $color-pri;
             }
@@ -1077,7 +1166,9 @@
     }
     
     .boxCk {
-        display: block;
+        display: flex;
+        align-items: center;
+        column-gap: var(--columnContent0);
         width: fit-content;
         height: auto;
         cursor: pointer;
@@ -1121,7 +1212,7 @@
         border-radius: 0.4rem;
         background-color: #F5F5F7;
         // The shine that's going to move across the skeleton:
-        background-image: linear-gradient( 90deg, rgba(#fff, 0), rgba(#fff, 0.5), rgba(#fff, 0));
+        background-image: linear-gradient(90deg, rgba(#fff, 0), rgba(#fff, 0.5), rgba(#fff, 0));
         background-size: 40px 100%; // width of the shine
         background-repeat: no-repeat; // No need to repeat the shine effect
         background-position: left -40px top 0; // Place shine on the left side, with offset on the left based on the width of the shine - see background-size
@@ -1132,5 +1223,78 @@
         to {
             // Move shine from left to right, with offset on the right based on the width of the shine - see background-size
             background-position: right -40px top 0;
+        }
+    }
+    
+    .react-tooltip {
+        padding: 0.4rem !important;
+        font-size: 1.2rem !important;
+    }
+    
+    .totalPro {
+        box-shadow: 0px 8px 32px 0px #3326AE14;
+        &_wrap {
+            padding: var(--rowContent24);
+        }
+        &_list {
+            // flex-wrap: nowrap;
+            row-gap: var(--rowContent12);
+        }
+        &_item {
+            display: flex;
+            width: calc(100% / 4) !important;
+            justify-content: center;
+            &:first-child {
+                justify-content: start;
+            }
+            &:nth-child(2) {
+                @include max(1200px) {
+                    justify-content: end;
+                }
+            }
+            &:nth-child(3) {
+                @include max(1200px) {
+                    justify-content: start;
+                }
+            }
+            &:last-child {
+                justify-content: end;
+            }
+            @include max(1200px) {
+                width: calc(100% / 2) !important;
+            }
+            @include max(600px) {
+                width: 100% !important;
+                justify-content: start !important;
+            }
+            &--wrap {
+                @include max(600px) {
+                    width: 100%;
+                }
+                .note-text {
+                    display: flex;
+                    column-gap: 0.4rem;
+                    @include max(600px) {
+                        flex-direction: row-reverse;
+                        justify-content: space-between;
+                    }
+                }
+            }
+        }
+    }
+    
+    .Toastify__toast-container {
+        @include max(600px) {
+            max-width: 80% !important;
+            right: 0 !important;
+            left: unset !important;
+            ;
+        }
+    }
+    
+    .Toastify__toast-body {
+        font-size: 1.4rem !important;
+        @include max(600px) {
+            font-size: 1.2rem !important;
         }
     }

@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import ictitle from "../../assets/images/ictitle.svg"
 import btnIcPro0 from "../../assets/images/btnicpr0.png"
 import btnIcPro1 from "../../assets/images/btnicpr1.png"
@@ -21,6 +21,12 @@ import $ from 'jquery'; // Import jQuery
 import { ThemeContext } from '../../App'
 import Select2Component from '../../components/Select2Component/Select2Component'
 import { useNavigate } from 'react-router-dom'
+import PopupPrice1 from '../../components/PopupPrice/PopupPrice1'
+import { Scrollbar } from 'swiper/modules';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import "swiper/css";
+import 'swiper/css/scrollbar';
+import TotalPro from './TotalPro'
 
 const optionsKho = [
     { value: 'null', label: 'Trạng thái kho' },
@@ -30,14 +36,14 @@ const optionsKho = [
 
 const optionsHd1 = [
     { value: 'null', label: 'Hành động' },
-    { value: 'op1', label: 'Chỉnh sửa' },
-    { value: 'op2', label: 'Bỏ vào thùng rác' },
+    { value: 'editPro', label: 'Chỉnh sửa' },
+    { value: 'trashPro', label: 'Bỏ vào thùng rác' },
 ];
 
 const optionsHd2 = [
     { value: 'null', label: 'Hành động' },
-    { value: 'op1', label: 'Khôi phục lại' },
-    { value: 'op2', label: 'Xóa vĩnh viễn' },
+    { value: 'restorePro', label: 'Khôi phục lại' },
+    { value: 'deletePro', label: 'Xóa vĩnh viễn' },
 ];
 
 const optionsSp = [
@@ -60,12 +66,10 @@ const optionsSl = [
 
 
 const Product = () => {
-
+    const navigate = useNavigate(); // Hook nằm bên trong component
     const [quantityChoose, setQuantityChoose] = useState(0)
     const [idCate, setIdCate] = useState()
     const [titleSl1, setTitleSl1] = useState()
-    const [titleSl2, setTitleSl2] = useState()
-    const [titleSl3, setTitleSl3] = useState()
     const [titleSlDm, setTitleSlDm] = useState(() => {
         return localStorage.getItem("titleSlDm", "Chọn danh mục")
     })
@@ -73,6 +77,7 @@ const Product = () => {
     const { totalProduct, totalProductAo, totalProductDraft, totalProductTrash } = useContext(ThemeContext)
     const { data: dataProductCate } = useQuery(GET_PRODUCT_CATEGORIES)
     const [listSubmit, setListSubmit] = useState({})
+
 
     const [cateQuantity, setCateQuantity] = useState(() => {
         return Number(localStorage.getItem("quantityCategories")) || 0
@@ -86,8 +91,9 @@ const Product = () => {
 
     const [activeDmChild, setActiveDmChild] = useState(() => {
         return Number(localStorage.getItem("activeDmChild")) || -1;
-
     })
+
+    const [activeCn, setActiveCn] = useState(0);
 
     const [selectedValueKho, setSelectedValueKho] = useState(() => {
         return localStorage.getItem("statusPro") || "null"; // Nếu không có trong localStorage, mặc định là ""
@@ -109,7 +115,6 @@ const Product = () => {
         return localStorage.getItem("selectedValueSl") || "az";
     })
 
-    const navigate = useNavigate(); // Hook nằm bên trong component
 
 
     const [activeBl, setActiveBl] = useState(() => {
@@ -130,6 +135,11 @@ const Product = () => {
         return localStorage.getItem("valueSearch") || "";
     })
 
+
+
+    const [listCheckBoxPro, setListCheckBoxPro] = useState([])
+    const [showPopup, setShowPopup] = useState(false)
+
     const handleApDung = () => {
         localStorage.setItem("idCategories", idCate)
         localStorage.setItem("quantityCategories", cateQuantity)
@@ -141,6 +151,8 @@ const Product = () => {
             cateQuantity: cateQuantity,
             statusPro: selectedValueKho,
             typePro: selectedValueSp,
+            selectedValueHd: selectedValueHd,
+            selectedValueHd2: selectedValueHd2,
         })
         navigate(`?${localStorage.getItem('idCategories') !== "null" ? "idCategories=" + localStorage.getItem('idCategories') : ""}${localStorage.getItem('quantityCategories') !== -1 ? "&quantityCategories=" + localStorage.getItem('quantityCategories') : ""}${localStorage.getItem('statusPro') !== "null" ? "&status=" + localStorage.getItem('statusPro') : ""}${localStorage.getItem('typePro') !== "null" ? "&type=" + localStorage.getItem('typePro') : ""}${localStorage.getItem('statusPro') !== "null" ? "&post_type=" + localStorage.getItem('statusPro') : ""}${localStorage.getItem('valueSearch') !== "" ? "&paramSearch=" + localStorage.getItem('valueSearch') : ""}`);
     }
@@ -183,7 +195,11 @@ const Product = () => {
         }
     }
 
-    console.log(activeBl)
+    console.log(selectedValueHd)
+    console.log(listCheckBoxPro)
+
+
+
 
 
     return (
@@ -200,39 +216,47 @@ const Product = () => {
                     </div>
                     <div className="layout_top--pro">
                         <div className="layout_top--pro-lf">
-                            <div className="layout_top--pro-btns">
-                                <button className="btn btnPro">
-                                    <span className="btn-ic">
-                                        <img src={btnIcPro1} alt="btnIc" />
-                                    </span>
-                                    <span className="btn-text">
-                                        Nhập sản phẩm
-                                    </span>
-                                </button>
-                                <button className="btn btnPro">
-                                    <span className="btn-ic">
-                                        <img src={btnIcPro2} alt="btnIc" />
-                                    </span>
-                                    <span className="btn-text">
-                                        Xuất sản phẩm
-                                    </span>
-                                </button>
-                                <button className="btn btnPro">
-                                    <span className="btn-ic">
-                                        <img src={btnIcPro3} alt="btnIc" />
-                                    </span>
-                                    <span className="btn-text">
-                                        Chỉnh sửa tất cả
-                                    </span>
-                                </button>
-                                <button className="btn btnDis">
-                                    <span className="btn-ic">
-                                        <img src={btnIcPro4} alt="btnIc" />
-                                    </span>
-                                    <span className="btn-text">
-                                        Xóa tất cả sản phẩm
-                                    </span>
-                                </button>
+                            <div className="layout_top--pro-btns d-wrap">
+                                <Swiper
+                                    slidesPerView="auto"
+                                    spaceBetween={0} // Đây phải là một giá trị số
+                                    className="custom-class"
+                                    scrollbar={{ draggable: true }}  // Kích hoạt thanh cuộn
+                                    modules={[Scrollbar]}  // Cần khai báo module Scrollbar
+                                >
+                                    <SwiperSlide className='d-item'>
+                                        <button className="btn btnPro">
+                                            <span className="btn-ic">
+                                                <img src={btnIcPro1} alt="btnIc" />
+                                            </span>
+                                            <span className="btn-text">Nhập sản phẩm</span>
+                                        </button>
+                                    </SwiperSlide>
+                                    <SwiperSlide className='d-item'>
+                                        <button className="btn btnPro">
+                                            <span className="btn-ic">
+                                                <img src={btnIcPro2} alt="btnIc" />
+                                            </span>
+                                            <span className="btn-text">Xuất sản phẩm</span>
+                                        </button>
+                                    </SwiperSlide>
+                                    <SwiperSlide className='d-item'>
+                                        <button className="btn btnPro">
+                                            <span className="btn-ic">
+                                                <img src={btnIcPro3} alt="btnIc" />
+                                            </span>
+                                            <span className="btn-text">Chỉnh sửa tất cả</span>
+                                        </button>
+                                    </SwiperSlide>
+                                    <SwiperSlide className='d-item'>
+                                        <button className="btn btnDis">
+                                            <span className="btn-ic">
+                                                <img src={btnIcPro4} alt="btnIc" />
+                                            </span>
+                                            <span className="btn-text">Xóa tất cả sản phẩm</span>
+                                        </button>
+                                    </SwiperSlide>
+                                </Swiper>
                             </div>
                         </div>
                         <div className="layout_top--pro-rt">
@@ -241,7 +265,7 @@ const Product = () => {
                                     <FontAwesomeIcon icon={faPlus} />
                                 </span>
                                 <span className="btn-text">
-                                    Nhập sản phẩm
+                                    Thêm sản phẩm mới
                                 </span>
                             </button>
                         </div>
@@ -253,15 +277,19 @@ const Product = () => {
                             <div className="product_filter--top-list d-wrap">
                                 <div className="product_filter--top-item d-item">
                                     <div className="product_filter--choose">
-                                        <label className="product_filter--choose-ck">
-                                            <input type="checkbox" name="checkChoosePro" />
+                                        <label className="product_filter--choose-ck" >
+                                            <input type="checkbox" name="checkChoosePro" checked={listCheckBoxPro.length > 0} />
                                             <span className="box"></span>
                                         </label>
                                         <p className="note-sm cl-gray">Đã chọn</p>
-                                        <p className="note-sm cl-pri fw-6">{quantityChoose}</p>
+                                        <p className="note-sm cl-pri fw-6">
+                                            {
+                                                listCheckBoxPro.length > 0 ? listCheckBoxPro.length : 0
+                                            }
+                                        </p>
                                     </div>
                                 </div>
-                                <div className="product_filter--top-item d-item">
+                                <div className={`product_filter--top-item d-item ${listCheckBoxPro.length > 0 ? "" : "notAction"}`}>
                                     <label className="box-select">
                                         <span className="box-select-title">
                                             <p className="note-sm cl-text fw-5">
@@ -275,8 +303,9 @@ const Product = () => {
                                         <div className="box-select-op">
                                             <ul className="box-select-list">
                                                 <li className="box-select-item">
-                                                    <div className="box-select-cs actived" onClick={() => {
+                                                    <div className={`box-select-cs ${activeCn === 0 ? "actived" : ""}`} onClick={() => {
                                                         setTitleSl1("Cập nhật hàng loạt")
+                                                        setActiveCn(0)
                                                     }}>
                                                         <span className="ic">
                                                             <img src={btnIcPro0} alt="" />
@@ -287,8 +316,10 @@ const Product = () => {
                                                     </div>
                                                 </li>
                                                 <li className="box-select-item">
-                                                    <div className="box-select-cs" onClick={() => {
+                                                    <div className={`box-select-cs ${activeCn === 1 ? "actived" : ""}`} onClick={() => {
                                                         setTitleSl1("Thiết lập giá")
+                                                        setActiveCn(1)
+                                                        setShowPopup(true)
                                                     }}>
                                                         <span className="ic">
                                                             <img src={scs1} alt="" />
@@ -299,8 +330,10 @@ const Product = () => {
                                                     </div>
                                                 </li>
                                                 <li className="box-select-item">
-                                                    <div className="box-select-cs" onClick={() => {
+                                                    <div className={`box-select-cs ${activeCn === 2 ? "actived" : ""}`} onClick={() => {
                                                         setTitleSl1("Quảng bán trên Storefont")
+                                                        setActiveCn(2)
+                                                        document.body.style.overflow = "hidden"
                                                     }}>
                                                         <span className="ic">
                                                             <img src={scs2} alt="" />
@@ -311,8 +344,9 @@ const Product = () => {
                                                     </div>
                                                 </li>
                                                 <li className="box-select-item">
-                                                    <div className="box-select-cs" onClick={() => {
+                                                    <div className={`box-select-cs ${activeCn === 3 ? "actived" : ""}`} onClick={() => {
                                                         setTitleSl1("Vận chuyển & Nhận hàng")
+                                                        setActiveCn(3)
                                                     }}>
                                                         <span className="ic">
                                                             <img src={scs3} alt="" />
@@ -323,8 +357,9 @@ const Product = () => {
                                                     </div>
                                                 </li>
                                                 <li className="box-select-item">
-                                                    <div className="box-select-cs" onClick={() => {
+                                                    <div className={`box-select-cs ${activeCn === 4 ? "actived" : ""}`} onClick={() => {
                                                         setTitleSl1("Xóa các mục đã chọn")
+                                                        setActiveCn(4)
                                                     }}>
                                                         <span className="ic">
                                                             <img src={scs4} alt="" />
@@ -333,21 +368,6 @@ const Product = () => {
                                                             Xóa các mục đã chọn
                                                         </p>
                                                     </div>
-                                                </li>
-                                                <li className="box-select-item">
-                                                    <div className="box-switch" >
-                                                        <label className="switch cl-gr">
-                                                            <input type="checkbox" onChange={() => {
-                                                            }} />
-                                                            <span className="switch-wrap">
-                                                                <span className="switch-wrap-around"></span>
-                                                            </span>
-                                                        </label>
-                                                        <p className="note-sm cl-text fw-5">
-                                                            Bật / Tắt  sản phẩm
-                                                        </p>
-                                                    </div>
-
                                                 </li>
                                             </ul>
                                         </div>
@@ -364,8 +384,9 @@ const Product = () => {
                                 <div className="product_filter--top-item d-item">
                                     <div className="box-search">
                                         <input type="text" onKeyDown={handleKeyEnter} onChange={(e) => {
+
                                             setValueSearchKeyWord(e.target.value)
-                                        }} placeholder='Tên sản phẩm. SKU,UPC' className="form-item-ip" value={valueSearchKeyWord} />
+                                        }} placeholder='Tên , Mã sản phẩm' className="form-item-ip" value={valueSearchKeyWord} />
                                         <button onClick={handleBtnSearch} className="btn">
                                             <span className="btn-ic">
                                                 <img src={icSearch} alt="" />
@@ -411,7 +432,12 @@ const Product = () => {
                                             setCateQuantity(0)
                                             setSelectedValueSp("null")
 
+                                            setListCheckBoxPro([]);
+
+
                                             navigate(`?${localStorage.getItem('idCategories') !== "null" ? "idCategories=" + localStorage.getItem('idCategories') : ""}${localStorage.getItem('quantityCategories') !== "-1" ? "&quantityCategories=" + localStorage.getItem('quantityCategories') : ""}${localStorage.getItem('statusPro') !== "null" ? "&status=" + localStorage.getItem('statusPro') : ""}${localStorage.getItem('typePro') !== "null" ? "&type=" + localStorage.getItem('typePro') : ""}${localStorage.getItem('statusPro') !== "null" ? "&post_type=" + localStorage.getItem('statusPro') : ""}${localStorage.getItem('valueSearch') !== "" ? "&paramSearch=" + localStorage.getItem('valueSearch') : ""}`);
+
+
                                         }}>
                                             <p className="note-sm cl-text fw-4">
                                                 Tất cả
@@ -436,6 +462,8 @@ const Product = () => {
                                             setSelectedValueSp("null")
                                             setTitleSlDm("Chọn danh mục")
                                             setActiveDm(-1)
+
+                                            setListCheckBoxPro([]);
 
                                             navigate(`?${localStorage.getItem('idCategories') !== "null" ? "idCategories=" + localStorage.getItem('idCategories') : ""}${localStorage.getItem('quantityCategories') !== "-1" ? "&quantityCategories=" + localStorage.getItem('quantityCategories') : ""}${localStorage.getItem('statusPro') !== "null" ? "&status=" + localStorage.getItem('statusPro') : ""}${localStorage.getItem('typePro') !== "null" ? "&type=" + localStorage.getItem('typePro') : ""}${localStorage.getItem('statusPro') !== "null" ? "&post_type=" + localStorage.getItem('statusPro') : ""}${localStorage.getItem('valueSearch') !== "" ? "&paramSearch=" + localStorage.getItem('valueSearch') : ""}`);
                                         }}>
@@ -462,6 +490,9 @@ const Product = () => {
                                             setSelectedValueSp("null")
                                             setTitleSlDm("Chọn danh mục")
                                             setActiveDm(-1)
+
+                                            setListCheckBoxPro([]);
+
 
                                             navigate(`?${localStorage.getItem('idCategories') !== "null" ? "idCategories=" + localStorage.getItem('idCategories') : ""}${localStorage.getItem('quantityCategories') !== "-1" ? "&quantityCategories=" + localStorage.getItem('quantityCategories') : ""}${localStorage.getItem('statusPro') !== "null" ? "&status=" + localStorage.getItem('statusPro') : ""}${localStorage.getItem('typePro') !== "null" ? "&type=" + localStorage.getItem('typePro') : ""}${localStorage.getItem('statusPro') !== "null" ? "&post_type=" + localStorage.getItem('statusPro') : ""}${localStorage.getItem('valueSearch') !== "" ? "&paramSearch=" + localStorage.getItem('valueSearch') : ""}`);
 
@@ -490,6 +521,8 @@ const Product = () => {
                                             setTitleSlDm("Chọn danh mục")
                                             setActiveDm(-1)
 
+                                            setListCheckBoxPro([]);
+
                                             navigate(`?${localStorage.getItem('idCategories') !== "null" ? "idCategories=" + localStorage.getItem('idCategories') : ""}${localStorage.getItem('quantityCategories') !== "-1" ? "&quantityCategories=" + localStorage.getItem('quantityCategories') : ""}${localStorage.getItem('statusPro') !== "null" ? "&status=" + localStorage.getItem('statusPro') : ""}${localStorage.getItem('typePro') !== "null" ? "&type=" + localStorage.getItem('typePro') : ""}${localStorage.getItem('statusPro') !== "null" ? "&post_type=" + localStorage.getItem('statusPro') : ""}${localStorage.getItem('valueSearch') !== "" ? "&paramSearch=" + localStorage.getItem('valueSearch') : ""}`);
 
                                         }}>
@@ -503,7 +536,7 @@ const Product = () => {
                                 <div className="product_filter--bottom-bottom">
                                     <div className="product_filter--bottom-bottom-list d-wrap">
                                         {
-                                            activeBl === "tr" && <div className="product_filter--bottom-bottom-item d-item">
+                                            activeBl === "tr" && <div className={`product_filter--bottom-bottom-item d-item ${listCheckBoxPro.length > 0 ? "" : "notAction"}`}>
 
                                                 <Select2Component
                                                     options={optionsHd2}
@@ -513,7 +546,7 @@ const Product = () => {
                                             </div>
                                         }
                                         {
-                                            activeBl !== "tr" && <div className="product_filter--bottom-bottom-item d-item">
+                                            activeBl !== "tr" && <div className={`product_filter--bottom-bottom-item d-item ${listCheckBoxPro.length > 0 ? "" : "notAction"}`}>
 
                                                 <Select2Component
                                                     options={optionsHd1}
@@ -638,11 +671,12 @@ const Product = () => {
                             </div>
                         </div>
                     </div>
-                    <ProductTable list={listSubmit} changeBl={changeBl} selectedValueSl={selectedValueSl} valueSearch={valueSearch} />
+                    <ProductTable list={listSubmit} changeBl={changeBl} selectedValueSl={selectedValueSl} valueSearch={valueSearch} setListCheckBoxPro={setListCheckBoxPro} listCheckBoxPro={listCheckBoxPro} setSelectedValueHd={setSelectedValueHd} setSelectedValueHd2={setSelectedValueHd2} />
                 </div>
-
+                <TotalPro totalProduct={totalProduct} />
             </div>
-        </div>
+            <PopupPrice1 showPopup={showPopup} setShowPopup={setShowPopup} />
+        </div >
     )
 }
 

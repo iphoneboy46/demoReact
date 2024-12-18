@@ -2,6 +2,7 @@
 @use "../mixins/mixin" as *;
 @use "font" as *;
 .swiper {
+    position: unset;
     & {
         width: 100%;
     }
@@ -9,16 +10,21 @@
         width: 100%;
     }
     &-scrollbar {
-        height: 0.3rem;
-        width: 100%;
-        margin: 0.5rem auto 0;
+        position: absolute !important;
+        top: 110% !important;
+        left: 0;
+        bottom: unset !important;
+        height: 0.3rem !important;
+        width: 100% !important;
         overflow: hidden;
         border-radius: 0 !important;
-        background: $color-white;
+        background: rgba($color: $color-pri, $alpha: 0.3);
+        left: 50% !important;
+        transform: translateX(-50%) !important;
         cursor: grab;
         &-drag {
             border-radius: 0 !important;
-            background: $color-second;
+            background: $color-pri;
         }
     }
     &-pagination {

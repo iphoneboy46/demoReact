@@ -6,6 +6,7 @@ import Code from "../pages/Code/Code";
 import Home from "../pages/Home/Home";
 import Order from "../pages/Order/Order";
 import Product from "../pages/Product/Product";
+import ProductCt from "../pages/Product/ProductCt";
 import Forgot from "../pages/Sign/Forgot";
 import SignIn from "../pages/Sign/SignIn";
 import Variant from "../pages/Variant/Variant";
@@ -29,6 +30,13 @@ const publicRoutes = [
   {
     path: "/product",
     components: Product,
+    layout:Layout, 
+    exact: false,
+    protected: true, // Yêu cầu đăng nhập
+  },
+  {
+    path: "/product/:id", // Thêm dấu ":" trước "id" để chỉ định đây là một dynamic parameter
+    components: ProductCt,
     layout:Layout,
     exact: false,
     protected: true, // Yêu cầu đăng nhập

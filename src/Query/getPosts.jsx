@@ -2,8 +2,43 @@ import { gql } from '@apollo/client';
 
 //truy vấn truy cập danh mục
 export const GET_PRODUCT_CATEGORIES = gql`
-    query GetProductCategories2 {
-      productCategories {
+    query GetProductCategories {
+      productCategories(first: 1000) {
+        edges {
+          node {
+            id
+            name
+            termTaxonomyId
+            children {
+              edges {
+                node {
+                  id
+                  name
+                  termTaxonomyId
+                  children {
+                    edges {
+                      node {
+                        id
+                        name
+                        termTaxonomyId
+                      }
+                    }
+                  }
+                  count
+                }
+              }
+            }
+            count
+          }
+        }
+      }
+    }
+`;
+
+//truy vấn truy cập danh mục sử dụng nhiều
+export const GET_PRODUCT_CATEGORIES_MUCH = gql`
+    query GetProductCategories {
+      productCategories(where: {orderby: COUNT},first: 1000) {
         edges {
           node {
             id
@@ -37,7 +72,7 @@ export const GET_PRODUCT_CATEGORIES = gql`
 
 // truy vấn lấy tất cả sản phẩm
 export const GET_PRODUCT_ALL = gql`
-  query GetProductAll($offset: Int, $size: Int! ,$categoryId:Int , $status: String , $type: ProductTypesEnum,$orderby: [ProductsOrderbyInput],$search: String) {
+  query GetProductAll($offset: Int, $size: Int! ,$categoryId:Int , $status: String , $type:ProductTypesEnum,$orderby: [ProductsOrderbyInput],$search: String, $sku: String) {
     products(
       where: { 
         offsetPagination: { offset: $offset, size: $size }, 
@@ -46,6 +81,7 @@ export const GET_PRODUCT_ALL = gql`
         type: $type,
         orderby: $orderby,
         search: $search,
+        sku: $sku,
         }) 
       {
       edges {
@@ -96,8 +132,10 @@ export const GET_PRODUCT_ALL = gql`
               }
             }
             salePrice
-            price
+            regularPrice
             sku
+            dateGmt
+            link
           }
           ... on SimpleProduct {
             regularPrice
@@ -116,10 +154,72 @@ export const GET_PRODUCT_ALL = gql`
       found
     }
   }
-    
 `;
 
 
+export const GET_PRODUCT_BY_ID = gql`
+  query GetProductById($id: ID!) {
+    product(id: $id) {
+      id
+      name
+      description
+      dateGmt
+      link
+      image {
+        sourceUrl
+      }
+        galleryImages {
+          nodes {
+            id
+            sourceUrl
+            altText
+          }
+      }
+      ... on ProductWithPricing {
+        regularPrice
+        salePrice
+      }
+      ... on VariableProduct {
+        status
+        stockQuantity
+        stockStatus
+        variations {
+          nodes {
+            id
+            name
+            regularPrice
+            salePrice
+            stockStatus
+            sku
+          }
+        }
+        terms(where: { taxonomies: [PRODUCTCATEGORY] }) {
+          nodes {
+            id
+            name
+          }
+        }
+        tagTerms: terms(where: { taxonomies: [PRODUCTTAG] }) {
+              nodes {
+                id
+                name
+                termTaxonomyId
+              }
+        }
+        salePrice
+        regularPrice
+      }
+      ... on SimpleProduct {
+        regularPrice
+        salePrice
+        status
+        stockQuantity
+        stockStatus
+      }
+      type
+    }
+  }
+`;
 
 // truy vấn lấy tất cả sản phẩm đã publish
 export const GET_PUBLISHER_PRODUCT_TOTAL = gql`

@@ -10,3 +10,5 @@ export const UPDATE_PRODUCT_STATUS = gql`
         }
     }
 `;
+
+
