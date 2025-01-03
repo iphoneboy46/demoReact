@@ -20,6 +20,13 @@
             visibility: visible;
         }
     }
+    &_unit {
+        // height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 5rem;
+    }
     &_wrap {
         padding: var(--columnContent24);
         background: $color-white;

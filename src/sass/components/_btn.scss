@@ -25,38 +25,6 @@
         min-width: 10rem;
         // border-radius: 4rem;
     }
-    @include max(800px) {
-        // padding: 1rem 1.2rem;
-        height: 4rem;
-        min-width: 10rem;
-        // border-radius: 3rem;
-    }
-    @include max(600px) {
-        // padding: 0.5rem 1.2rem;
-        // padding: 0.6rem 1rem;
-        height: 3.6rem;
-        min-width: 8rem;
-        // border-radius: 2rem;
-    }
-    @include max(600px) {
-        // padding: 0.5rem 1.2rem;
-        padding: 0.6rem 1rem;
-        // height: 3.8rem;
-        min-width: 8rem;
-        // border-radius: 2rem;
-        .btn-ic {
-            i {
-                top: 55%;
-            }
-        }
-    }
-    @include max(460px) {
-        // padding: 0.5rem 1.2rem;
-        padding: 0.6rem 1rem 0.6rem 1rem;
-        height: 3.4rem;
-        min-width: 8rem;
-        // border-radius: 1.6rem;
-    }
     &.btn_ios {
         .btn-text {
             margin-top: 0 !important;
@@ -82,28 +50,6 @@
             }
         }
     }
-    // &.tran2s {
-    //     background: transparent;
-    //     border: 0.1rem solid rgba($color: $color-white, $alpha: 0.7);
-    //     padding-left: var(--rowContent24);
-    //     padding-right: var(--rowContent24);
-    //     .btn-text {
-    //         color: $color-white;
-    //     }
-    //     .btn-ic i {
-    //         color: $color-pri;
-    //     }
-    //     @include hover {
-    //         background: $color-second;
-    //         border-color: $color-second;
-    //         .btn-text {
-    //             color: $color-white;
-    //         }
-    //         .btn-ic i {
-    //             color: $color-white;
-    //         }
-    //     }
-    // }
     &.cl-2 {
         background: $color-five;
         @include hover {
@@ -121,6 +67,10 @@
                 color: $color-white;
             }
         }
+    }
+    &.cl-4 {
+        background: $color-second;
+        @include hover {}
     }
     &.gg {
         background: #333333;
@@ -246,6 +196,7 @@
         background: #D8DCE3;
         pointer-events: none;
         opacity: 0.8;
+        border-color: #D8DCE3;
         .btn-text {
             color: $color-gray2;
         }
@@ -285,6 +236,15 @@
                 filter: brightness(0) saturate(100%) invert(95%) sepia(96%) saturate(0%) hue-rotate(194deg) brightness(104%) contrast(100%);
             }
         }
+    }
+    &-loading2 {
+        position: absolute;
+        z-index: 2;
+        // top: 50%;
+        // left: 50%;
+        // transform: translate(-50%, -50%);
+        width: 3rem;
+        height: 3rem;
     }
     @include hover {
         background: $color-second;

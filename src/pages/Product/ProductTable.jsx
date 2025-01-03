@@ -28,9 +28,6 @@ const ProductTable = ({ list, changeBl, selectedValueSl, valueSearch, setListChe
     const [statusPro, setStatusPro] = useState("null");
     const [typePro, setTypePro] = useState("");
 
-    const [checkBoxPro, setCheckBoxPro] = useState("null")
-
-    // const [checkAll, setCheckAll] = useState(false)
 
     // Gọi GraphQL với Apollo Client, truyền offset, size, và categoryId vào
     const { loading, error, data: productAlls, refetch } = useQuery(GET_PRODUCT_ALL, {
@@ -96,13 +93,11 @@ const ProductTable = ({ list, changeBl, selectedValueSl, valueSearch, setListChe
     console.log(dataDraftPro?.products?.pageInfo?.offsetPagination?.total)
 
 
-
     //lấy sản phẩm XÓA
     const { data: dataTrashPro, refetch: refetchTrashPro } = useQuery(GET_TRASH_PRODUCT_TOTAL);
     useEffect(() => {
         setTotalProductTrash(dataTrashPro?.products?.pageInfo?.offsetPagination?.total)
     }, [dataTrashPro]);
-
 
 
 

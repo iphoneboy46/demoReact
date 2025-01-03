@@ -315,6 +315,7 @@
         transition: 0.4s ease-out;
         height: 100svh;
         overflow: hidden;
+        scroll-behavior: smooth;
         &--wrap {
             padding: 2.4rem;
             height: 100svh;

@@ -92,31 +92,7 @@ export const GET_PRODUCT_ALL = gql`
           image { 
             sourceUrl
           }
-          ... on ProductWithPricing {
-            regularPrice
-            salePrice
-          }
           ... on VariableProduct {
-            status
-            stockQuantity
-            stockStatus
-            variations {
-              nodes {
-                id
-                name
-                regularPrice
-                salePrice
-                stockStatus
-                sku
-              }
-              pageInfo {
-                offsetPagination {
-                  hasMore
-                  hasPrevious
-                  total
-                }
-              }
-            }
             terms(where: { taxonomies: [PRODUCTCATEGORY] }) {
               nodes {
                 id
@@ -133,13 +109,41 @@ export const GET_PRODUCT_ALL = gql`
             }
             salePrice
             regularPrice
+            price
             sku
             dateGmt
             link
+            weight
+            shippingRequired
+            password
+            status
+            stockQuantity
+            stockStatus
           }
           ... on SimpleProduct {
-            regularPrice
+            terms(where: { taxonomies: [PRODUCTCATEGORY] }) {
+              nodes {
+                id
+                name
+                termTaxonomyId
+              }
+            }
+            tagTerms: terms(where: { taxonomies: [PRODUCTTAG] }) {
+              nodes {
+                id
+                name
+                termTaxonomyId
+              }
+            }
             salePrice
+            regularPrice
+            price
+            sku
+            dateGmt
+            link
+            weight
+            shippingRequired
+            password
             status
             stockQuantity
             stockStatus
@@ -158,68 +162,89 @@ export const GET_PRODUCT_ALL = gql`
 
 
 export const GET_PRODUCT_BY_ID = gql`
-  query GetProductById($id: ID!) {
+  query GetProductById($id: ID!,$first: Int!) {
     product(id: $id) {
       id
       name
       description
       dateGmt
       link
+      sku
+      password
       image {
         sourceUrl
+        id
       }
-        galleryImages {
+        galleryImages(first: $first) {
           nodes {
             id
             sourceUrl
             altText
+            mediaItemUrl
+            mediaType
           }
       }
-      ... on ProductWithPricing {
-        regularPrice
-        salePrice
-      }
+
       ... on VariableProduct {
-        status
-        stockQuantity
-        stockStatus
-        variations {
-          nodes {
-            id
-            name
-            regularPrice
-            salePrice
-            stockStatus
-            sku
-          }
-        }
-        terms(where: { taxonomies: [PRODUCTCATEGORY] }) {
-          nodes {
-            id
-            name
-          }
-        }
-        tagTerms: terms(where: { taxonomies: [PRODUCTTAG] }) {
+            terms(where: { taxonomies: [PRODUCTCATEGORY] }) {
               nodes {
                 id
                 name
                 termTaxonomyId
               }
-        }
-        salePrice
-        regularPrice
-      }
-      ... on SimpleProduct {
-        regularPrice
-        salePrice
-        status
-        stockQuantity
-        stockStatus
-      }
+            }
+            tagTerms: terms(where: { taxonomies: [PRODUCTTAG] }) {
+              nodes {
+                id
+                name
+                termTaxonomyId
+              }
+            }
+            salePrice(format: RAW)
+            regularPrice(format: RAW)
+            sku
+            dateGmt
+            link
+            weight
+            shippingRequired
+            password
+            status
+            stockQuantity
+            stockStatus
+          }
+          ... on SimpleProduct {
+            terms(where: { taxonomies: [PRODUCTCATEGORY] }) {
+              nodes {
+                id
+                name
+                termTaxonomyId
+              }
+            }
+            tagTerms: terms(where: { taxonomies: [PRODUCTTAG] }) {
+              nodes {
+                id
+                name
+                termTaxonomyId
+              }
+            }
+            salePrice(format: RAW)
+            regularPrice(format: RAW)
+            sku
+            dateGmt
+            link
+            weight
+            shippingRequired
+            password
+            status
+            stockQuantity
+            stockStatus
+          }
       type
+      
     }
   }
 `;
+
 
 // truy vấn lấy tất cả sản phẩm đã publish
 export const GET_PUBLISHER_PRODUCT_TOTAL = gql`
@@ -275,4 +300,83 @@ export const GET_ALL_PRODUCT_TOTAL = gql`
     }
   }
 `;
+
+
+
+// truy vấn lấy tất cả ảnh media
+
+export const GET_ALL_IMAGE_ATTRIBUTES = gql`
+  query GetAllImageAttributes($size: Int!, $offset: Int,$parent:ID, $authorIn: [ID] , $month: Int, $year: Int, $search: String) {
+  mediaItems( where: {
+    offsetPagination: {offset: $offset, size:$size },
+    parent: $parent,
+    authorIn: $authorIn,
+    dateQuery: {month: $month, year: $year},
+    search: $search
+  }) {
+    edges {
+      node {
+        id
+        title
+        altText
+        caption(format: RAW)
+        description(format: RAW)
+        date
+        sourceUrl
+        mediaItemUrl
+        mediaType
+        mediaDetails {
+          width
+          height
+          file
+        }
+        author {
+          node {
+            name
+          }
+        }
+        fileSize
+      }
+    }
+    pageInfo {
+      offsetPagination {
+        total
+        
+      }
+    }
+  }
+}
+`;
+
+
+// export const GET_IMAGE_AVA_ID = gql`
+//   query GetImageAvaId($id: Int!) {
+//   mediaItems(where: {id: $id}) {
+//     edges {
+//       node {
+//         id
+//         title
+//         altText
+//         caption(format: RAW)
+//         description(format: RAW)
+//         date
+//         sourceUrl
+//         mediaDetails {
+//           width
+//           height
+//           file
+//         }
+//         author {
+//           node {
+//             name
+//           }
+//         }
+//         fileSize
+//       }
+//     }
+//   }
+// }
+// `;
+
+
 

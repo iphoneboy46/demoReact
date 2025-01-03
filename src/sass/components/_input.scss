@@ -15,6 +15,10 @@
     .wpcf7-not-valid-tip {
         right: 0 !important;
     }
+    .tox .tox-toolbar--scrolling {
+        flex-wrap: wrap !important;
+        row-gap: var(--rowContent0);
+    }
     &-ck {
         display: flex;
         column-gap: var(--columnContent24);
@@ -80,16 +84,39 @@
             border-color: $color-pri !important;
         }
     }
+    &-unit {
+        position: relative;
+        .form-item-ip {
+            padding-right: calc(5rem + var(--columnContent16));
+            &:focus {
+                &~.form-item-unit-text {
+                    border-color: $color-pri;
+                }
+            }
+        }
+        &-text {
+            width: 5rem;
+            position: absolute;
+            top: 0;
+            right: 0;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-left: 0.1rem solid $color-gray3;
+            transition: 0.3s linear;
+        }
+    }
     &-tx {
         width: 100%;
         background: transparent;
         display: flex;
         align-items: center;
-        min-height: 14rem;
+        min-height: 10rem;
         // border-radius: 0.4rem;
-        padding: var(--rowContent12);
+        padding: var(--rowContent12) var(--columnContent16);
         // border-radius: 0.4rem;
-        border: 0.1rem solid #C2C9D3 !important;
+        border: 0.1rem solid #D8DCE3 !important;
         color: $color-text;
         @include fz-16;
         position: relative;
@@ -98,6 +125,7 @@
         overflow: hidden;
         resize: vertical;
         overflow-y: auto;
+        border-radius: 0.6rem;
         // min-height: 3.6rem !important;\
         @include max(800px) {
             @include fz-14;
@@ -219,10 +247,7 @@
             color: $color-text !important;
             line-height: inherit !important;
             font-weight: 500;
-            @include fz-14;
-            @include max(800px) {
-                @include fz-14;
-            }
+            font-size: 1.6rem;
         }
         &~.select2-container--default .select2-selection--single .select2-selection__arrow b {
             display: none;

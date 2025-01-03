@@ -10,6 +10,8 @@ const optionsMoney = [
 ];
 
 
+
+
 const PopupPrice1 = ({ showPopup, setShowPopup }) => {
     const [selectedValueMoney, setSelectedValueMoney] = useState("&nbsp;₫");
 
@@ -41,11 +43,9 @@ const PopupPrice1 = ({ showPopup, setShowPopup }) => {
                     <div className="popupPrice_center">
                         <div className="popupPrice_ip">
                             <input type="text" className='form-item-ip' placeholder="Nhập giá muốn thay đổi" />
-                            <Select2Component
-                                options={optionsMoney}
-                                value={selectedValueMoney}
-                                onChange={handleSelectChangeMoney}
-                            />
+                            <div className="popupPrice_unit">
+                                <p className="note-sm fw-5">Đ</p>
+                            </div>
                         </div>
                         <p className='note-sm fw-i'>
                             <strong className='cl-red'>*</strong>Giá trị của bạn sẽ được thay đổi theo cách này:

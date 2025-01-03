@@ -23,8 +23,6 @@ const Layout = ({ children }) => {
             const style = getComputedStyle(wrap);
             const style2 = getComputedStyle(siteBar);
             const style3 = getComputedStyle(box);
-
-
             const list = siteBar.querySelector(".siteBar_bottom .menu-list");
 
             const total = siteBar.clientHeight - top.clientHeight - parseInt(style.rowGap) - parseInt(style2.paddingBottom) - parseInt(style2.paddingTop) - login?.clientHeight - parseInt(style3.rowGap);

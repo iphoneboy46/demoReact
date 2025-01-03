@@ -604,7 +604,7 @@ const Product = () => {
                                                                             </p>
                                                                         </div>
                                                                         {
-                                                                            data.node?.children?.edges ? (
+                                                                            data.node?.children?.edges.length > 0 ? (
                                                                                 <ul className="box-select-list">
                                                                                     {data.node.children.edges.map((child, childIndex) => {
                                                                                         return (
@@ -624,6 +624,33 @@ const Product = () => {
                                                                                                         <span className="note-sm fw-4">({child.node?.count === null ? 0 : child.node?.count})</span>
                                                                                                     </p>
                                                                                                 </div>
+                                                                                                {
+                                                                                                    child.node?.children?.edges.length > 0 ? (
+                                                                                                        <ul className="box-select-list">
+                                                                                                            {child.node.children.edges.map((child2, childIndex2) => {
+                                                                                                                return (
+                                                                                                                    <li key={childIndex2} className="box-select-item">
+                                                                                                                        <div className={`box-select-cs ${activeDmChild === childIndex2 ? "actived" : ""}`} id={child2.node.id} onClick={() => {
+                                                                                                                            setTitleSlDm(child2.node.name);
+                                                                                                                            setActiveDmChild(childIndex2);
+                                                                                                                            setIdCate(child2.node.termTaxonomyId);
+                                                                                                                            setActiveDm();
+                                                                                                                            setCateQuantity(data.node?.count)
+                                                                                                                            localStorage.setItem("titleSlDm", child2.node.name)
+                                                                                                                            localStorage.setItem("activeDm", "")
+                                                                                                                            localStorage.setItem("activeDmChild", childIndex2)
+                                                                                                                        }}>
+                                                                                                                            <p className="note-sm cl-text fw-5">
+                                                                                                                                {child2.node?.name}
+                                                                                                                                <span className="note-sm fw-4">({child2.node?.count === null ? 0 : child2.node?.count})</span>
+                                                                                                                            </p>
+                                                                                                                        </div>
+                                                                                                                    </li>
+                                                                                                                )
+                                                                                                            })}
+                                                                                                        </ul>
+                                                                                                    ) : ""
+                                                                                                }
                                                                                             </li>
                                                                                         )
                                                                                     })}
