@@ -379,6 +379,7 @@ const Product = () => {
                                         options={optionsSl}
                                         value={selectedValueSl}
                                         onChange={handleSelectChangeSl}
+                                        isSearchable={false}
                                     />
                                 </div>
                                 <div className="product_filter--top-item d-item">
@@ -542,6 +543,7 @@ const Product = () => {
                                                     options={optionsHd2}
                                                     value={selectedValueHd2}
                                                     onChange={handleSelectChangeHd2}
+                                                    isSearchable={false}
                                                 />
                                             </div>
                                         }
@@ -552,6 +554,7 @@ const Product = () => {
                                                     options={optionsHd1}
                                                     value={selectedValueHd}
                                                     onChange={handleSelectChangeHd}
+                                                    isSearchable={false}
                                                 />
                                             </div>
                                         }
@@ -671,6 +674,7 @@ const Product = () => {
                                                 options={optionsSp}
                                                 value={selectedValueSp}
                                                 onChange={handleSelectChangeSp}
+                                                isSearchable={false}
                                             />
                                         </div>
                                         {
@@ -683,6 +687,7 @@ const Product = () => {
                                                         options={optionsKho}
                                                         value={selectedValueKho}
                                                         onChange={handleSelectChangeKho}
+                                                        isSearchable={false}
                                                     />
                                                 </div>
                                         }

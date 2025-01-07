@@ -1175,7 +1175,7 @@
     
     .boxCk {
         display: flex;
-        align-items: center;
+        // align-items: center;
         column-gap: var(--columnContent0);
         width: fit-content;
         height: auto;
@@ -1201,6 +1201,7 @@
             transition: 0.3s linear;
             background: transparent;
             position: relative;
+            margin-top: 0.1rem;
             &::before {
                 content: "";
                 width: 100%;
@@ -1305,4 +1306,13 @@
         @include max(600px) {
             font-size: 1.2rem !important;
         }
+    }
+    
+    .css-v7duua,
+    .css-1xc3v61-indicatorContainer {
+        cursor: pointer;
+    }
+    
+    .css-9jq23d {
+        text-transform: capitalize;
     }

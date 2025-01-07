@@ -171,6 +171,18 @@ export const GET_PRODUCT_BY_ID = gql`
       link
       sku
       password
+      attributes(first: $first) {
+        nodes {
+          name
+          options
+          id
+          label
+          variation
+          visible
+          attributeId
+          position
+          }
+        }
       image {
         sourceUrl
         id
@@ -211,6 +223,7 @@ export const GET_PRODUCT_BY_ID = gql`
             status
             stockQuantity
             stockStatus
+            
           }
           ... on SimpleProduct {
             terms(where: { taxonomies: [PRODUCTCATEGORY] }) {

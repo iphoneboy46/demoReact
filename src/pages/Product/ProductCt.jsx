@@ -6,7 +6,7 @@ import { useMutation, useQuery } from '@apollo/client';
 import { GET_PRODUCT_BY_ID, GET_PRODUCT_CATEGORIES, GET_PRODUCT_CATEGORIES_MUCH } from '../../Query/getPosts';
 import ictitle from '../../assets/images/ictitle.svg';
 import PagiWeb from '../../components/PagiWeb/PagiWeb';
-import { CREATE_TAG_MUTATION, GET_TAG_TERMS, REMOVE_TAGS_FROM_PRODUCT,UPDATE_PRODUCT_STATUS, UPDATE_PRODUCT_TAG } from '../../Query/update';
+import { CREATE_TAG_MUTATION, GET_TAG_TERMS, REMOVE_TAGS_FROM_PRODUCT, UPDATE_PRODUCT_STATUS, UPDATE_PRODUCT_TAG } from '../../Query/update';
 import { toast } from 'react-toastify';
 import { BarLoader, ClipLoader, ScaleLoader } from 'react-spinners';
 import icChangeImg from "../../assets/images/icChangeImg.png";
@@ -32,6 +32,7 @@ import PopupUpdateImage from '../../components/PopupUpdateImage/PopupUpdateImage
 import PopupUpdateAlbums from '../../components/PopupUpdateImage/PopupUpdateAlbums';
 import { Tooltip, TooltipProvider } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
+import ProductAttribute from './ProductAttribute';
 
 const optionsStatus = [
     { value: 'publish', label: 'Đã xuất bản' },
@@ -115,6 +116,9 @@ const ProductCt = () => {
         // notifyOnNetworkStatusChange: true,  // Đảm bảo cập nhật khi dữ liệu thay đổi
 
     });
+
+    
+    console.log("productCt",data)
 
 
     const { data: dataProductCate } = useQuery(GET_PRODUCT_CATEGORIES)
@@ -296,9 +300,6 @@ const ProductCt = () => {
     const handleAddNameTags = (productId) => {
         console.log(nameTags)
 
-
-
-
         if (nameTags.trim().length === 0) {
             setErrorMessTag("Vui lòng nhập tên thẻ");
             return;
@@ -439,7 +440,6 @@ const ProductCt = () => {
     };
 
 
-
     useEffect(() => {
         console.log(listUpdate)
     }, [listUpdate])
@@ -454,10 +454,6 @@ const ProductCt = () => {
         console.log(avatarProduct)
         const decodedProductId = atob(productId);
         const productNumber = decodedProductId.match(/:(\d+)$/)?.[1] || null;
-
-        // const productNumber = decodedProductId.startsWith('product:')
-        //     ? decodedProductId.split(':')[1].slice(-4)
-        //     : decodedProductId;
 
         // Kiểm tra nếu dateView không hợp lệ
         if (!dateView) {
@@ -607,8 +603,8 @@ const ProductCt = () => {
 
     const handleDeleteAvatarProduct = (idPro) => {
         setAvatarProduct({
-            id:"",
-            image:undefined
+            id: "",
+            image: undefined
         })
     };
 
@@ -795,7 +791,7 @@ const ProductCt = () => {
                                             <ProductTq data={data} loading={loading} setDescriptionPro={setDescriptionPro} setNamePro={setNamePro} setKiloPro={setKiloPro} setCodePro={setCodePro} setPriceProRegular={setPriceProRegular} setPriceProSale={setPriceProSale} showedChangeAlbums={showedChangeAlbums} setShowedChangeAlbums={setShowedChangeAlbums} setTabActived={setTabActived} setListAlbumId={setListAlbumId} setIdProAlbum={setIdProAlbum} refetchProductCt={refetchProductCt} />
                                         </div>
                                         <div className={`productEdit_lf--content-item ${tabLfContent === 2 ? "showed" : ""}`}>
-                                            Thuộc tính
+                                            <ProductAttribute data={data} />
                                         </div>
                                         <div className={`productEdit_lf--content-item ${tabLfContent === 3 ? "showed" : ""}`}>
                                             Tùy chọn
@@ -1356,6 +1352,7 @@ const ProductCt = () => {
                                                                                         options={optionsStatus}
                                                                                         value={selectedValueStatus}
                                                                                         onChange={handleSelectStatus}
+                                                                                        isSearchable={false}
                                                                                     />
                                                                                 </div>
                                                                             </div>
@@ -1416,6 +1413,8 @@ const ProductCt = () => {
                                                                                         options={optionsView}
                                                                                         value={selectedValueView}
                                                                                         onChange={handleSelectView}
+                                                                                        isSearchable={false}
+
                                                                                     />
                                                                                     {
                                                                                         data?.product?.password !== null && selectedValueView === "password"

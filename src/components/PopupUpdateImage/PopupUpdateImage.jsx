@@ -125,9 +125,9 @@ const PopupUpdateImage = ({ showedChangeAva, setShowedChangeAva, idAva, setIdAva
             ...(selectedValueImage === "upload" ? { parent: id } : ""),
             ...(selectedValueImage === "noneImage" ? { parent: 0 } : ""),
             ...(selectedValueImage === "forYou" ? { authorIn: data.user_id } : ""),
-            ...(selectedValueMonth !== "" ? {month:Number(selectedValueMonth)} : ""),
-            ...(selectedValueYear !== "" ? {year:Number(selectedValueYear)} : ""),
-            ...(valueSearch !== "" ? {search:valueSearch} : "")
+            ...(selectedValueMonth !== "" ? { month: Number(selectedValueMonth) } : ""),
+            ...(selectedValueYear !== "" ? { year: Number(selectedValueYear) } : ""),
+            ...(valueSearch !== "" ? { search: valueSearch } : "")
 
         },
         fetchPolicy: 'cache-first', // Lấy dữ liệu từ cache trước
@@ -600,16 +600,20 @@ const PopupUpdateImage = ({ showedChangeAva, setShowedChangeAva, idAva, setIdAva
                                                                 options={optionsImage}
                                                                 value={selectedValueImage}
                                                                 onChange={handleSelectChangeImage}
+                                                                isSearchable={false}
+
                                                             />
                                                             <Select2Component
                                                                 options={optionsMonth}
                                                                 value={selectedValueMonth}
                                                                 onChange={handleSelectChangeMonth}
+                                                                isSearchable={false}
                                                             />
                                                             <Select2Component
                                                                 options={optionYears}
                                                                 value={selectedValueYear}
                                                                 onChange={handleSelectChangeYear}
+                                                                isSearchable={false}
                                                             />
                                                         </div>
                                                     </div>
@@ -617,7 +621,7 @@ const PopupUpdateImage = ({ showedChangeAva, setShowedChangeAva, idAva, setIdAva
                                                         <p className="note-text fw-5 cl-text">
                                                             Tìm tệp media
                                                         </p>
-                                                        <input value={valueSearch} type="text" className='form-item-ip' placeholder='Nhập tên hình' onChange={(e)=>{
+                                                        <input value={valueSearch} type="text" className='form-item-ip' placeholder='Nhập tên hình' onChange={(e) => {
                                                             setValueSearch(e.target.value)
                                                         }} />
                                                     </div>
@@ -691,7 +695,7 @@ const PopupUpdateImage = ({ showedChangeAva, setShowedChangeAva, idAva, setIdAva
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div className={`popupUpdateImg_show--rt ${idAva === ""  ? "hiddened" : ""}`}>
+                                            <div className={`popupUpdateImg_show--rt ${idAva === "" ? "hiddened" : ""}`}>
                                                 <div className="popupUpdateImg_show--ct">
                                                     <div className="popupUpdateImg_show--ct-top">
                                                         <p className="note-text cl-text t-up fw-5">

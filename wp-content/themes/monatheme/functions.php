@@ -272,155 +272,134 @@ add_action('graphql_register_types', function () {
 });
 
 
+//////////////////////////////////////////////
 
 
-// add_action('graphql_register_types', function () {
-//     register_graphql_field('UpdateProductInput', 'image', [
-//         'type' => 'String',
-//         'description' => __('Image ID or URL to update the product image', 'your-textdomain'),
+// add_action( 'graphql_register_types', function() {
+//     register_graphql_field( 'RootQuery', 'productAttributes', [
+//         'type'        => [ 'list_of' => 'AttributeTaxonomy' ],
+//         'description' => __( 'Retrieve all product attribute taxonomies', 'your-text-domain' ),
+//         'resolve'     => function() {
+//             // Get all registered product attributes
+//             $attribute_taxonomies = wc_get_attribute_taxonomies();
+
+//             $result = [];
+
+//             if ( ! empty( $attribute_taxonomies ) ) {
+//                 foreach ( $attribute_taxonomies as $taxonomy ) {
+//                     $result[] = [
+//                         'name'        => $taxonomy->attribute_name,
+//                         'label'       => $taxonomy->attribute_label,
+//                         'slug'        => wc_attribute_taxonomy_name( $taxonomy->attribute_name ),
+//                         'type'        => $taxonomy->attribute_type,
+//                     ];
+//                 }
+//             }
+
+//             return $result;
+//         },
 //     ]);
 
-//     register_graphql_mutation('updateProduct', [
-//         'inputFields' => [
-//             'id' => [
-//                 'type' => 'ID',
-//                 'description' => __('The ID of the product to update', 'your-textdomain'),
+//     register_graphql_object_type( 'AttributeTaxonomy', [
+//         'description' => __( 'Product attribute taxonomy', 'your-text-domain' ),
+//         'fields'      => [
+//             'name' => [
+//                 'type'        => 'String',
+//                 'description' => __( 'The name of the attribute taxonomy', 'your-text-domain' ),
 //             ],
-//             'image' => [
-//                 'type' => 'String',
-//                 'description' => __('Image ID or URL to update the product image', 'your-textdomain'),
+//             'label' => [
+//                 'type'        => 'String',
+//                 'description' => __( 'The label of the attribute taxonomy', 'your-text-domain' ),
+//             ],
+//             'slug' => [
+//                 'type'        => 'String',
+//                 'description' => __( 'The slug of the attribute taxonomy', 'your-text-domain' ),
+//             ],
+//             'type' => [
+//                 'type'        => 'String',
+//                 'description' => __( 'The type of the attribute taxonomy', 'your-text-domain' ),
 //             ],
 //         ],
-//         'outputFields' => [
-//             'product' => [
-//                 'type' => 'Product',
-//                 'description' => __('The updated product', 'your-textdomain'),
-//             ],
-//         ],
-//         'mutateAndGetPayload' => function ($input) {
-//             $product_id = absint($input['id']);
-//             $image = isset($input['image']) ? $input['image'] : null;
-
-//             $product = wc_get_product($product_id);
-
-//             if (!$product) {
-//                 throw new \GraphQL\Error\UserError(__('Product not found.', 'your-textdomain'));
-//             }
-
-//             // Kiểm tra và cập nhật ảnh nếu cần
-//             if ($image !== null) {
-//                 $product->set_image_id($image);
-//             } else {
-//                 // Nếu không có ảnh (hoặc null), xóa ảnh
-//                 $product->set_image_id(0);
-//             }
-
-//             // Lưu sản phẩm
-//             $product->save();
-
-//             // Trả về thông tin sản phẩm và chắc chắn trả về null cho image
-//             return [
-//                 'product' => [
-//                     'id' => $product->get_id(),
-//                     'name' => $product->get_name(),
-//                     'image' => null, // Trả về null thay vì thông tin ảnh
-//                 ],
-//             ];
-//         },
 //     ]);
 // });
 
 
-add_action('graphql_register_types', function () {
-    // Đăng ký lại field image trong UpdateProductInput
-    register_graphql_field('UpdateProductInput', 'image', [
-        'type' => 'String',  // Kiểu String hoặc ID cho ảnh
-        'description' => __('Image ID or URL to update the product image', 'your-textdomain'),
-    ]);
+// add_action( 'graphql_register_types', function() {
+//     register_graphql_field( 'RootQuery', 'productAttributes', [
+//         'type'        => [ 'list_of' => 'AttributeTaxonomy' ],
+//         'description' => __( 'Retrieve all product attribute taxonomies', 'your-text-domain' ),
+//         'resolve'     => function() {
+//             $attribute_taxonomies = wc_get_attribute_taxonomies(); // Lấy tất cả attribute taxonomies
 
-    // Đăng ký input type UpdateProductInput
-    register_graphql_input_type('UpdateProductInput', [
-        'fields' => [
-            'id' => [
-                'type' => 'ID',
-                'description' => __('The ID of the product to update', 'your-textdomain'),
-            ],
-            'image' => [
-                'type' => 'String', // Kiểu String cho ảnh (ID hoặc URL)
-                'description' => __('The image URL or ID to update the product image', 'your-textdomain'),
-            ],
-        ],
-    ]);
+//             $result = [];
 
-    // Đăng ký mutation updateProduct
-    register_graphql_mutation('updateProduct', [
-        'inputFields' => [
-            'id' => [
-                'type' => 'ID',
-                'description' => __('The ID of the product to update', 'your-textdomain'),
-            ],
-            'image' => [
-                'type' => 'String', // Kiểu String cho ảnh
-                'description' => __('The image URL or ID to update the product image', 'your-textdomain'),
-            ],
-        ],
-        'outputFields' => [
-            'product' => [
-                'type' => 'Product',
-                'description' => __('The updated product', 'your-textdomain'),
-            ],
-        ],
-        'mutateAndGetPayload' => function ($input) {
-            $product_id = absint($input['id']);
-            $image = isset($input['image']) ? $input['image'] : null;
+//             if ( ! empty( $attribute_taxonomies ) ) {
+//                 foreach ( $attribute_taxonomies as $taxonomy ) {
+//                     // Lấy thông tin chi tiết về attribute
+//                     $attribute = wc_get_attribute( $taxonomy->attribute_id );
 
-            $product = wc_get_product($product_id);
+//                     // Lấy options từ terms
+//                     $terms = get_terms( [
+//                         'taxonomy' => wc_attribute_taxonomy_name( $taxonomy->attribute_name ),
+//                         'hide_empty' => false,
+//                     ] );
 
-            if (!$product) {
-                throw new \GraphQL\Error\UserError(__('Product not found.', 'your-textdomain'));
-            }
+//                     // Chuyển danh sách terms thành array options
+//                     $options = [];
+//                     if ( ! is_wp_error( $terms ) && ! empty( $terms ) ) {
+//                         foreach ( $terms as $term ) {
+//                             $options[] = $term->name; // Lấy name của term làm option
+//                         }
+//                     }
 
-            // Debug: Log trước khi cập nhật ảnh
-            error_log("Product ID: $product_id, Image: $image");
+//                     $result[] = [
+//                         'name'     => $taxonomy->attribute_name,
+//                         'label'    => $taxonomy->attribute_label,
+//                         'slug'     => wc_attribute_taxonomy_name( $taxonomy->attribute_name ),
+//                         'type'     => $taxonomy->attribute_type,
+//                         'variation'=> (bool) $attribute->is_variation,
+//                         'visible'  => (bool) $attribute->is_visible,
+//                         'options'  => $options, // Trả về các options đã lấy từ terms
+//                     ];
+//                 }
+//             }
 
-            // Nếu image là null, xóa ảnh
-            if ($image === null || $image === '0' || empty($image)) {
-                $product->set_image_id(0); // Set ảnh về 0 (xóa ảnh)
-                error_log("Image ID set to 0 (removed image)");
-            } else {
-                // Kiểm tra image có phải là URL hay ID
-                if (is_numeric($image)) {
-                    // Nếu là ID, cập nhật ảnh
-                    $product->set_image_id(intval($image));
-                    error_log("Image set to ID: " . intval($image));
-                } else {
-                    // Nếu là URL, cần chuyển đổi URL thành ID ảnh
-                    $attachment_id = attachment_url_to_postid($image);
-                    if ($attachment_id) {
-                        $product->set_image_id($attachment_id); // Cập nhật ảnh theo ID của URL
-                        error_log("Image set from URL: $image, Attachment ID: $attachment_id");
-                    } else {
-                        // Nếu không phải là URL hợp lệ, báo lỗi
-                        throw new \GraphQL\Error\UserError(__('Invalid image URL.', 'your-textdomain'));
-                    }
-                }
-            }
+//             return $result;
+//         },
+//     ]);
 
-            // Lưu sản phẩm
-            $product->save();
-
-            // Debug: Log sau khi lưu
-            error_log("Product saved with image ID: " . $product->get_image_id());
-
-            // Trả về sản phẩm đã cập nhật
-            return [
-                'product' => $product,
-            ];
-        },
-    ]);
-});
-
-
-
-
+//     register_graphql_object_type( 'AttributeTaxonomy', [
+//         'description' => __( 'Product attribute taxonomy', 'your-text-domain' ),
+//         'fields'      => [
+//             'name' => [
+//                 'type'        => 'String',
+//                 'description' => __( 'The name of the attribute taxonomy', 'your-text-domain' ),
+//             ],
+//             'label' => [
+//                 'type'        => 'String',
+//                 'description' => __( 'The label of the attribute taxonomy', 'your-text-domain' ),
+//             ],
+//             'slug' => [
+//                 'type'        => 'String',
+//                 'description' => __( 'The slug of the attribute taxonomy', 'your-text-domain' ),
+//             ],
+//             'type' => [
+//                 'type'        => 'String',
+//                 'description' => __( 'The type of the attribute taxonomy', 'your-text-domain' ),
+//             ],
+//             'variation' => [
+//                 'type'        => 'Boolean',
+//                 'description' => __( 'Is this attribute used for variations?', 'your-text-domain' ),
+//             ],
+//             'visible' => [
+//                 'type'        => 'Boolean',
+//                 'description' => __( 'Is this attribute visible on the product page?', 'your-text-domain' ),
+//             ],
+//             'options' => [
+//                 'type'        => [ 'list_of' => 'String' ],
+//                 'description' => __( 'Available options for this attribute', 'your-text-domain' ),
+//             ],
+//         ],
+//     ]);
+// });
 

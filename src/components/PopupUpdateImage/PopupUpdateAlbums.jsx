@@ -749,7 +749,7 @@ const PopupUpdateAlbums = ({ showedChangeAlbums, setShowedChangeAlbums, setTabAc
                                                                         return (
                                                                             <li key={index} className="popupUpdateImg_show--all-item d-item">
                                                                                 <label className='popupUpdateImg_show--all-item-img'>
-                                                                                    <input checked={checkedAlbums.includes(data.node.id)} onClick={(e) => {
+                                                                                    <input checked={checkedAlbums.includes(data.node.id)} onChange={()=>{}} onClick={(e) => {
                                                                                         handleChangeImgAlbs(e, data.node.id)
 
                                                                                     }}

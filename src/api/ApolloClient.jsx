@@ -3,9 +3,10 @@ import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client';
 const token = localStorage.getItem('authToken');
 // console.log(token)
 
+const baseUrl = process.env.REACT_APP_BASE_URL;
 const client = new ApolloClient({
     link: createHttpLink({
-        uri: 'https://managewoostore.monamedia.net/graphql', // Kiểm tra URI này
+        uri: `${baseUrl}/graphql`, // Kiểm tra URI này
         headers: {
             Authorization: `Bearer ${token}`  // Thêm token vào header
         }
