@@ -1,10 +1,17 @@
 import React from 'react'
+import { Helmet } from 'react-helmet'
 
 const Variant = () => {
     return (
-        <div>
-            <h1>Variant</h1>
-        </div>
+        <>
+            <Helmet>
+                <title>Các biến thể</title>
+            </Helmet>
+            <div>
+                <h1>Variant</h1>
+            </div>
+        </>
+
     )
 }
 

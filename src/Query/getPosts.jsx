@@ -1,73 +1,257 @@
 import { gql } from '@apollo/client';
 
-//truy vấn truy cập danh mục
-export const GET_PRODUCT_CATEGORIES = gql`
-    query GetProductCategories {
-      productCategories(first: 1000) {
-        edges {
-          node {
-            id
-            name
-            termTaxonomyId
-            children {
-              edges {
-                node {
-                  id
-                  name
-                  termTaxonomyId
-                  children {
-                    edges {
-                      node {
-                        id
-                        name
-                        termTaxonomyId
+const CATEGORY_FIELDS = gql`
+  fragment CategoryFields on ProductCategory {
+  id
+  name
+  termTaxonomyId
+  count
+  parentId
+  description
+  slug
+  image {
+    id
+    sourceUrl
+  }
+  children {
+    edges {
+      node {
+        id
+        name
+        termTaxonomyId
+        count
+        parentId
+        children {
+          edges {
+            node {
+              id
+              name
+              termTaxonomyId
+              count
+              parentId
+              description
+              slug
+              image {
+                id
+                sourceUrl
+              }
+              children {
+                edges {
+                  node {
+                    id
+                    name
+                    termTaxonomyId
+                    count
+                    parentId
+                    description
+                    slug
+                    image {
+                      id
+                      sourceUrl
+                    }
+                    children {
+                      edges {
+                        node {
+                          id
+                          name
+                          termTaxonomyId
+                          count
+                          parentId
+                          description
+                          slug
+                          image {
+                            id
+                            sourceUrl
+                          }
+                          children {
+                            edges {
+                              node {
+                                id
+                                name
+                                termTaxonomyId
+                                count
+                                parentId
+                                description
+                                slug
+                                image {
+                                  id
+                                  sourceUrl
+                                }
+                                children {
+                                  edges {
+                                    node {
+                                      id
+                                      name
+                                      termTaxonomyId
+                                      count
+                                      parentId
+                                      description
+                                      slug
+                                      image {
+                                        id
+                                        sourceUrl
+                                      }
+                                      children {
+                                        edges {
+                                          node {
+                                            id
+                                            name
+                                            termTaxonomyId
+                                            count
+                                            parentId
+                                            description
+                                            slug
+                                            image {
+                                              id
+                                              sourceUrl
+                                            }
+                                            children {
+                                              edges {
+                                                node {
+                                                  id
+                                                  name
+                                                  termTaxonomyId
+                                                  count
+                                                  parentId
+                                                  description
+                                                  slug
+                                                  image {
+                                                    id
+                                                    sourceUrl
+                                                  }
+                                                  children {
+                                                    edges {
+                                                      node {
+                                                        id
+                                                        name
+                                                        termTaxonomyId
+                                                        count
+                                                        parentId
+                                                        description
+                                                        slug
+                                                        image {
+                                                          id
+                                                          sourceUrl
+                                                        }
+                                                      }
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
                       }
                     }
                   }
-                  count
                 }
               }
             }
-            count
           }
         }
       }
     }
+  }
+}
 `;
+
+
+
+export const GET_ALL_CATEGORIES = gql`
+query GetProductCategories($search: String, $page: Int, $perPage: Int!) {
+    customTaxonomyz(page: $page, perPage: $perPage, search: $search , taxonomy: "product_cat") {
+      currentPage
+      hasNextPage
+      hasPreviousPage
+      total
+      totalPages
+      query {
+        name
+        id
+        parent
+        level
+        isInserted
+        count
+        description
+        slug
+        imageId
+        imageUrl
+        displayName
+        parentName
+      }
+    }
+  }
+`;
+
+export const GET_ALL_TAGS = gql`
+  query GetProductTags($search: String, $page: Int, $perPage: Int!) {
+    customTaxonomy(perPage: $perPage, page: $page, taxonomy: "product_tag" , search: $search) {
+      currentPage
+      hasNextPage
+      hasPreviousPage
+      total
+      totalPages
+      query {
+        id
+        name
+        description
+        count
+        slug
+      }
+    }
+  }
+`
+
+export const GET_ALL_ATTRIBUTE = gql`
+  query NewQueryAllAttribute {
+    productAttributes {
+      id
+      has_archives
+      label
+      name
+      order_by
+      slug
+      type
+      terms
+    }
+  }
+`
+
+
+export const GET_PRODUCT_CATEGORIES = gql`
+  query GetProductCategories {
+    productCategories(first: 10000, where: { parent: null }) {
+      edges {
+        node {
+          ...CategoryFields
+        }
+      }
+    }
+  }
+  ${CATEGORY_FIELDS}
+`;
+
 
 //truy vấn truy cập danh mục sử dụng nhiều
 export const GET_PRODUCT_CATEGORIES_MUCH = gql`
-    query GetProductCategories {
-      productCategories(where: {orderby: COUNT},first: 1000) {
+  query GetProductCategories {
+      productCategories(first: 10000, where: { parent: null , orderby: COUNT }) {
         edges {
           node {
-            id
-            name
-            termTaxonomyId
-            children {
-              edges {
-                node {
-                  id
-                  name
-                  termTaxonomyId
-                  children {
-                    edges {
-                      node {
-                        id
-                        name
-                        termTaxonomyId
-                      }
-                    }
-                  }
-                  count
-                }
-              }
-            }
-            count
+            ...CategoryFields
           }
         }
       }
     }
+  ${CATEGORY_FIELDS}
 `;
 
 // truy vấn lấy tất cả sản phẩm
@@ -93,14 +277,14 @@ export const GET_PRODUCT_ALL = gql`
             sourceUrl
           }
           ... on VariableProduct {
-            terms(where: { taxonomies: [PRODUCTCATEGORY] }) {
+            terms(where: { taxonomies: [PRODUCTCATEGORY] }, first: 10000) {
               nodes {
                 id
                 name
                 termTaxonomyId
               }
             }
-            tagTerms: terms(where: { taxonomies: [PRODUCTTAG] }) {
+            tagTerms: terms(where: { taxonomies: [PRODUCTTAG] } , first: 10000) {
               nodes {
                 id
                 name
@@ -121,14 +305,14 @@ export const GET_PRODUCT_ALL = gql`
             stockStatus
           }
           ... on SimpleProduct {
-            terms(where: { taxonomies: [PRODUCTCATEGORY] }) {
+            terms(where: { taxonomies: [PRODUCTCATEGORY] },first: 10000) {
               nodes {
                 id
                 name
                 termTaxonomyId
               }
             }
-            tagTerms: terms(where: { taxonomies: [PRODUCTTAG] }) {
+            tagTerms: terms(where: { taxonomies: [PRODUCTTAG] } , first: 10000) {
               nodes {
                 id
                 name
@@ -198,14 +382,14 @@ export const GET_PRODUCT_BY_ID = gql`
       }
 
       ... on VariableProduct {
-            terms(where: { taxonomies: [PRODUCTCATEGORY] }) {
+            terms(where: { taxonomies: [PRODUCTCATEGORY] },first: 10000) {
               nodes {
                 id
                 name
                 termTaxonomyId
               }
             }
-            tagTerms: terms(where: { taxonomies: [PRODUCTTAG] }) {
+            tagTerms: terms(where: { taxonomies: [PRODUCTTAG] } , first: 10000) {
               nodes {
                 id
                 name
@@ -226,14 +410,14 @@ export const GET_PRODUCT_BY_ID = gql`
             
           }
           ... on SimpleProduct {
-            terms(where: { taxonomies: [PRODUCTCATEGORY] }) {
+            terms(where: { taxonomies: [PRODUCTCATEGORY] },first: 10000) {
               nodes {
                 id
                 name
                 termTaxonomyId
               }
             }
-            tagTerms: terms(where: { taxonomies: [PRODUCTTAG] }) {
+            tagTerms: terms(where: { taxonomies: [PRODUCTTAG] } , first: 10000) {
               nodes {
                 id
                 name
@@ -362,34 +546,37 @@ export const GET_ALL_IMAGE_ATTRIBUTES = gql`
 `;
 
 
-// export const GET_IMAGE_AVA_ID = gql`
-//   query GetImageAvaId($id: Int!) {
-//   mediaItems(where: {id: $id}) {
-//     edges {
-//       node {
-//         id
-//         title
-//         altText
-//         caption(format: RAW)
-//         description(format: RAW)
-//         date
-//         sourceUrl
-//         mediaDetails {
-//           width
-//           height
-//           file
-//         }
-//         author {
-//           node {
-//             name
-//           }
-//         }
-//         fileSize
-//       }
-//     }
-//   }
-// }
-// `;
+export const GET_ALL_ATTRIBUTES_VALUE = gql`
+  query GetAttributeValue(
+    $page: Int, 
+    $perPage: Int!, 
+    $search: String, 
+    $taxonomy: String
+  ) {
+    customTaxonomy(
+      perPage: $perPage,
+      page: $page,
+      taxonomy: $taxonomy,
+      search: $search
+    ) {
+      currentPage
+      hasNextPage
+      hasPreviousPage
+      total
+      totalPages
+      query {
+        id
+        name
+        description
+        count
+        slug
+      }
+    }
+  }
+`;
+
+
+
 
 
 

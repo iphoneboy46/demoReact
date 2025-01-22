@@ -263,6 +263,7 @@
                         background: $color-white;
                         min-width: unset;
                         width: 100%;
+                        min-width: 20rem;
                     }
                     .btn {
                         min-width: unset;
@@ -295,6 +296,8 @@
         row-gap: var(--rowContent24);
     }
     &--table {
+        border-radius: 0.8rem;
+        overflow: hidden;
         table {
             width: 100%;
             @include max(1200px) {
@@ -331,13 +334,13 @@
                             flex: 0.25;
                         }
                         &:nth-child(2) {
-                            flex: 6;
+                            flex: 4;
                         }
                         &:nth-child(3) {
                             flex: 1.5;
                         }
                         &:nth-child(4) {
-                            flex: 3;
+                            flex: 4;
                         }
                         &:nth-child(5) {
                             flex: 1.5;
@@ -372,7 +375,7 @@
                         display: flex;
                         // align-items: center;
                         flex-direction: column;
-                        justify-content: center;
+                        justify-content: start;
                         .note-text {
                             text-align: start;
                         }
@@ -407,7 +410,7 @@
                             justify-content: start;
                         }
                         &:nth-child(2) {
-                            flex: 6;
+                            flex: 4;
                             @include max(800px) {
                                 flex-direction: column !important;
                                 row-gap: var(--rowContent12);
@@ -418,7 +421,7 @@
                             flex: 1.5;
                         }
                         &:nth-child(4) {
-                            flex: 3;
+                            flex: 4;
                         }
                         &:nth-child(5) {
                             flex: 1.5;
@@ -539,7 +542,7 @@
                 content: ",";
                 position: absolute;
                 bottom: 0.1rem;
-                right: -10%;
+                right: -5%;
                 font-size: 1.2rem;
                 @include max(800px) {
                     font-size: 1rem;
@@ -1000,19 +1003,26 @@
             max-height: 20rem;
             overflow-y: auto;
             overflow-x: hidden;
+            row-gap: 0.4rem;
+            width: 100%;
         }
         &--item {
-            padding: 0.6rem var(--columnContent12);
+            padding: 0rem var(--columnContent12);
             display: flex;
             flex-direction: column;
+            row-gap: 0.4rem;
             .boxCk {
                 width: 100%;
             }
             .productEdit_dm--list {
-                padding-top: 0.6rem;
+                // padding-top: 0.6rem;
+                padding-top: 0rem;
                 padding-left: 0.6rem;
                 overflow: unset !important;
                 max-height: unset !important;
+                .productEdit_dm--item {
+                    padding-right: 0;
+                }
             }
         }
         &--content {
@@ -1453,6 +1463,19 @@
             display: flex;
             align-items: center;
             column-gap: var(--columnContent12);
+            &-sl {
+                position: relative;
+                border-radius: 0.4rem;
+                &.dis {
+                    pointer-events: none;
+                    opacity: 0.5;
+                    background: rgba($color: $color-gray8, $alpha: 1.0);
+                }
+                .btn-loading {
+                    z-index: 2;
+                    opacity: 1;
+                }
+            }
         }
         &--rt {}
     }
@@ -1492,6 +1515,22 @@
     &_item {
         display: flex;
         flex-direction: column;
+        position: relative;
+        &.disDelete {
+            &::before {
+                content: "";
+                width: 100%;
+                height: 100%;
+                inset: 0;
+                background: rgba($color: #D8DCE3, $alpha: 0.5);
+                z-index: 1;
+                position: absolute;
+            }
+            pointer-events: none;
+        }
+        .btn-loading {
+            z-index: 2;
+        }
         &.actived {
             .productAttribute_item--top-rt {
                 .ic {
@@ -1576,6 +1615,9 @@
             display: flex;
             flex-direction: column;
             row-gap: var(--rowContent12);
+            .skeleton {
+                height: 3.6rem;
+            }
         }
     }
 }

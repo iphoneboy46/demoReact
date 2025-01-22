@@ -85,7 +85,28 @@ export const REMOVE_TAGS_FROM_PRODUCT = gql`
 `;
 
 
-
+// Định nghĩa Mutation
+export const ADD_ATTRIBUTE_TO_PRODUCT = gql`
+  mutation AddAttributeToProduct($input: AddAttributeToProductInput!) {
+    addAttributeToProduct(input: $input) {
+      product {
+        id
+        name
+        attributes {
+          nodes {
+            id
+            name
+            options
+            label
+            variation
+            visible
+            attributeId
+          }
+        }
+      }
+    }
+  }
+`;
 
 
 

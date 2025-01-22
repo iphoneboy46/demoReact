@@ -115,6 +115,9 @@
                                 }
                             }
                         }
+                        .menu-ic {
+                            display: flex;
+                        }
                         @include hover {
                             background: rgba($color: $color-red, $alpha: 0.1);
                             .menu-link-wrap {
@@ -125,6 +128,11 @@
                                     img {
                                         filter: brightness(0) saturate(100%) invert(31%) sepia(51%) saturate(4126%) hue-rotate(200deg) brightness(102%) contrast(110%);
                                     }
+                                }
+                            }
+                            .menu-ic {
+                                svg {
+                                    filter: brightness(0) saturate(100%) invert(27%) sepia(81%) saturate(2151%) hue-rotate(345deg) brightness(85%) contrast(102%);
                                 }
                             }
                         }
@@ -147,6 +155,9 @@
                                     }
                                 }
                             }
+                            .menu-ic {
+                                display: flex;
+                            }
                             @include hover {
                                 background: $color-third;
                                 .menu-link-wrap {
@@ -159,19 +170,29 @@
                                         }
                                     }
                                 }
+                                .menu-ic {
+                                    svg {
+                                        filter: brightness(0) saturate(100%) invert(31%) sepia(51%) saturate(4126%) hue-rotate(200deg) brightness(102%) contrast(110%);
+                                    }
+                                }
                             }
                         }
                         &.actived {
-                            .menu-link {
-                                background: $color-third;
+                            &>.menu-link {
+                                background: $color-third !important;
                                 .menu-link-wrap {
                                     .note-text {
-                                        color: $color-pri;
+                                        color: $color-pri !important;
                                     }
                                     .ic {
                                         img {
-                                            filter: brightness(0) saturate(100%) invert(31%) sepia(51%) saturate(4126%) hue-rotate(200deg) brightness(102%) contrast(110%);
+                                            filter: brightness(0) saturate(100%) invert(31%) sepia(51%) saturate(4126%) hue-rotate(200deg) brightness(102%) contrast(110%) !important;
                                         }
+                                    }
+                                }
+                                .menu-ic {
+                                    svg {
+                                        filter: brightness(0) saturate(100%) invert(31%) sepia(51%) saturate(4126%) hue-rotate(200deg) brightness(102%) contrast(110%) !important;
                                     }
                                 }
                             }
@@ -238,7 +259,7 @@
                                 }
                             }
                             @include hover {
-                                background: $color-third;
+                                background: $color-third !important;
                                 .menu-link-wrap {
                                     .note-text {
                                         color: $color-pri;
@@ -252,15 +273,15 @@
                             }
                         }
                         &.actived {
-                            .menu-link {
-                                background: $color-third;
+                            &>.menu-link {
+                                background: $color-third !important;
                                 .menu-link-wrap {
                                     .note-text {
-                                        color: $color-pri;
+                                        color: $color-pri !important;
                                     }
                                     .ic {
                                         img {
-                                            filter: brightness(0) saturate(100%) invert(31%) sepia(51%) saturate(4126%) hue-rotate(200deg) brightness(102%) contrast(110%);
+                                            filter: brightness(0) saturate(100%) invert(31%) sepia(51%) saturate(4126%) hue-rotate(200deg) brightness(102%) contrast(110%) !important;
                                         }
                                     }
                                 }
@@ -273,7 +294,7 @@
                 transform: translateY(-50%) rotate(-180deg);
             }
             .siteBar_logout {
-                .menu-link {
+                &>.menu-link {
                     width: 100%;
                     justify-content: center;
                     .menu-link-wrap {

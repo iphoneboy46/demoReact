@@ -6,10 +6,6 @@
         --pd: 1.8rem;
         display: flex;
         flex-direction: column;
-        row-gap: var(--rowContent12);
-        // margin-left: calc(var(--pd) * -1);
-        // margin-right: calc(var(--pd) * -1);
-        height: 100%;
         @include max(1400px) {
             --pd: 1.6rem;
         }
@@ -18,297 +14,89 @@
         }
     }
     .menu-item {
-        height: 100%;
         position: relative;
         margin: 0 auto;
-        // &-svg {
-        // 	position: absolute;
-        // 	top: 55%;
-        // 	left: 50%;
-        // 	transform: translate(-50%, -50%);
-        // 	width: 105%;
-        // 	height: 100%;
-        // 	svg {
-        // 		width: 100%;
-        // 		height: 100%;
-        // 		object-fit: cover;
-        // 		stroke-dasharray: 1000;
-        // 		/* Set a large enough value */
-        // 		stroke-dashoffset: 1000;
-        // 		transition: 1s linear;
-        // 	}
-        // }
-        &.current-menu-item {
-            // &::before {
-            // 	clip-path: circle(100% at 50% 50%);
-            // }
-            .menu-link {
-                color: $color-second;
-                font-weight: 700;
-                // &::before {
-                // 	width: calc(100% - (var(--pd) * 2));
-                // }
-            }
-        }
+        padding: 0.4rem 0;
         &.actived {
-            .menu-link {
-                background: $color-white;
-                &-wrap {
+            &>.menu-link {
+                background: $color-white !important;
+                .menu-link-wrap {
                     .ic {
                         img {
-                            filter: brightness(0) saturate(100%) invert(31%) sepia(51%) saturate(4126%) hue-rotate(200deg) brightness(102%) contrast(110%);
+                            filter: brightness(0) saturate(100%) invert(47%) sepia(79%) saturate(6244%) hue-rotate(201deg) brightness(103%) contrast(105%);
                         }
+                    }
+                    .note-text {
+                        color: $color-pri;
+                    }
+                }
+                .menu-ic {
+                    svg {
+                        filter: brightness(0) saturate(100%) invert(31%) sepia(51%) saturate(4126%) hue-rotate(200deg) brightness(102%) contrast(110%) !important;
                     }
                 }
             }
         }
-        @include hover {
-            .menu-item-svg {
-                svg {
-                    stroke-dashoffset: 0;
-                }
-            }
-            .menu-link {
-                color: $color-second;
-                // &::before {
-                // 	width: calc(100% - (var(--pd) * 2));
-                // }
-            }
+        .menu-link {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            column-gap: 0.4rem;
+            justify-content: space-between;
+            padding: var(--rowContent12);
+            color: $color-white;
+            @include fz-16;
+            position: relative;
+            font-weight: 500;
+            transition: 0.3s linear;
+            white-space: nowrap;
+            background: rgba($color: $color-white, $alpha: 0.1);
+            user-select: none;
             &::before {
-                clip-path: circle(100% at 50% 50%);
+                display: none;
+            }
+            &-wrap {
+                display: flex;
+                column-gap: 1rem;
+                align-items: center;
+                .ic {
+                    width: var(--wh);
+                    height: var(--wh);
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    flex-shrink: 0;
+                    img {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: contain;
+                    }
+                }
+                .note-text {
+                    display: none;
+                    margin-top: 0.1rem;
+                    @include max(600px) {
+                        margin-top: 0.2rem;
+                    }
+                }
+                @include max(1200px) {
+                    column-gap: var(--columnContent0);
+                }
             }
         }
+        // Mục cha có dropdown
         &.dropdown {
-            @include hover {
-                &>.menu-list {
-                    transform: translateY(0%);
-                    opacity: 1;
-                    visibility: visible;
-                    pointer-events: visible;
-                }
-                &>.menu-mega {
-                    transform: translate(-50%, 0%);
-                    opacity: 1;
-                    pointer-events: visible;
-                    visibility: visible;
-                }
-            }
+            display: flex;
+            flex-direction: column;
+            row-gap: 0.4rem;
+            // Mục con bên trong dropdown
             &>.menu-list {
-                position: absolute;
-                top: calc(100% + 0.1rem);
-                left: var(--pd);
-                min-width: 18rem;
                 flex-direction: column;
-                background: $color-white;
-                box-shadow: 0 0 0.3rem rgba($color: #000000, $alpha: 0.3);
                 margin: unset;
                 height: unset;
-                transition: 0.3s linear;
-                transform: translateY(10%);
-                opacity: 0;
-                visibility: hidden;
-                pointer-events: none;
-                border-radius: var(--radius04);
-                // max-height: 20vh;
-                // overflow-y: auto;
-                &::before {
-                    content: "";
-                    width: 100%;
-                    height: 4rem;
-                    position: absolute;
-                    background: transparent;
-                    top: -2rem;
-                    left: 0;
-                }
-                .menu-item {
-                    &::before {
-                        display: none !important;
-                    }
-                    &.current-menu-item {
-                        .menu-link {
-                            // background: $color-pri;
-                            color: $color-second !important;
-                        }
-                    }
-                    @include hover {
-                        &>.menu-link {
-                            // background: $color-pri;
-                            color: $color-second !important;
-                        }
-                    }
-                    &.dropdown {
-                        @include hover {
-                            &>.menu-list {
-                                transform: translateX(0%) translateY(0);
-                            }
-                        }
-                        &>.menu-list {
-                            position: absolute;
-                            top: 0;
-                            left: calc(100% + 0.1rem);
-                            min-width: 18rem;
-                            flex-direction: column;
-                            background: $color-white;
-                            box-shadow: 0 0 0.3rem rgba($color: #000000, $alpha: 0.3);
-                            margin: unset;
-                            height: unset;
-                            transform: translateX(5%) translateY(0);
-                            .menu-item {
-                                &::before {
-                                    display: none !important;
-                                }
-                                &.current-menu-item {
-                                    .menu-link {
-                                        background: $color-pri;
-                                        color: $color-white !important;
-                                    }
-                                }
-                                @include hover {
-                                    &>.menu-link {
-                                        // background: $color-pri;
-                                        color: $color-second !important;
-                                    }
-                                }
-                                &:not(:last-child) {
-                                    border-bottom: 0.1rem solid rgba($color: #000000, $alpha: 0.1);
-                                }
-                                .menu-link {
-                                    padding: 1rem 0.8rem;
-                                    color: $color-text;
-                                    &::before {
-                                        display: none;
-                                    }
-                                }
-                                &.dropdown {
-                                    @include hover {
-                                        &>.menu-list {
-                                            transform: translateX(0%) translateY(0);
-                                        }
-                                    }
-                                    &>.menu-list {
-                                        position: absolute;
-                                        top: 0;
-                                        left: calc(100% + 0.1rem);
-                                        min-width: 18rem;
-                                        flex-direction: column;
-                                        background: $color-white;
-                                        box-shadow: 0 0 0.3rem rgba($color: #000000, $alpha: 0.3);
-                                        margin: unset;
-                                        height: unset;
-                                        transform: translateX(5%) translateY(0);
-                                        .menu-item {
-                                            &::before {
-                                                display: none !important;
-                                            }
-                                            &.current-menu-item {
-                                                .menu-link {
-                                                    // background: $color-pri;
-                                                    color: $color-second !important;
-                                                }
-                                            }
-                                            @include hover {
-                                                .menu-link {
-                                                    // background: $color-pri;
-                                                    color: $color-second !important;
-                                                }
-                                            }
-                                            &:not(:last-child) {
-                                                border-bottom: 0.1rem solid rgba($color: #000000, $alpha: 0.1);
-                                            }
-                                            .menu-link {
-                                                padding: 1rem 0.8rem;
-                                                color: $color-text;
-                                                &::before {
-                                                    display: none;
-                                                }
-                                            }
-                                            &.dropdown {}
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    &:not(:last-child) {
-                        border-bottom: 0.1rem solid rgba($color: #000000, $alpha: 0.1);
-                    }
-                    .menu-link {
-                        padding: 1rem 0.8rem;
-                        color: $color-text;
-                        width: 100%;
-                        justify-content: space-between;
-                        &::before {
-                            display: none;
-                        }
-                        @include hover {
-                            color: $color-pri;
-                        }
-                    }
-                }
-            }
-        }
-    }
-    .menu-link {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        column-gap: 0.4rem;
-        justify-content: start;
-        padding: var(--rowContent12);
-        // text-transform: uppercase;
-        color: $color-white;
-        @include fz-16;
-        position: relative;
-        font-weight: 500;
-        transition: 0.3s linear;
-        white-space: nowrap;
-        background: rgba($color: $color-white, $alpha: 0.1);
-        user-select: none;
-        // @include hover {
-        // 	&::before {
-        // 		transform: translateX(-50%) scale(1);
-        // 	}
-        // }
-        &::before {
-            display: none;
-        }
-        &-wrap {
-            display: flex;
-            column-gap: 1rem;
-            align-items: center;
-            .ic {
-                width: var(--wh);
-                height: var(--wh);
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                flex-shrink: 0;
-                img {
-                    width: 100%;
-                    height: 100%;
-                    object-fit: contain;
-                }
-            }
-            .note-text {
+                padding-left: var(--columnContent12);
                 display: none;
-                margin-top: 0.1rem;
-                @include max(600px) {
-                    margin-top: 0.2rem;
-                }
-            }
-            @include max(1200px) {
-                column-gap: var(--columnContent0);
-            }
-        }
-        @include hover {
-            background: $color-white;
-            .menu-link-wrap {
-                .ic {
-                    img {
-                        filter: brightness(0) saturate(100%) invert(31%) sepia(51%) saturate(4126%) hue-rotate(200deg) brightness(102%) contrast(110%);
-                    }
-                }
             }
         }
     }
@@ -319,437 +107,21 @@
     justify-content: center;
     align-items: center;
     flex-shrink: 0;
-    margin-top: 0.25rem;
-    @include max(1200px) {
-        width: 2.4rem;
-        height: 2.4rem;
-        margin-top: 0;
-    }
-    i {
-        @include fz-14;
-        @include max(1200px) {
-            transition: 0.2s linear;
-        }
+    margin-top: 0.05rem;
+    width: 2rem;
+    height: 2rem;
+    display: none;
+    svg {
+        width: 1.4rem;
+        height: 1.4rem;
+        object-fit: contain;
+        transition: 0.3s linear;
+        filter: brightness(0) saturate(100%) invert(49%) sepia(9%) saturate(923%) hue-rotate(175deg) brightness(90%) contrast(93%);
     }
     &.actived {
-        i {
+        svg {
             transform: rotate(-180deg);
         }
-    }
-}
-
-.menu_mb {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    max-width: 38rem;
-    height: 100dvh;
-    box-shadow: 0 0 0.3rem rgba($color: #000000, $alpha: 0.3);
-    // background: $color-white;
-    background: rgba($color: #000000, $alpha: 0.6);
-    z-index: 3001;
-    transform: translateX(-100%);
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    transition: 0.8s ease;
-    backdrop-filter: blur(0.8rem);
-    // display: none;
-    @include max(600px) {
-        max-width: unset;
-        width: 100%;
-    }
-    // @include max(1200px) {
-    //     display: block;
-    // }
-    &.showed {
-        opacity: 1;
-        visibility: visible;
-        pointer-events: visible;
-        transform: translateX(0);
-        &~.menu_mb--modal {
-            opacity: 1;
-            visibility: visible;
-            pointer-events: visible;
-        }
-    }
-    @include max(800px) {
-        width: 50%;
-    }
-    @include max(600px) {
-        width: 70%;
-    }
-    @include max(460px) {
-        width: 100%;
-    }
-    &--top {}
-    &--logo {
-        max-width: 12rem;
-        // margin: 0 auto;
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: var(--rowContent16) var(--columnContent24);
-        @include max(1200px) {
-            width: 10rem;
-        }
-        @include max(800px) {
-            width: 8rem;
-        }
-        img {
-            width: 100%;
-            height: 100% !important;
-            object-fit: contain;
-            // filter: brightness(0) saturate(100%) invert(20%) sepia(42%) saturate(1503%) hue-rotate(116deg) brightness(89%) contrast(107%);
-        }
-    }
-    &--ex {
-        position: absolute;
-        top: var(--rowContent2);
-        right: var(--rowContent2);
-        width: 2rem;
-        height: 2rem;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        cursor: pointer;
-        z-index: 2;
-        @include hover {
-            i {
-                color: $color-second;
-            }
-        }
-        i {
-            @include fz-24;
-            color: $color-white;
-            transition: 0.3s linear;
-        }
-    }
-    &--wrap {
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        position: relative;
-    }
-    &--nav {
-        height: 100%;
-        .menu-list {
-            padding: var(--rowContent16) var(--columnContent24);
-            display: flex;
-            flex-direction: column;
-            margin: 0;
-            // max-height: 80vh;
-            overflow-y: auto;
-            height: unset;
-            row-gap: var(--rowContent16);
-            &::-webkit-scrollbar {
-                width: 0.3rem;
-            }
-            .menu-item {
-                height: unset;
-                display: flex;
-                flex-direction: column;
-                border-bottom: unset !important;
-                &::before {
-                    display: none !important;
-                }
-                // &:not(:last-child) {
-                //     border-bottom: 0.1rem solid rgba($color: #000000, $alpha: 0.1);
-                // }
-                &.current-menu-item {
-                    .menu-link {
-                        // background: $color-gray;
-                        background: transparent;
-                        &::before {
-                            display: none;
-                        }
-                        color: $color-white !important;
-                    }
-                }
-                .menu-link {
-                    color: $color-second !important;
-                    padding: 1rem;
-                    width: 100%;
-                    justify-content: space-between;
-                    font-weight: 500;
-                    @include fz-16;
-                    display: flex;
-                    align-items: center;
-                    transition: 0.3s linear;
-                    padding-left: 0 !important;
-                    padding-right: 0 !important;
-                    @include hover {
-                        background: transparent !important;
-                        color: $color-white !important;
-                    }
-                }
-                .menu-ic {
-                    width: 2rem;
-                    height: 2rem;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    // right: 1.2rem;
-                    i {
-                        @include fz-14;
-                    }
-                }
-                &.dropdown>.menu-list {
-                    height: unset;
-                    min-width: unset;
-                    transform: unset;
-                    opacity: 1;
-                    pointer-events: visible;
-                    visibility: visible;
-                    // padding-left: 2.4rem;
-                    background: unset;
-                    box-shadow: unset;
-                    position: relative;
-                    left: unset;
-                    top: unset;
-                    transform: unset;
-                    transition: unset;
-                    // margin-bottom: 1rem;
-                    display: none;
-                    padding: 0 2.4rem;
-                    // &::before {
-                    //     content: "";
-                    //     width: 0.1rem;
-                    //     height: 100%;
-                    //     position: absolute;
-                    //     left: 1.2rem;
-                    //     background: rgba($color: #000000, $alpha: 0.1);
-                    // }
-                    .menu-item {
-                        height: unset;
-                        &::before {
-                            display: none !important;
-                        }
-                        &.current-menu-item {
-                            .menu-link {
-                                background: transparent !important;
-                                color: $color-white !important;
-                            }
-                        }
-                        .menu-link {
-                            color: $color-second !important;
-                            padding: 0.8rem;
-                            @include fz-14;
-                            height: unset;
-                            @include hover {
-                                color: $color-white !important;
-                                background: transparent !important;
-                            }
-                        }
-                        &.dropdown {
-                            &.dropdown>.menu-list {
-                                height: unset;
-                                min-width: unset;
-                                transform: unset;
-                                opacity: 1;
-                                pointer-events: visible;
-                                visibility: visible;
-                                padding: 0rem 1.6rem;
-                                background: unset;
-                                box-shadow: unset;
-                                position: relative;
-                                left: unset;
-                                top: unset;
-                                transform: unset;
-                                transition: unset;
-                                // margin-bottom: 1rem;
-                                display: none;
-                                // &::before {
-                                //     content: "";
-                                //     width: 0.1rem;
-                                //     height: 100%;
-                                //     position: absolute;
-                                //     left: 0rem;
-                                //     background: rgba($color: #000000, $alpha: 0.1);
-                                // }
-                                .menu-item {
-                                    height: unset;
-                                    // &::before {
-                                    //     display: none !important;
-                                    // }
-                                    &.current-menu-item {
-                                        .menu-link {
-                                            background: transparent !important;
-                                            color: $color-second !important;
-                                        }
-                                    }
-                                    .menu-link {
-                                        color: $color-black;
-                                        font-weight: 400;
-                                        padding: 0.6rem;
-                                        @include fz-14;
-                                        height: unset;
-                                        @include hover {
-                                            background: transparent !important;
-                                            ;
-                                            color: $color-white !important;
-                                        }
-                                    }
-                                    &.dropdown {
-                                        &.dropdown>.menu-list {
-                                            height: unset;
-                                            min-width: unset;
-                                            transform: unset;
-                                            opacity: 1;
-                                            pointer-events: visible;
-                                            visibility: visible;
-                                            padding-left: 1rem;
-                                            background: unset;
-                                            box-shadow: unset;
-                                            position: relative;
-                                            left: unset;
-                                            top: unset;
-                                            transform: unset;
-                                            transition: unset;
-                                            // margin-bottom: 1rem;
-                                            display: none;
-                                            // &::before {
-                                            //     content: "";
-                                            //     width: 0.1rem;
-                                            //     height: 100%;
-                                            //     position: absolute;
-                                            //     left: 0rem;
-                                            //     background: rgba($color: #000000, $alpha: 0.1);
-                                            // }
-                                            .menu-item {
-                                                height: unset;
-                                                &::before {
-                                                    display: none !important;
-                                                }
-                                                &.current-menu-item {
-                                                    .menu-link {
-                                                        background: transparent !important;
-                                                        color: $color-white !important;
-                                                    }
-                                                }
-                                                .menu-link {
-                                                    color: $color-text2;
-                                                    font-weight: 400;
-                                                    padding: 0.6rem 0;
-                                                    @include fz-14;
-                                                    height: unset;
-                                                    @include hover {
-                                                        background: transparent !important;
-                                                        color: $color-white !important;
-                                                    }
-                                                }
-                                                &.dropdown {}
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    &--btn {
-        .btn {
-            width: 100%;
-            border-radius: 0;
-            &::before {
-                display: none;
-            }
-            &::after {
-                display: none;
-            }
-            padding: 0 1.2rem;
-        }
-    }
-    &--info {
-        &-title {
-            display: flex;
-            flex-direction: column;
-            // row-gap: var(--rowContent0);
-            .note-md {
-                @include fz-24;
-            }
-            .note-text {
-                color: $color-white;
-                font-weight: 600;
-            }
-        }
-        &-item {
-            padding: var(--columnContent24);
-            display: flex;
-            flex-direction: column;
-            row-gap: var(--rowContent12);
-            border-top: 0.1rem solid rgba($color: $color-second, $alpha: 0.5);
-            &:last-child {
-                padding: unset;
-                border: unset;
-            }
-            .btn {
-                width: 100%;
-                display: none;
-                @include max(600px) {
-                    display: block;
-                }
-            }
-        }
-        .address_item--content {
-            justify-content: start;
-            flex-wrap: nowrap;
-        }
-    }
-    &--modal {
-        position: fixed;
-        background: rgba($color: #000000, $alpha: 0.6);
-        top: 0;
-        left: 0;
-        z-index: 3000;
-        height: 100%;
-        width: 100%;
-        transition: 0.5s linear;
-        opacity: 0;
-        visibility: hidden;
-        pointer-events: none;
-    }
-    .social_img {
-        background: $color-pri;
-        width: 3.6rem;
-        height: 3.6rem;
-        @include max(1200px) {
-            width: 3.2rem;
-            height: 3.2rem;
-        }
-        @include hover {
-            background: $color-second;
-            img {
-                filter: brightness(0) saturate(100%) invert(100%) sepia(100%) saturate(1%) hue-rotate(183deg) brightness(111%) contrast(101%);
-            }
-        }
-        // box-shadow: 0 0 0.5rem rgba($color: #000000, $alpha: 0.5);
-    }
-    .address_list {
-        row-gap: var(--rowContent12);
-    }
-    .address_item {
-        .note-md {
-            color: $color-white;
-            font-weight: 700;
-            @include max(800px) {
-                font-size: 1.4rem !important;
-            }
-        }
-        &--content {
-            .note-sm {
-                @include fz-16;
-            }
-        }
-    }
-    .address_link {
-        @include fz-16;
-        color: $color-white;
     }
 }
 

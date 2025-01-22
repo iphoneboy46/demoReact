@@ -33,6 +33,7 @@ import PopupUpdateAlbums from '../../components/PopupUpdateImage/PopupUpdateAlbu
 import { Tooltip, TooltipProvider } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
 import ProductAttribute from './ProductAttribute';
+import { Helmet } from 'react-helmet';
 
 const optionsStatus = [
     { value: 'publish', label: 'Đã xuất bản' },
@@ -100,6 +101,7 @@ const ProductCt = () => {
     })
 
     const [loadingUpdate, setLoadingUpdate] = useState(false)
+    const [nameTitle, setNameTitle] = useState("")
 
 
 
@@ -117,8 +119,12 @@ const ProductCt = () => {
 
     });
 
-    
-    console.log("productCt",data)
+
+    console.log("productCt", data)
+
+    useEffect(()=>{
+        setNameTitle(data?.product?.name)
+    },[data])
 
 
     const { data: dataProductCate } = useQuery(GET_PRODUCT_CATEGORIES)
@@ -444,7 +450,6 @@ const ProductCt = () => {
         console.log(listUpdate)
     }, [listUpdate])
 
-    console.log(checkedDm)
 
     console.log("avatarProduct", avatarProduct)
 
@@ -496,12 +501,10 @@ const ProductCt = () => {
 
         // Giả sử bạn đã có danh sách các ảnh hiện tại của sản phẩm (dưới đây là ví dụ)
         const currentImages = data?.product?.galleryImages?.nodes;
-        console.log(currentImages)
-
 
 
         // Giải mã Base64 để lấy chuỗi ban đầu
-        const decodedProductIdAva = atob(avatarProduct.id); // atob() giải mã Base64
+        const decodedProductIdAva = atob(avatarProduct.id || ""); // atob() giải mã Base64
 
         // Sử dụng regex để chỉ lấy số sau dấu 2 chấm
         const productNumberAva = decodedProductIdAva.match(/:(\d+)$/)?.[1] || 0;
@@ -515,7 +518,9 @@ const ProductCt = () => {
             description: descriptionPro,
             date_created_gmt: isoDate,   // Đảm bảo định dạng ISO đúng
             post_password: selectedValueView === "password" ? passPro : "",
-            categories: checkedDm.map(id => ({ id })),
+            categories: checkedDm.map((id) => {
+                return { id: Number(id) }
+            }),
             weight: kiloPro || "",
             status: selectedValueView === "private" ? selectedValueView : selectedValueStatus,
             regular_price: priceProRegular,  // Kiểm tra xem API có yêu cầu là regular_price thay vì regularPrice
@@ -535,6 +540,7 @@ const ProductCt = () => {
             ]
 
         };
+        console.log("listSubmit", listSubmit)
 
         const listSubmitJson = JSON.stringify(listSubmit)
 
@@ -610,414 +616,494 @@ const ProductCt = () => {
 
     console.log(avatarProduct)
 
+    const renderChildren1 = (children, checkedDm, handleCheckedDm) => {
+        return (
+            <ul className="productEdit_dm--list">
+                {children.map((dataChild, indexChild) => (
+                    <li key={indexChild} className="productEdit_dm--item">
+                        <label className="boxCk">
+                            <input
+                                checked={Array.isArray(checkedDm) && checkedDm.includes(dataChild?.node?.termTaxonomyId)}
+                                type="checkbox"
+                                onChange={() => handleCheckedDm(dataChild?.node?.termTaxonomyId)}
+                            />
+                            <span className="box"></span>
+                            <span className="note-sm cl-text">{dataChild?.node?.name}</span>
+                        </label>
+
+                        {/* Kiểm tra nếu có cấp con, tiếp tục gọi hàm đệ quy */}
+                        {dataChild?.node?.children?.edges?.length > 0 && renderChildren1(dataChild.node.children.edges, checkedDm, handleCheckedDm)}
+                    </li>
+                ))}
+            </ul>
+        );
+    };
+
+    const renderChildren2 = (children, checkedDm, handleCheckedDm) => {
+        return (
+            <ul className="productEdit_dm--list">
+                {children.map((dataChild, indexChild) => (
+                    <li key={indexChild} className="productEdit_dm--item">
+                        <label className="boxCk">
+                            <input
+                                checked={Array.isArray(checkedDm) && checkedDm.includes(dataChild?.node?.termTaxonomyId)}
+                                type="checkbox"
+                                onChange={() => handleCheckedDm(dataChild?.node?.termTaxonomyId)}
+                            />
+                            <span className="box"></span>
+                            <span className="note-sm cl-text">{dataChild?.node?.name}</span>
+                        </label>
+
+                        {/* Kiểm tra nếu có cấp con, tiếp tục gọi hàm đệ quy */}
+                        {dataChild?.node?.children?.edges?.length > 0 && renderChildren2(dataChild.node.children.edges, checkedDm, handleCheckedDm)}
+                    </li>
+                ))}
+            </ul>
+        );
+
+    };
+
+
+
+    console.log(dataProductCate?.productCategories)
 
     return (
-        <div className="product">
-            <div className="product_wrap">
-                <div className="layout_top">
-                    <div className="layout_top--title">
-                        {loading ? (
-                            <div className="skeleton"></div>
-                        ) : (
-                            <>
-                                <span className="ic">
-                                    <img src={ictitle} alt="ictitle" />
-                                </span>
-                                <h1 className="title-mn fw-6 cl-text">
-                                    {
-                                        data?.product?.name !== null ? data.product.name : "NaN"
-                                    }
-                                </h1>
-                            </>
-
-                        )}
-                    </div>
-                    <div className="layout_top--pro proCt">
-                        {
-                            loading
-                                ?
+        <>
+            <Helmet>
+                <title>
+                    {
+                        "Sửa sản phẩm " + nameTitle
+                    }
+                </title>
+            </Helmet>
+            <div className="product">
+                <div className="product_wrap">
+                    <div className="layout_top">
+                        <div className="layout_top--title">
+                            {loading ? (
                                 <div className="skeleton"></div>
-                                :
+                            ) : (
                                 <>
-                                    <div className="layout_top--pro-lf">
-                                        <div className="layout_top--pro-btns d-wrap">
-                                            <div className="layout_top--pro-btn d-item">
-                                                <button className="btn">
-                                                    <span className="btn-ic">
-                                                        <FontAwesomeIcon icon={faPlus} />
-                                                    </span>
-                                                    <span className="btn-text">Thêm sản phẩm mới</span>
-                                                </button>
-                                            </div>
-                                            <div className="layout_top--pro-btn d-item">
-                                                <button className="btn btnPro">
-                                                    <span className="btn-text">Sản phẩm trùng lặp</span>
-                                                </button>
+                                    <span className="ic">
+                                        <img src={ictitle} alt="ictitle" />
+                                    </span>
+                                    <h1 className="title-mn fw-6 cl-text">
+                                        {
+                                            data?.product?.name !== null ? data.product.name : "NaN"
+                                        }
+                                    </h1>
+                                </>
+
+                            )}
+                        </div>
+                        <div className="layout_top--pro proCt">
+                            {
+                                loading
+                                    ?
+                                    <div className="skeleton"></div>
+                                    :
+                                    <>
+                                        <div className="layout_top--pro-lf">
+                                            <div className="layout_top--pro-btns d-wrap">
+                                                <div className="layout_top--pro-btn d-item">
+                                                    <button className="btn">
+                                                        <span className="btn-ic">
+                                                            <FontAwesomeIcon icon={faPlus} />
+                                                        </span>
+                                                        <span className="btn-text">Thêm sản phẩm mới</span>
+                                                    </button>
+                                                </div>
+                                                <div className="layout_top--pro-btn d-item">
+                                                    <button className="btn btnPro">
+                                                        <span className="btn-text">Sản phẩm trùng lặp</span>
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
+                                        <div className="layout_top--pro-rt">
+                                            <PagiWeb />
+                                        </div>
+                                    </>
+                            }
+                        </div>
+                        <div className="layout_top--br">
+                            {loading ? (
+                                <div className="skeleton"></div>
+                            ) : (
+                                <>
+
+                                    <div className="breadcrumbs">
+                                        <ul className="breadcrumbs-list">
+                                            <li className="breadcrumbs-item">
+                                                <Link className="breadcrumbs-link" to="/product">Danh sách sản phẩm</Link>
+                                            </li>
+                                            <li className="breadcrumbs-item last">
+                                                <p className="breadcrumbs-link" >
+                                                    {
+                                                        data?.product?.name !== null ? data.product.name : "NaN"
+                                                    }
+                                                </p>
+                                            </li>
+                                        </ul>
                                     </div>
-                                    <div className="layout_top--pro-rt">
-                                        <PagiWeb />
+
+                                    <div className="layout_top--type">
+                                        {
+                                            data?.product?.type === "SIMPLE" && <p className="note-text cl-text fw-6">Sản phẩm đơn giản</p>
+                                        }
+                                        {
+                                            data?.product?.type === "VARIABLE" && <p className="note-text cl-text fw-6">Sản phẩm biến thể</p>
+                                        }
                                     </div>
                                 </>
-                        }
-                    </div>
-                    <div className="layout_top--br">
-                        {loading ? (
-                            <div className="skeleton"></div>
-                        ) : (
-                            <>
+                            )}
 
-                                <div className="breadcrumbs">
-                                    <ul className="breadcrumbs-list">
-                                        <li className="breadcrumbs-item">
-                                            <Link className="breadcrumbs-link" to="/product">Danh sách sản phẩm</Link>
-                                        </li>
-                                        <li className="breadcrumbs-item last">
-                                            <p className="breadcrumbs-link" >
-                                                {
-                                                    data?.product?.name !== null ? data.product.name : "NaN"
-                                                }
-                                            </p>
-                                        </li>
-                                    </ul>
-                                </div>
-
-                                <div className="layout_top--type">
-                                    {
-                                        data?.product?.type === "SIMPLE" && <p className="note-text cl-text fw-6">Sản phẩm đơn giản</p>
-                                    }
-                                    {
-                                        data?.product?.type === "VARIABLE" && <p className="note-text cl-text fw-6">Sản phẩm biến thể</p>
-                                    }
-                                </div>
-                            </>
-                        )}
+                        </div>
 
                     </div>
-
-                </div>
-                <div className="productEdit">
-                    <div className="productEdit_wrap d-wrap">
-                        <div className="productEdit_lf d-item">
-                            <div className="productEdit_lf--wrap">
-                                <div className="productEdit_lf--tab">
-                                    <div className="productEdit_lf--tab-list">
-                                        <Swiper
-                                            slidesPerView="auto"
-                                            spaceBetween={0} // Đây phải là một giá trị số
-                                            className="custom-class"
-                                            scrollbar={{ draggable: true }}  // Kích hoạt thanh cuộn
-                                            modules={[Scrollbar]}  // Cần khai báo module Scrollbar
-                                        >
-                                            <SwiperSlide>
-                                                <div className={`productEdit_lf--tab-item ${tabLfContent === 1 ? "actived" : ""}`} onClick={() => {
-                                                    setTabLfContent(1)
-                                                }}>
-                                                    <p className="note-sm cl-text fw-5">
-                                                        Tổng quan
-                                                    </p>
-                                                </div>
-                                            </SwiperSlide>
-                                            <SwiperSlide>
-                                                <div className={`productEdit_lf--tab-item ${tabLfContent === 2 ? "actived" : ""}`} onClick={() => {
-                                                    setTabLfContent(2)
-                                                }}>
-                                                    <p className="note-sm cl-text fw-5">
-                                                        Thuộc tính
-                                                    </p>
-                                                </div>
-                                            </SwiperSlide>
-                                            <SwiperSlide>
-                                                <div className={`productEdit_lf--tab-item ${tabLfContent === 3 ? "actived" : ""}`} onClick={() => {
-                                                    setTabLfContent(3)
-                                                }}>
-                                                    <p className="note-sm cl-text fw-5">
-                                                        Tùy chọn
-                                                    </p>
-                                                </div>
-                                            </SwiperSlide>
-                                            <SwiperSlide>
-                                                <div className={`productEdit_lf--tab-item ${tabLfContent === 4 ? "actived" : ""}`} onClick={() => {
-                                                    setTabLfContent(4)
-                                                }}>
-                                                    <p className="note-sm cl-text fw-5">
-                                                        Tập tin
-                                                    </p>
-                                                </div>
-                                            </SwiperSlide>
-                                            <SwiperSlide>
-                                                <div className={`productEdit_lf--tab-item ${tabLfContent === 5 ? "actived" : ""}`} onClick={() => {
-                                                    setTabLfContent(5)
-                                                }}>
-                                                    <p className="note-sm cl-text fw-5">
-                                                        Vận chuyển & nhận hàng
-                                                    </p>
-                                                </div>
-                                            </SwiperSlide>
-                                            <SwiperSlide>
-                                                <div className={`productEdit_lf--tab-item ${tabLfContent === 6 ? "actived" : ""}`} onClick={() => {
-                                                    setTabLfContent(6)
-                                                }}>
-                                                    <p className="note-sm cl-text fw-5">
-                                                        SEO
-                                                    </p>
-                                                </div>
-                                            </SwiperSlide>
-                                            <SwiperSlide>
-                                                <div className={`productEdit_lf--tab-item ${tabLfContent === 7 ? "actived" : ""}`} onClick={() => {
-                                                    setTabLfContent(7)
-                                                }}>
-                                                    <p className="note-sm cl-text fw-5">
-                                                        Sản phẩm liên quan
-                                                    </p>
-                                                </div>
-                                            </SwiperSlide>
-                                            <SwiperSlide>
-                                                <div className={`productEdit_lf--tab-item ${tabLfContent === 8 ? "actived" : ""}`} onClick={() => {
-                                                    setTabLfContent(8)
-                                                }}>
-                                                    <p className="note-sm cl-text fw-5">
-                                                        Nút “Mua ngay”
-                                                    </p>
-                                                </div>
-                                            </SwiperSlide>
-                                        </Swiper>
+                    <div className="productEdit">
+                        <div className="productEdit_wrap d-wrap">
+                            <div className="productEdit_lf d-item">
+                                <div className="productEdit_lf--wrap">
+                                    <div className="productEdit_lf--tab">
+                                        <div className="productEdit_lf--tab-list">
+                                            <Swiper
+                                                slidesPerView="auto"
+                                                spaceBetween={0} // Đây phải là một giá trị số
+                                                className="custom-class"
+                                                scrollbar={{ draggable: true }}  // Kích hoạt thanh cuộn
+                                                modules={[Scrollbar]}  // Cần khai báo module Scrollbar
+                                            >
+                                                <SwiperSlide>
+                                                    <div className={`productEdit_lf--tab-item ${tabLfContent === 1 ? "actived" : ""}`} onClick={() => {
+                                                        setTabLfContent(1)
+                                                    }}>
+                                                        <p className="note-sm cl-text fw-5">
+                                                            Tổng quan
+                                                        </p>
+                                                    </div>
+                                                </SwiperSlide>
+                                                <SwiperSlide>
+                                                    <div className={`productEdit_lf--tab-item ${tabLfContent === 2 ? "actived" : ""}`} onClick={() => {
+                                                        setTabLfContent(2)
+                                                    }}>
+                                                        <p className="note-sm cl-text fw-5">
+                                                            Thuộc tính
+                                                        </p>
+                                                    </div>
+                                                </SwiperSlide>
+                                                <SwiperSlide>
+                                                    <div className={`productEdit_lf--tab-item ${tabLfContent === 3 ? "actived" : ""}`} onClick={() => {
+                                                        setTabLfContent(3)
+                                                    }}>
+                                                        <p className="note-sm cl-text fw-5">
+                                                            Tùy chọn
+                                                        </p>
+                                                    </div>
+                                                </SwiperSlide>
+                                                <SwiperSlide>
+                                                    <div className={`productEdit_lf--tab-item ${tabLfContent === 4 ? "actived" : ""}`} onClick={() => {
+                                                        setTabLfContent(4)
+                                                    }}>
+                                                        <p className="note-sm cl-text fw-5">
+                                                            Tập tin
+                                                        </p>
+                                                    </div>
+                                                </SwiperSlide>
+                                                <SwiperSlide>
+                                                    <div className={`productEdit_lf--tab-item ${tabLfContent === 5 ? "actived" : ""}`} onClick={() => {
+                                                        setTabLfContent(5)
+                                                    }}>
+                                                        <p className="note-sm cl-text fw-5">
+                                                            Vận chuyển & nhận hàng
+                                                        </p>
+                                                    </div>
+                                                </SwiperSlide>
+                                                <SwiperSlide>
+                                                    <div className={`productEdit_lf--tab-item ${tabLfContent === 6 ? "actived" : ""}`} onClick={() => {
+                                                        setTabLfContent(6)
+                                                    }}>
+                                                        <p className="note-sm cl-text fw-5">
+                                                            SEO
+                                                        </p>
+                                                    </div>
+                                                </SwiperSlide>
+                                                <SwiperSlide>
+                                                    <div className={`productEdit_lf--tab-item ${tabLfContent === 7 ? "actived" : ""}`} onClick={() => {
+                                                        setTabLfContent(7)
+                                                    }}>
+                                                        <p className="note-sm cl-text fw-5">
+                                                            Sản phẩm liên quan
+                                                        </p>
+                                                    </div>
+                                                </SwiperSlide>
+                                                <SwiperSlide>
+                                                    <div className={`productEdit_lf--tab-item ${tabLfContent === 8 ? "actived" : ""}`} onClick={() => {
+                                                        setTabLfContent(8)
+                                                    }}>
+                                                        <p className="note-sm cl-text fw-5">
+                                                            Nút “Mua ngay”
+                                                        </p>
+                                                    </div>
+                                                </SwiperSlide>
+                                            </Swiper>
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="productEdit_lf--content">
-                                    <div className="productEdit_lf--content-list">
-                                        <div className={`productEdit_lf--content-item ${tabLfContent === 1 ? "showed" : ""}`}>
-                                            <ProductTq data={data} loading={loading} setDescriptionPro={setDescriptionPro} setNamePro={setNamePro} setKiloPro={setKiloPro} setCodePro={setCodePro} setPriceProRegular={setPriceProRegular} setPriceProSale={setPriceProSale} showedChangeAlbums={showedChangeAlbums} setShowedChangeAlbums={setShowedChangeAlbums} setTabActived={setTabActived} setListAlbumId={setListAlbumId} setIdProAlbum={setIdProAlbum} refetchProductCt={refetchProductCt} />
-                                        </div>
-                                        <div className={`productEdit_lf--content-item ${tabLfContent === 2 ? "showed" : ""}`}>
-                                            <ProductAttribute data={data} />
-                                        </div>
-                                        <div className={`productEdit_lf--content-item ${tabLfContent === 3 ? "showed" : ""}`}>
-                                            Tùy chọn
-                                        </div>
-                                        <div className={`productEdit_lf--content-item ${tabLfContent === 4 ? "showed" : ""}`}>
-                                            Tập tin
-                                        </div>
-                                        <div className={`productEdit_lf--content-item ${tabLfContent === 5 ? "showed" : ""}`}>
-                                            Vận chuyển & nhận hàng
-                                        </div>
-                                        <div className={`productEdit_lf--content-item ${tabLfContent === 6 ? "showed" : ""}`}>
-                                            SEO
-                                        </div>
-                                        <div className={`productEdit_lf--content-item ${tabLfContent === 7 ? "showed" : ""}`}>
-                                            Sản phẩm liên quan
-                                        </div>
-                                        <div className={`productEdit_lf--content-item ${tabLfContent === 8 ? "showed" : ""}`}>
-                                            Nút “ Mua ngay”
+                                    <div className="productEdit_lf--content">
+                                        <div className="productEdit_lf--content-list">
+                                            <div className={`productEdit_lf--content-item ${tabLfContent === 1 ? "showed" : ""}`}>
+                                                <ProductTq data={data} loading={loading} setDescriptionPro={setDescriptionPro} setNamePro={setNamePro} setKiloPro={setKiloPro} setCodePro={setCodePro} setPriceProRegular={setPriceProRegular} setPriceProSale={setPriceProSale} showedChangeAlbums={showedChangeAlbums} setShowedChangeAlbums={setShowedChangeAlbums} setTabActived={setTabActived} setListAlbumId={setListAlbumId} setIdProAlbum={setIdProAlbum} refetchProductCt={refetchProductCt} />
+                                            </div>
+                                            <div className={`productEdit_lf--content-item ${tabLfContent === 2 ? "showed" : ""}`}>
+                                                <ProductAttribute data={data} refetchProductCt={refetchProductCt} />
+                                            </div>
+                                            <div className={`productEdit_lf--content-item ${tabLfContent === 3 ? "showed" : ""}`}>
+                                                Tùy chọn
+                                            </div>
+                                            <div className={`productEdit_lf--content-item ${tabLfContent === 4 ? "showed" : ""}`}>
+                                                Tập tin
+                                            </div>
+                                            <div className={`productEdit_lf--content-item ${tabLfContent === 5 ? "showed" : ""}`}>
+                                                Vận chuyển & nhận hàng
+                                            </div>
+                                            <div className={`productEdit_lf--content-item ${tabLfContent === 6 ? "showed" : ""}`}>
+                                                SEO
+                                            </div>
+                                            <div className={`productEdit_lf--content-item ${tabLfContent === 7 ? "showed" : ""}`}>
+                                                Sản phẩm liên quan
+                                            </div>
+                                            <div className={`productEdit_lf--content-item ${tabLfContent === 8 ? "showed" : ""}`}>
+                                                Nút “ Mua ngay”
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div className="productEdit_rt d-item">
-                            <div className="productEdit_rt--wrap">
-                                {
-                                    data?.product?.status === "private"
-                                        ?
-                                        ""
-                                        :
-                                        <div className="productEdit_Kdung">
-                                            {
-                                                loading
-                                                    ?
-                                                    <div className="skeleton"></div>
-                                                    :
-                                                    <>
-                                                        <p className="note-sm cl-text fw-5">Khả dụng sản phẩm</p>
-                                                        <div className={`product_table--status ${loadingStatus[data?.product?.id] && "load"} `}>
-                                                            {loadingStatus[data?.product?.id] && <ScaleLoader className='product_table--status-load' />}
-                                                            <p className={`note-text ${data?.product?.status === "draft" ? "cl-text" : "cl-gray3"} `}>Tắt</p>
-                                                            <label className="switch cl-gr">
-                                                                <input
-                                                                    type="checkbox"
-                                                                    checked={data?.product?.status === "publish"}
-                                                                    onChange={(e) => handleStatusChange(data?.product?.id, data?.product?.status, e)}
-                                                                    disabled={loadingStatus[data?.product?.id]} // Vô hiệu hóa trong lúc loading
-                                                                />
-                                                                <span className="switch-wrap">
-                                                                    <span className="switch-wrap-around"></span>
-                                                                </span>
-                                                            </label>
-                                                            <p className={`note-text ${data?.product?.status === "publish" ? "cl-text" : "cl-gray3"} `}>Bật</p>
-                                                        </div>
-                                                    </>
-                                            }
+                            <div className="productEdit_rt d-item">
+                                <div className="productEdit_rt--wrap">
+                                    {
+                                        data?.product?.status === "private"
+                                            ?
+                                            ""
+                                            :
+                                            <div className="productEdit_Kdung">
+                                                {
+                                                    loading
+                                                        ?
+                                                        <div className="skeleton"></div>
+                                                        :
+                                                        <>
+                                                            <p className="note-sm cl-text fw-5">Khả dụng sản phẩm</p>
+                                                            <div className={`product_table--status ${loadingStatus[data?.product?.id] && "load"} `}>
+                                                                {loadingStatus[data?.product?.id] && <ScaleLoader className='product_table--status-load' />}
+                                                                <p className={`note-text ${data?.product?.status === "draft" ? "cl-text" : "cl-gray3"} `}>Tắt</p>
+                                                                <label className="switch cl-gr">
+                                                                    <input
+                                                                        type="checkbox"
+                                                                        checked={data?.product?.status === "publish"}
+                                                                        onChange={(e) => handleStatusChange(data?.product?.id, data?.product?.status, e)}
+                                                                        disabled={loadingStatus[data?.product?.id]} // Vô hiệu hóa trong lúc loading
+                                                                    />
+                                                                    <span className="switch-wrap">
+                                                                        <span className="switch-wrap-around"></span>
+                                                                    </span>
+                                                                </label>
+                                                                <p className={`note-text ${data?.product?.status === "publish" ? "cl-text" : "cl-gray3"} `}>Bật</p>
+                                                            </div>
+                                                        </>
+                                                }
 
-                                        </div>
-                                }
-                                <div className="productEdit_tags">
+                                            </div>
+                                    }
+                                    <div className="productEdit_tags">
 
-                                    <div className="productEdit_layout">
+                                        <div className="productEdit_layout">
 
-                                        <div className={`productEdit_layout--top ${actived1 ? "actived" : ""}`} onClick={() => {
-                                            $(componentRef1.current).slideToggle(500);
-                                            setActived1(!actived1)
-                                        }}>
-                                            {
-                                                loading
-                                                    ?
-                                                    <div className="skeleton"></div>
-                                                    :
-                                                    <>
-                                                        <div className="productEdit_layout--top-wrap">
-                                                            <p className="note-sm fw-5 cl-text">
-                                                                Thẻ sản phẩm
-                                                            </p>
-                                                            <span className="ic">
-                                                                <FontAwesomeIcon icon={faAngleDown} />
-                                                            </span>
-                                                        </div>
-                                                    </>
-                                            }
-
-                                        </div>
-                                        <div className="productEdit_layout--bottom " ref={componentRef1}>
-                                            {
-                                                loading
-                                                    ?
-                                                    <div className="skeleton"></div>
-                                                    :
-                                                    <>
-
-                                                        <div className="productEdit_layout--bottom-wrap">
-                                                            <div className="productEdit_tags--form">
-                                                                <div className="productEdit_tags--form-ip">
-                                                                    <input value={nameTags} onChange={(e) => {
-                                                                        setNameTags(e.target.value)
-                                                                    }} type="text" placeholder='Thêm thẻ sản phẩm' className="form-item-ip" />
-                                                                    <button onClick={() => {
-                                                                        handleAddNameTags(id)
-                                                                    }} className={`btn ${loadingHandleTags ? "btnDis" : ""}`}>
-                                                                        <span className="btn-text">
-                                                                            Thêm
-                                                                        </span>
-                                                                        {
-                                                                            loadingHandleTags && <ClipLoader className='btn-loading2' color="#007AFF" />
-                                                                        }
-
-                                                                    </button>
-                                                                </div>
-                                                                {
-                                                                    errorMessTag !== ""
-                                                                        ?
-                                                                        <span className="note-mn cl-red">
-                                                                            {errorMessTag}
-                                                                        </span>
-                                                                        :
-                                                                        ""
-                                                                }
-                                                                <span className="note-mn cl-gray fw-i">
-                                                                    Phân cách các thẻ bằng dấu phẩy
+                                            <div className={`productEdit_layout--top ${actived1 ? "actived" : ""}`} onClick={() => {
+                                                $(componentRef1.current).slideToggle(500);
+                                                setActived1(!actived1)
+                                            }}>
+                                                {
+                                                    loading
+                                                        ?
+                                                        <div className="skeleton"></div>
+                                                        :
+                                                        <>
+                                                            <div className="productEdit_layout--top-wrap">
+                                                                <p className="note-sm fw-5 cl-text">
+                                                                    Thẻ sản phẩm
+                                                                </p>
+                                                                <span className="ic">
+                                                                    <FontAwesomeIcon icon={faAngleDown} />
                                                                 </span>
                                                             </div>
-                                                            <ul className="productEdit_tags--list">
-                                                                {
-                                                                    data?.product?.tagTerms?.nodes?.map((tag, index) => {
-                                                                        return (
-                                                                            <li key={index} className={`productEdit_tags--item ${loadingHandleTags2[tag.id] ? "loading" : ""}`}>
-                                                                                <div className="productEdit_tags--item-wrap">
-                                                                                    <span onClick={() => {
-                                                                                        handleRemoveTag(tag.id, id)
-                                                                                    }} className="ic">
-                                                                                        <FontAwesomeIcon icon={faXmark} />
-                                                                                    </span>
-                                                                                    <p className="note-sm cl-gray">
-                                                                                        {tag.name}
-                                                                                    </p>
-                                                                                </div>
-                                                                                {
-                                                                                    loadingHandleTags2[tag.id]
-                                                                                        ?
-                                                                                        <ScaleLoader className='tagsLoading'
-                                                                                            color="#007AFF"
-                                                                                            height={25}
-                                                                                            width={3}
-                                                                                            margin={1}
-                                                                                        />
-                                                                                        :
-                                                                                        ""
-                                                                                }
-                                                                            </li>
-                                                                        )
-                                                                    })
-                                                                }
-                                                            </ul>
-                                                        </div>
-                                                    </>
-                                            }
+                                                        </>
+                                                }
 
+                                            </div>
+                                            <div className="productEdit_layout--bottom " ref={componentRef1}>
+                                                {
+                                                    loading
+                                                        ?
+                                                        <div className="skeleton"></div>
+                                                        :
+                                                        <>
+
+                                                            <div className="productEdit_layout--bottom-wrap">
+                                                                <div className="productEdit_tags--form">
+                                                                    <div className="productEdit_tags--form-ip">
+                                                                        <input value={nameTags} onChange={(e) => {
+                                                                            setNameTags(e.target.value)
+                                                                        }} type="text" placeholder='Thêm thẻ sản phẩm' className="form-item-ip" />
+                                                                        <button onClick={() => {
+                                                                            handleAddNameTags(id)
+                                                                        }} className={`btn ${loadingHandleTags ? "btnDis" : ""}`}>
+                                                                            <span className="btn-text">
+                                                                                Thêm
+                                                                            </span>
+                                                                            {
+                                                                                loadingHandleTags && <ClipLoader className='btn-loading2' color="#007AFF" />
+                                                                            }
+
+                                                                        </button>
+                                                                    </div>
+                                                                    {
+                                                                        errorMessTag !== ""
+                                                                            ?
+                                                                            <span className="note-mn cl-red">
+                                                                                {errorMessTag}
+                                                                            </span>
+                                                                            :
+                                                                            ""
+                                                                    }
+                                                                    <span className="note-mn cl-gray fw-i">
+                                                                        Phân cách các thẻ bằng dấu phẩy
+                                                                    </span>
+                                                                </div>
+                                                                <ul className="productEdit_tags--list">
+                                                                    {
+                                                                        data?.product?.tagTerms?.nodes?.map((tag, index) => {
+                                                                            return (
+                                                                                <li key={index} className={`productEdit_tags--item ${loadingHandleTags2[tag.id] ? "loading" : ""}`}>
+                                                                                    <div className="productEdit_tags--item-wrap">
+                                                                                        <span onClick={() => {
+                                                                                            handleRemoveTag(tag.id, id)
+                                                                                        }} className="ic">
+                                                                                            <FontAwesomeIcon icon={faXmark} />
+                                                                                        </span>
+                                                                                        <p className="note-sm cl-gray">
+                                                                                            {tag.name}
+                                                                                        </p>
+                                                                                    </div>
+                                                                                    {
+                                                                                        loadingHandleTags2[tag.id]
+                                                                                            ?
+                                                                                            <ScaleLoader className='tagsLoading'
+                                                                                                color="#007AFF"
+                                                                                                height={25}
+                                                                                                width={3}
+                                                                                                margin={1}
+                                                                                            />
+                                                                                            :
+                                                                                            ""
+                                                                                    }
+                                                                                </li>
+                                                                            )
+                                                                        })
+                                                                    }
+                                                                </ul>
+                                                            </div>
+                                                        </>
+                                                }
+
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div className="productEdit_avatar">
-                                    <div className="productEdit_layout">
-                                        <div className={`productEdit_layout--top ${actived2 ? "actived" : ""}`} onClick={() => {
-                                            $(componentRef2.current).slideToggle(500);
-                                            setActived2(!actived2)
-                                        }}>
-                                            {
-                                                loading
-                                                    ?
-                                                    <div className="skeleton"></div>
-                                                    :
-                                                    <>
-                                                        <div className="productEdit_layout--top-wrap">
-                                                            <p className="note-sm fw-5 cl-text">
-                                                                Ảnh đại diện sản phẩm
-                                                            </p>
-                                                            <span className="ic">
-                                                                <FontAwesomeIcon icon={faAngleDown} />
-                                                            </span>
-                                                        </div>
-                                                    </>
-                                            }
+                                    <div className="productEdit_avatar">
+                                        <div className="productEdit_layout">
+                                            <div className={`productEdit_layout--top ${actived2 ? "actived" : ""}`} onClick={() => {
+                                                $(componentRef2.current).slideToggle(500);
+                                                setActived2(!actived2)
+                                            }}>
+                                                {
+                                                    loading
+                                                        ?
+                                                        <div className="skeleton"></div>
+                                                        :
+                                                        <>
+                                                            <div className="productEdit_layout--top-wrap">
+                                                                <p className="note-sm fw-5 cl-text">
+                                                                    Ảnh đại diện sản phẩm
+                                                                </p>
+                                                                <span className="ic">
+                                                                    <FontAwesomeIcon icon={faAngleDown} />
+                                                                </span>
+                                                            </div>
+                                                        </>
+                                                }
 
-                                        </div>
-                                        <div className="productEdit_layout--bottom" ref={componentRef2}>
-                                            {
-                                                loading
-                                                    ?
-                                                    <div className="skeleton"></div>
-                                                    :
-                                                    <>
-                                                        <div className="productEdit_layout--bottom-wrap">
-                                                            {
-                                                                data?.product?.image !== null || avatarProduct.image !== undefined
-                                                                    ?
-                                                                    <>
-                                                                        <div className="productEdit_avatar--img" onClick={() => {
-                                                                            setShowedChangeAva(true)
-                                                                            document.body.style.overflow = "hidden"
-                                                                            localStorage.setItem("idAvatar", data?.product?.image?.id)
-                                                                            setIdAva(localStorage.getItem("idAvatar"))
-                                                                            setTabActived(2)
-                                                                        }}>
-                                                                            <img src={avatarProduct.image} alt={data?.name} />
-                                                                        </div>
-                                                                        <div className="productEdit_avatar--control">
-                                                                            <p onClick={() => {
-                                                                                handleDeleteAvatarProduct(data?.product?.id, data?.product?.image?.id)
-                                                                            }} className="note-sm cl-gray deleteImg">
-                                                                                Xóa
-                                                                            </p>
-                                                                            <button className="productEdit_avatar--change" onClick={() => {
+                                            </div>
+                                            <div className="productEdit_layout--bottom" ref={componentRef2}>
+                                                {
+                                                    loading
+                                                        ?
+                                                        <div className="skeleton"></div>
+                                                        :
+                                                        <>
+                                                            <div className="productEdit_layout--bottom-wrap">
+                                                                {
+                                                                    data?.product?.image !== null || avatarProduct.image !== undefined
+                                                                        ?
+                                                                        <>
+                                                                            <div className="productEdit_avatar--img" onClick={() => {
                                                                                 setShowedChangeAva(true)
                                                                                 document.body.style.overflow = "hidden"
                                                                                 localStorage.setItem("idAvatar", data?.product?.image?.id)
                                                                                 setIdAva(localStorage.getItem("idAvatar"))
                                                                                 setTabActived(2)
                                                                             }}>
+                                                                                <img src={avatarProduct.image} alt={data?.name} />
+                                                                            </div>
+                                                                            <div className="productEdit_avatar--control">
+                                                                                <p onClick={() => {
+                                                                                    handleDeleteAvatarProduct(data?.product?.id, data?.product?.image?.id)
+                                                                                }} className="note-sm cl-gray deleteImg">
+                                                                                    Xóa
+                                                                                </p>
+                                                                                <button className="productEdit_avatar--change" onClick={() => {
+                                                                                    setShowedChangeAva(true)
+                                                                                    document.body.style.overflow = "hidden"
+                                                                                    localStorage.setItem("idAvatar", data?.product?.image?.id)
+                                                                                    setIdAva(localStorage.getItem("idAvatar"))
+                                                                                    setTabActived(2)
+                                                                                }}>
+                                                                                    <span className="ic">
+                                                                                        <img src={icChangeImg} alt="" />
+                                                                                    </span>
+                                                                                    <p className="note-sm cl-text">
+                                                                                        Thay đổi ảnh
+                                                                                    </p>
+                                                                                    <span data-tooltip-id="my-tooltipUpLoad" className="ic" data-tooltip-content="Để có kết quả tốt nhất, hãy tải lên tệp JPEG hoặc PNG có kích thước 1000 x 1000 pixel trở lên. Dung lượng tối đa 5GB">
+                                                                                        <FontAwesomeIcon icon={faCircleQuestion} />
+                                                                                    </span>
+                                                                                    <Tooltip id="my-tooltipUpLoad" place="bottom" />
+                                                                                </button>
+                                                                            </div>
+                                                                        </>
+                                                                        :
+                                                                        <div className="productEdit_avatar--none-img">
+                                                                            <button className="productEdit_avatar--change" onClick={() => {
+                                                                                setShowedChangeAva(true)
+                                                                                document.body.style.overflow = "hidden"
+                                                                                localStorage.setItem("idAvatar", data?.product?.image?.id)
+                                                                                setIdAva(localStorage.getItem("idAvatar"))
+                                                                                setTabActived(2)
+                                                                            }} >
                                                                                 <span className="ic">
                                                                                     <img src={icChangeImg} alt="" />
                                                                                 </span>
                                                                                 <p className="note-sm cl-text">
-                                                                                    Thay đổi ảnh
+                                                                                    Thiết lập ảnh cho sản phẩm
                                                                                 </p>
                                                                                 <span data-tooltip-id="my-tooltipUpLoad" className="ic" data-tooltip-content="Để có kết quả tốt nhất, hãy tải lên tệp JPEG hoặc PNG có kích thước 1000 x 1000 pixel trở lên. Dung lượng tối đa 5GB">
                                                                                     <FontAwesomeIcon icon={faCircleQuestion} />
@@ -1025,551 +1111,426 @@ const ProductCt = () => {
                                                                                 <Tooltip id="my-tooltipUpLoad" place="bottom" />
                                                                             </button>
                                                                         </div>
-                                                                    </>
-                                                                    :
-                                                                    <div className="productEdit_avatar--none-img">
-                                                                        <button className="productEdit_avatar--change" onClick={() => {
-                                                                            setShowedChangeAva(true)
-                                                                            document.body.style.overflow = "hidden"
-                                                                            localStorage.setItem("idAvatar", data?.product?.image?.id)
-                                                                            setIdAva(localStorage.getItem("idAvatar"))
-                                                                            setTabActived(2)
-                                                                        }} >
-                                                                            <span className="ic">
-                                                                                <img src={icChangeImg} alt="" />
-                                                                            </span>
-                                                                            <p className="note-sm cl-text">
-                                                                                Thiết lập ảnh cho sản phẩm
-                                                                            </p>
-                                                                            <span data-tooltip-id="my-tooltipUpLoad" className="ic" data-tooltip-content="Để có kết quả tốt nhất, hãy tải lên tệp JPEG hoặc PNG có kích thước 1000 x 1000 pixel trở lên. Dung lượng tối đa 5GB">
-                                                                                <FontAwesomeIcon icon={faCircleQuestion} />
-                                                                            </span>
-                                                                            <Tooltip id="my-tooltipUpLoad" place="bottom" />
-                                                                        </button>
-                                                                    </div>
 
-                                                            }
+                                                                }
 
 
-                                                        </div>
-                                                    </>
-                                            }
+                                                            </div>
+                                                        </>
+                                                }
 
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div className="productEdit_dm">
-                                    <div className="productEdit_layout">
-                                        <div className={`productEdit_layout--top ${actived3 ? "actived" : ""}`} onClick={() => {
-                                            $(componentRef3.current).slideToggle(500);
-                                            setActived3(!actived3)
-                                        }}>
+                                    <div className="productEdit_dm">
+                                        <div className="productEdit_layout">
+                                            <div className={`productEdit_layout--top ${actived3 ? "actived" : ""}`} onClick={() => {
+                                                $(componentRef3.current).slideToggle(500);
+                                                setActived3(!actived3)
+                                            }}>
+                                                {
+                                                    loading
+                                                        ?
+                                                        <div className="skeleton"></div>
+                                                        :
+                                                        <>
+                                                            <div className="productEdit_layout--top-wrap">
+                                                                <p className="note-sm fw-5 cl-text">
+                                                                    Danh mục sản phẩm
+                                                                </p>
+                                                                <span className="ic">
+                                                                    <FontAwesomeIcon icon={faAngleDown} />
+                                                                </span>
+                                                            </div>
+                                                        </>
+                                                }
+
+                                            </div>
+                                            <div className="productEdit_layout--bottom" ref={componentRef3}>
+                                                {
+                                                    loading
+                                                        ?
+                                                        <div className="skeleton"></div>
+                                                        :
+                                                        <>
+                                                            <div className="productEdit_layout--bottom-wrap">
+                                                                <div className="productEdit_dm--tabs">
+                                                                    <div onClick={() => {
+                                                                        setTab(1)
+                                                                    }} className={`productEdit_dm--tab ${tab === 1 ? "actived" : ""}`}>
+                                                                        Tất cả danh mục
+                                                                    </div>
+                                                                    <div onClick={() => {
+                                                                        setTab(2)
+                                                                    }} className={`productEdit_dm--tab ${tab === 2 ? "actived" : ""}`}>
+                                                                        Dùng nhiều nhất
+                                                                    </div>
+                                                                </div>
+                                                                <div className="productEdit_dm--contents">
+                                                                    <div className={`productEdit_dm--content ${tab === 1 ? "showed" : ""}`}>
+                                                                        <ul className="productEdit_dm--list">
+                                                                            {dataProductCate?.productCategories?.edges.map((data, index) => (
+                                                                                <li key={index} className="productEdit_dm--item">
+                                                                                    <label className="boxCk">
+                                                                                        <input
+                                                                                            checked={Array.isArray(checkedDm) && checkedDm.includes(data?.node?.termTaxonomyId)}
+                                                                                            type="checkbox"
+                                                                                            onChange={() => handleCheckedDm(data?.node?.termTaxonomyId)}
+                                                                                        />
+                                                                                        <span className="box"></span>
+                                                                                        <span className="note-sm cl-text">{data?.node?.name}</span>
+                                                                                    </label>
+
+                                                                                    {/* Kiểm tra nếu có cấp con, tiếp tục gọi hàm đệ quy */}
+                                                                                    {data?.node?.children?.edges?.length > 0 && renderChildren1(data.node.children.edges, checkedDm, handleCheckedDm)}
+                                                                                </li>
+                                                                            ))}
+                                                                        </ul>
+                                                                    </div>
+                                                                    <div className={`productEdit_dm--content ${tab === 2 ? "showed" : ""}`}>
+                                                                        <ul className="productEdit_dm--list">
+                                                                            {dataProductCateMuch?.productCategories?.edges.map((data, index) => (
+                                                                                <li key={index} className="productEdit_dm--item">
+                                                                                    <label className="boxCk">
+                                                                                        <input
+                                                                                            checked={Array.isArray(checkedDm) && checkedDm.includes(data?.node?.termTaxonomyId)}
+                                                                                            type="checkbox"
+                                                                                            onChange={() => handleCheckedDm(data?.node?.termTaxonomyId)}
+                                                                                        />
+                                                                                        <span className="box"></span>
+                                                                                        <span className="note-sm cl-text">{data?.node?.name}</span>
+                                                                                    </label>
+
+                                                                                    {/* Kiểm tra nếu có cấp con, tiếp tục gọi hàm đệ quy */}
+                                                                                    {data?.node?.children?.edges?.length > 0 && renderChildren2(data.node.children.edges, checkedDm, handleCheckedDm)}
+                                                                                </li>
+                                                                            ))}
+                                                                        </ul>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </>
+                                                }
+
+                                            </div>
+                                        </div>
+                                        <div className="productEdit_dm--btn">
                                             {
                                                 loading
                                                     ?
                                                     <div className="skeleton"></div>
                                                     :
-                                                    <>
+                                                    <button className="btn">
+                                                        <span className="btn-text">
+                                                            Thêm danh mục mới
+                                                        </span>
+                                                    </button>
+                                            }
+
+                                        </div>
+                                    </div>
+                                    <div className="productEdit_xb">
+                                        <div className="productEdit_layout">
+                                            <div className={`productEdit_layout--top ${actived4 ? "actived" : ""}`} onClick={() => {
+                                                $(componentRef4.current).slideToggle(500);
+                                                setActived4(!actived4)
+                                            }}>
+                                                {
+                                                    loading
+                                                        ?
+                                                        <div className="skeleton"></div>
+                                                        :
                                                         <div className="productEdit_layout--top-wrap">
                                                             <p className="note-sm fw-5 cl-text">
-                                                                Danh mục sản phẩm
+                                                                Xuất bản
                                                             </p>
                                                             <span className="ic">
                                                                 <FontAwesomeIcon icon={faAngleDown} />
                                                             </span>
                                                         </div>
-                                                    </>
-                                            }
-
-                                        </div>
-                                        <div className="productEdit_layout--bottom" ref={componentRef3}>
-                                            {
-                                                loading
-                                                    ?
-                                                    <div className="skeleton"></div>
-                                                    :
-                                                    <>
-                                                        <div className="productEdit_layout--bottom-wrap">
-                                                            <div className="productEdit_dm--tabs">
-                                                                <div onClick={() => {
-                                                                    setTab(1)
-                                                                }} className={`productEdit_dm--tab ${tab === 1 ? "actived" : ""}`}>
-                                                                    Tất cả danh mục
-                                                                </div>
-                                                                <div onClick={() => {
-                                                                    setTab(2)
-                                                                }} className={`productEdit_dm--tab ${tab === 2 ? "actived" : ""}`}>
-                                                                    Dùng nhiều nhất
-                                                                </div>
-                                                            </div>
-                                                            <div className="productEdit_dm--contents">
-                                                                <div className={`productEdit_dm--content ${tab === 1 ? "showed" : ""}`}>
-                                                                    <ul className="productEdit_dm--list">
-                                                                        {
-                                                                            dataProductCate?.productCategories?.edges.map((data, index) => {
-                                                                                return (
-                                                                                    <li key={index} className="productEdit_dm--item">
-                                                                                        <label className='boxCk'>
-                                                                                            <input checked={Array.isArray(checkedDm) && checkedDm.includes(data?.node?.termTaxonomyId)} type="checkbox" onChange={(e) => {
-                                                                                                handleCheckedDm(data?.node?.termTaxonomyId)
-                                                                                            }} />
-                                                                                            <span className="box"></span>
-                                                                                            <span className="note-sm cl-text">
-                                                                                                {data?.node?.name}
-                                                                                            </span>
-                                                                                        </label>
+                                                }
+                                            </div>
+                                            <div className="productEdit_layout--bottom" ref={componentRef4}>
+                                                <div className="productEdit_layout--bottom-wrap">
+                                                    <ul className="productEdit_xb--list">
+                                                        <li className="productEdit_xb--item">
+                                                            {
+                                                                loading
+                                                                    ?
+                                                                    <div className="skeleton"></div>
+                                                                    :
+                                                                    <div className="productEdit_xb--box">
+                                                                        <div className="productEdit_xb--top">
+                                                                            <div className="productEdit_xb--top-wrap">
+                                                                                <div className="productEdit_xb--top-lf">
+                                                                                    <p className="note-sm title cl-pri fw-5">
+                                                                                        <span className="ic">
+                                                                                            <img src={icXb1} alt="icxb1" />
+                                                                                        </span>
+                                                                                        Trạng thái:
+                                                                                    </p>
+                                                                                    <p className="note-sm cl-gray fw-5">
                                                                                         {
-                                                                                            data?.node?.children?.edges.length > 0
-                                                                                                ?
-                                                                                                <ul className="productEdit_dm--list">
-                                                                                                    {
-                                                                                                        data?.node?.children?.edges.map((dataChild, indexChild) => {
-                                                                                                            return (
-                                                                                                                <li key={indexChild} className="productEdit_dm--item">
-                                                                                                                    <label className='boxCk'>
-                                                                                                                        <input checked={Array.isArray(checkedDm) && checkedDm.includes(dataChild?.node?.termTaxonomyId)} type="checkbox" onChange={(e) => {
-                                                                                                                            handleCheckedDm(dataChild?.node?.termTaxonomyId)
-                                                                                                                        }} />
-                                                                                                                        <span className="box"></span>
-                                                                                                                        <span className="note-sm cl-text">
-                                                                                                                            {dataChild?.node?.name}
-                                                                                                                        </span>
-                                                                                                                    </label>
-                                                                                                                    {
-                                                                                                                        dataChild?.node?.children?.edges.length > 0
-                                                                                                                            ?
-                                                                                                                            <ul className="productEdit_dm--list">
-                                                                                                                                {
-                                                                                                                                    dataChild?.node?.children?.edges.map((dataChild2, indexChild2) => {
-                                                                                                                                        return (
-                                                                                                                                            <li key={indexChild2} className="productEdit_dm--item">
-                                                                                                                                                <label className='boxCk'>
-                                                                                                                                                    <input checked={Array.isArray(checkedDm) && checkedDm.includes(dataChild2?.node?.termTaxonomyId)} type="checkbox" onChange={(e) => {
-                                                                                                                                                        handleCheckedDm(dataChild2?.node?.termTaxonomyId)
-                                                                                                                                                    }} />
-                                                                                                                                                    <span className="box"></span>
-                                                                                                                                                    <span className="note-sm cl-text">
-                                                                                                                                                        {dataChild2?.node?.name}
-                                                                                                                                                    </span>
-                                                                                                                                                </label>
-
-                                                                                                                                            </li>
-                                                                                                                                        )
-                                                                                                                                    })
-                                                                                                                                }
-                                                                                                                            </ul>
-                                                                                                                            :
-                                                                                                                            ""
-                                                                                                                    }
-                                                                                                                </li>
-                                                                                                            )
-                                                                                                        })
-                                                                                                    }
-                                                                                                </ul>
-                                                                                                :
-                                                                                                ""
+                                                                                            selectedValueStatus === "publish" && "Đã xuất bản"
                                                                                         }
-                                                                                    </li>
-                                                                                )
-                                                                            })
-                                                                        }
-                                                                    </ul>
-                                                                </div>
-                                                                <div className={`productEdit_dm--content ${tab === 2 ? "showed" : ""}`}>
-                                                                    <ul className="productEdit_dm--list">
-                                                                        {
-                                                                            dataProductCateMuch?.productCategories?.edges.map((data, index) => {
-                                                                                return (
-                                                                                    <li key={index} className="productEdit_dm--item">
-                                                                                        <label className='boxCk'>
-                                                                                            <input checked={Array.isArray(checkedDm) && checkedDm.includes(data?.node?.termTaxonomyId)} type="checkbox" onChange={(e) => {
-                                                                                                handleCheckedDm(data?.node?.termTaxonomyId)
-                                                                                            }} />
-                                                                                            <span className="box"></span>
-                                                                                            <span className="note-sm cl-text">
-                                                                                                {data?.node?.name}
-                                                                                            </span>
-                                                                                        </label>
                                                                                         {
-                                                                                            data?.node?.children?.edges.length > 0
-                                                                                                ?
-                                                                                                <ul className="productEdit_dm--list">
-                                                                                                    {
-                                                                                                        data?.node?.children?.edges.map((dataChild, indexChild) => {
-                                                                                                            return (
-                                                                                                                <li key={indexChild} className="productEdit_dm--item">
-                                                                                                                    <label className='boxCk'>
-                                                                                                                        <input checked={Array.isArray(checkedDm) && checkedDm.includes(dataChild?.node?.termTaxonomyId)} type="checkbox" onChange={(e) => {
-                                                                                                                            handleCheckedDm(dataChild?.node?.termTaxonomyId)
-                                                                                                                        }} />
-                                                                                                                        <span className="box"></span>
-                                                                                                                        <span className="note-sm cl-text">
-                                                                                                                            {dataChild?.node?.name}
-                                                                                                                        </span>
-                                                                                                                    </label>
-                                                                                                                    {
-                                                                                                                        dataChild?.node?.children?.edges.length > 0
-                                                                                                                            ?
-                                                                                                                            <ul className="productEdit_dm--list">
-                                                                                                                                {
-                                                                                                                                    dataChild?.node?.children?.edges.map((dataChild2, indexChild2) => {
-                                                                                                                                        return (
-                                                                                                                                            <li key={indexChild2} className="productEdit_dm--item">
-                                                                                                                                                <label className='boxCk'>
-                                                                                                                                                    <input checked={Array.isArray(checkedDm) && checkedDm.includes(dataChild2?.node?.termTaxonomyId)} type="checkbox" onChange={(e) => {
-                                                                                                                                                        handleCheckedDm(dataChild2?.node?.termTaxonomyId)
-                                                                                                                                                    }} />
-                                                                                                                                                    <span className="box"></span>
-                                                                                                                                                    <span className="note-sm cl-text">
-                                                                                                                                                        {dataChild2?.node?.name}
-                                                                                                                                                    </span>
-                                                                                                                                                </label>
-
-                                                                                                                                            </li>
-                                                                                                                                        )
-                                                                                                                                    })
-                                                                                                                                }
-                                                                                                                            </ul>
-                                                                                                                            :
-                                                                                                                            ""
-                                                                                                                    }
-                                                                                                                </li>
-                                                                                                            )
-                                                                                                        })
-                                                                                                    }
-                                                                                                </ul>
-                                                                                                :
-                                                                                                ""
+                                                                                            selectedValueStatus === "draft" && "Bản nháp"
                                                                                         }
-                                                                                    </li>
-                                                                                )
-                                                                            })
-                                                                        }
-                                                                    </ul>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </>
-                                            }
-
-                                        </div>
-                                    </div>
-                                    <div className="productEdit_dm--btn">
-                                        {
-                                            loading
-                                                ?
-                                                <div className="skeleton"></div>
-                                                :
-                                                <button className="btn">
-                                                    <span className="btn-text">
-                                                        Thêm danh mục mới
-                                                    </span>
-                                                </button>
-                                        }
-
-                                    </div>
-                                </div>
-                                <div className="productEdit_xb">
-                                    <div className="productEdit_layout">
-                                        <div className={`productEdit_layout--top ${actived4 ? "actived" : ""}`} onClick={() => {
-                                            $(componentRef4.current).slideToggle(500);
-                                            setActived4(!actived4)
-                                        }}>
-                                            {
-                                                loading
-                                                    ?
-                                                    <div className="skeleton"></div>
-                                                    :
-                                                    <div className="productEdit_layout--top-wrap">
-                                                        <p className="note-sm fw-5 cl-text">
-                                                            Xuất bản
-                                                        </p>
-                                                        <span className="ic">
-                                                            <FontAwesomeIcon icon={faAngleDown} />
-                                                        </span>
-                                                    </div>
-                                            }
-                                        </div>
-                                        <div className="productEdit_layout--bottom" ref={componentRef4}>
-                                            <div className="productEdit_layout--bottom-wrap">
-                                                <ul className="productEdit_xb--list">
-                                                    <li className="productEdit_xb--item">
-                                                        {
-                                                            loading
-                                                                ?
-                                                                <div className="skeleton"></div>
-                                                                :
-                                                                <div className="productEdit_xb--box">
-                                                                    <div className="productEdit_xb--top">
-                                                                        <div className="productEdit_xb--top-wrap">
-                                                                            <div className="productEdit_xb--top-lf">
-                                                                                <p className="note-sm title cl-pri fw-5">
-                                                                                    <span className="ic">
-                                                                                        <img src={icXb1} alt="icxb1" />
-                                                                                    </span>
-                                                                                    Trạng thái:
-                                                                                </p>
-                                                                                <p className="note-sm cl-gray fw-5">
-                                                                                    {
-                                                                                        selectedValueStatus === "publish" && "Đã xuất bản"
-                                                                                    }
-                                                                                    {
-                                                                                        selectedValueStatus === "draft" && "Bản nháp"
-                                                                                    }
-                                                                                    {
-                                                                                        selectedValueStatus === "trash" && "Thùng rác"
-                                                                                    }
-                                                                                    {
-                                                                                        data?.product?.status === "private" && "Được xuất bản ở chế độ riêng tư"
-                                                                                    }
-                                                                                </p>
-                                                                            </div>
-                                                                            {
-                                                                                data?.product?.status === "private"
-                                                                                    ?
-                                                                                    ""
-                                                                                    :
-                                                                                    <div className="productEdit_xb--top-rt">
-                                                                                        <div className="productEdit_xb--ic" onClick={() => {
-                                                                                            $(componentRef5.current).slideToggle(500);
-                                                                                        }}>
-                                                                                            <img src={editProCt} alt="editProCt" />
+                                                                                        {
+                                                                                            selectedValueStatus === "trash" && "Thùng rác"
+                                                                                        }
+                                                                                        {
+                                                                                            data?.product?.status === "private" && "Được xuất bản ở chế độ riêng tư"
+                                                                                        }
+                                                                                    </p>
+                                                                                </div>
+                                                                                {
+                                                                                    data?.product?.status === "private"
+                                                                                        ?
+                                                                                        ""
+                                                                                        :
+                                                                                        <div className="productEdit_xb--top-rt">
+                                                                                            <div className="productEdit_xb--ic" onClick={() => {
+                                                                                                $(componentRef5.current).slideToggle(500);
+                                                                                            }}>
+                                                                                                <img src={editProCt} alt="editProCt" />
+                                                                                            </div>
                                                                                         </div>
-                                                                                    </div>
-                                                                            }
+                                                                                }
+
+                                                                            </div>
 
                                                                         </div>
+                                                                        {
+                                                                            data?.product?.status === "private"
+                                                                                ?
+                                                                                ""
+                                                                                :
+                                                                                <div className="productEdit_xb--bottom" ref={componentRef5}>
+                                                                                    <div className="productEdit_xb--bottom-wrap">
+                                                                                        <Select2Component
+                                                                                            options={optionsStatus}
+                                                                                            value={selectedValueStatus}
+                                                                                            onChange={handleSelectStatus}
+                                                                                            isSearchable={false}
+                                                                                        />
+                                                                                    </div>
+                                                                                </div>
+                                                                        }
 
                                                                     </div>
+                                                            }
+                                                        </li>
+                                                        {
+                                                            data?.product?.status === "draft" || data?.product?.status === "trash"
+                                                                ?
+                                                                ""
+                                                                :
+                                                                <li className="productEdit_xb--item">
                                                                     {
-                                                                        data?.product?.status === "private"
+                                                                        loading
                                                                             ?
-                                                                            ""
+                                                                            <div className="skeleton"></div>
                                                                             :
-                                                                            <div className="productEdit_xb--bottom" ref={componentRef5}>
-                                                                                <div className="productEdit_xb--bottom-wrap">
-                                                                                    <Select2Component
-                                                                                        options={optionsStatus}
-                                                                                        value={selectedValueStatus}
-                                                                                        onChange={handleSelectStatus}
-                                                                                        isSearchable={false}
-                                                                                    />
+                                                                            <div className="productEdit_xb--box">
+                                                                                <div className="productEdit_xb--top">
+                                                                                    <div className="productEdit_xb--top-wrap">
+                                                                                        <div className="productEdit_xb--top-lf">
+                                                                                            <p className="note-sm title cl-pri fw-5">
+                                                                                                <span className="ic">
+                                                                                                    <img src={icXb2} alt="icxb1" />
+                                                                                                </span>
+                                                                                                Hiển thị:
+                                                                                            </p>
+                                                                                            <p className="note-sm cl-gray fw-5">
+                                                                                                {
+                                                                                                    selectedValueView === "publish" && "Công khai"
+
+                                                                                                }
+                                                                                                {
+                                                                                                    selectedValueView === "password" && "Bảo vệ bằng mật khấu"
+
+                                                                                                }
+                                                                                                {
+                                                                                                    selectedValueView === "private" && "Riêng tư"
+                                                                                                }
+
+                                                                                            </p>
+                                                                                        </div>
+                                                                                        <div className="productEdit_xb--top-rt">
+                                                                                            <div className="productEdit_xb--ic" onClick={() => {
+                                                                                                $(componentRef6.current).slideToggle(500);
+                                                                                            }}>
+                                                                                                <img src={editProCt} alt="editProCt" />
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+
+                                                                                </div>
+                                                                                <div className="productEdit_xb--bottom" ref={componentRef6}>
+                                                                                    <div className="productEdit_xb--bottom-wrap">
+                                                                                        <Select2Component
+                                                                                            options={optionsView}
+                                                                                            value={selectedValueView}
+                                                                                            onChange={handleSelectView}
+                                                                                            isSearchable={false}
+
+                                                                                        />
+                                                                                        {
+                                                                                            data?.product?.password !== null && selectedValueView === "password"
+                                                                                                ?
+                                                                                                <input type="text" onChange={(e) => {
+                                                                                                    setPassPro(e.target.value)
+                                                                                                }} value={passPro} className="form-item-ip" placeholder='Nhập mật khẩu' />
+                                                                                                :
+                                                                                                ""
+                                                                                        }
+                                                                                    </div>
                                                                                 </div>
                                                                             </div>
                                                                     }
-
-                                                                </div>
+                                                                </li>
                                                         }
-                                                    </li>
-                                                    {
-                                                        data?.product?.status === "draft" || data?.product?.status === "trash"
-                                                            ?
-                                                            ""
-                                                            :
-                                                            <li className="productEdit_xb--item">
-                                                                {
-                                                                    loading
-                                                                        ?
-                                                                        <div className="skeleton"></div>
-                                                                        :
-                                                                        <div className="productEdit_xb--box">
-                                                                            <div className="productEdit_xb--top">
-                                                                                <div className="productEdit_xb--top-wrap">
-                                                                                    <div className="productEdit_xb--top-lf">
-                                                                                        <p className="note-sm title cl-pri fw-5">
-                                                                                            <span className="ic">
-                                                                                                <img src={icXb2} alt="icxb1" />
-                                                                                            </span>
-                                                                                            Hiển thị:
-                                                                                        </p>
-                                                                                        <p className="note-sm cl-gray fw-5">
-                                                                                            {
-                                                                                                selectedValueView === "publish" && "Công khai"
-
-                                                                                            }
-                                                                                            {
-                                                                                                selectedValueView === "password" && "Bảo vệ bằng mật khấu"
-
-                                                                                            }
-                                                                                            {
-                                                                                                selectedValueView === "private" && "Riêng tư"
-                                                                                            }
-
-                                                                                        </p>
-                                                                                    </div>
-                                                                                    <div className="productEdit_xb--top-rt">
-                                                                                        <div className="productEdit_xb--ic" onClick={() => {
-                                                                                            $(componentRef6.current).slideToggle(500);
-                                                                                        }}>
-                                                                                            <img src={editProCt} alt="editProCt" />
-                                                                                        </div>
+                                                        <li className="productEdit_xb--item">
+                                                            {
+                                                                loading
+                                                                    ?
+                                                                    <div className="skeleton"></div>
+                                                                    :
+                                                                    <div className="productEdit_xb--box">
+                                                                        <div className="productEdit_xb--top">
+                                                                            <div className="productEdit_xb--top-wrap">
+                                                                                <div className="productEdit_xb--top-lf">
+                                                                                    <p className="note-sm title cl-pri fw-5">
+                                                                                        <span className="ic">
+                                                                                            <img src={icXb3} alt="icxb1" />
+                                                                                        </span>
+                                                                                        Đã xuất bản:
+                                                                                    </p>
+                                                                                    <p className="note-sm cl-gray fw-5">{dateView}</p>
+                                                                                </div>
+                                                                                <div className="productEdit_xb--top-rt">
+                                                                                    <div className="productEdit_xb--ic " onClick={() => {
+                                                                                        $(componentRef7.current).slideToggle(500);
+                                                                                    }}>
+                                                                                        <img src={editProCt} alt="editProCt" />
                                                                                     </div>
                                                                                 </div>
-
                                                                             </div>
-                                                                            <div className="productEdit_xb--bottom" ref={componentRef6}>
-                                                                                <div className="productEdit_xb--bottom-wrap">
-                                                                                    <Select2Component
-                                                                                        options={optionsView}
-                                                                                        value={selectedValueView}
-                                                                                        onChange={handleSelectView}
-                                                                                        isSearchable={false}
 
-                                                                                    />
-                                                                                    {
-                                                                                        data?.product?.password !== null && selectedValueView === "password"
-                                                                                            ?
-                                                                                            <input type="text" onChange={(e) => {
-                                                                                                setPassPro(e.target.value)
-                                                                                            }} value={passPro} className="form-item-ip" placeholder='Nhập mật khẩu' />
-                                                                                            :
-                                                                                            ""
-                                                                                    }
-                                                                                </div>
-                                                                            </div>
                                                                         </div>
-                                                                }
-                                                            </li>
-                                                    }
-                                                    <li className="productEdit_xb--item">
-                                                        {
-                                                            loading
-                                                                ?
-                                                                <div className="skeleton"></div>
-                                                                :
-                                                                <div className="productEdit_xb--box">
-                                                                    <div className="productEdit_xb--top">
-                                                                        <div className="productEdit_xb--top-wrap">
-                                                                            <div className="productEdit_xb--top-lf">
-                                                                                <p className="note-sm title cl-pri fw-5">
-                                                                                    <span className="ic">
-                                                                                        <img src={icXb3} alt="icxb1" />
-                                                                                    </span>
-                                                                                    Đã xuất bản:
-                                                                                </p>
-                                                                                <p className="note-sm cl-gray fw-5">{dateView}</p>
+                                                                        <div className="productEdit_xb--bottom" ref={componentRef7}>
+                                                                            <div className="productEdit_xb--bottom-wrap">
+                                                                                <DatePicker
+                                                                                    selected={selectedDateTime}
+                                                                                    onChange={handleChange}
+                                                                                    showTimeSelect
+                                                                                    timeFormat="HH:mm"
+                                                                                    dateFormat="dd/MM/yyyy HH:mm"
+                                                                                    timeIntervals={1} // Điều chỉnh thời gian cách nhau
+                                                                                    inline
+                                                                                />
                                                                             </div>
-                                                                            <div className="productEdit_xb--top-rt">
-                                                                                <div className="productEdit_xb--ic " onClick={() => {
-                                                                                    $(componentRef7.current).slideToggle(500);
-                                                                                }}>
-                                                                                    <img src={editProCt} alt="editProCt" />
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-
-                                                                    </div>
-                                                                    <div className="productEdit_xb--bottom" ref={componentRef7}>
-                                                                        <div className="productEdit_xb--bottom-wrap">
-                                                                            <DatePicker
-                                                                                selected={selectedDateTime}
-                                                                                onChange={handleChange}
-                                                                                showTimeSelect
-                                                                                timeFormat="HH:mm"
-                                                                                dateFormat="dd/MM/yyyy HH:mm"
-                                                                                timeIntervals={1} // Điều chỉnh thời gian cách nhau
-                                                                                inline
-                                                                            />
                                                                         </div>
                                                                     </div>
-                                                                </div>
-                                                        }
+                                                            }
 
-                                                    </li>
-                                                </ul>
+                                                        </li>
+                                                    </ul>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div className="productEdit_xb--control">
-                                        <div className="productEdit_xb--control-btns">
-                                            {
-                                                loading
-                                                    ?
-                                                    <div className="skeleton"></div>
-                                                    :
-                                                    <>
-                                                        <div className="productEdit_xb--control-btn">
-                                                            <button className={`btn ${loadingUpdate && "loadBtn"}`} onClick={() => {
-                                                                handleUpdateProduct(id)
-                                                            }}>
-                                                                <span className="btn-text">
-                                                                    Cập nhật
-                                                                </span>
-                                                            </button>
-                                                            {
-                                                                loadingUpdate
-                                                                    ?
-                                                                    <div className="btn-loading">
-                                                                        <ClipLoader color="#007AFF" />
-                                                                    </div>
+                                        <div className="productEdit_xb--control">
+                                            <div className="productEdit_xb--control-btns">
+                                                {
+                                                    loading
+                                                        ?
+                                                        <div className="skeleton"></div>
+                                                        :
+                                                        <>
+                                                            <div className="productEdit_xb--control-btn">
+                                                                <button className={`btn ${loadingUpdate && "loadBtn"}`} onClick={() => {
+                                                                    handleUpdateProduct(id)
+                                                                }}>
+                                                                    <span className="btn-text">
+                                                                        Cập nhật
+                                                                    </span>
+                                                                </button>
+                                                                {
+                                                                    loadingUpdate
+                                                                        ?
+                                                                        <div className="btn-loading">
+                                                                            <ClipLoader color="#007AFF" />
+                                                                        </div>
 
-                                                                    :
-                                                                    ""
-                                                            }
-                                                        </div>
-                                                        <div className="productEdit_xb--control-btn">
-                                                            <Link target='_blank' to={data?.product?.link} className="btn trans">
-                                                                <span className="btn-text">
-                                                                    Xem trước
-                                                                </span>
-                                                            </Link>
-                                                        </div>
+                                                                        :
+                                                                        ""
+                                                                }
+                                                            </div>
+                                                            <div className="productEdit_xb--control-btn">
+                                                                <Link target='_blank' to={data?.product?.link} className="btn trans">
+                                                                    <span className="btn-text">
+                                                                        Xem trước
+                                                                    </span>
+                                                                </Link>
+                                                            </div>
 
-                                                    </>
-                                            }
+                                                        </>
+                                                }
 
+                                            </div>
+                                            <ul className="productEdit_xb--control-list d-wrap">
+                                                {
+                                                    loading
+                                                        ?
+                                                        <div className="skeleton"></div>
+                                                        :
+                                                        <>
+                                                            <li className="productEdit_xb--control-item d-item">
+                                                                <div className="productEdit_xb--control-link">
+                                                                    <span className="ic">
+                                                                        <img src={control1} alt="Nhân bản" />
+                                                                    </span>
+                                                                    <p className="note-sm cl-text">
+                                                                        Nhân bản
+                                                                    </p>
+                                                                </div>
+                                                            </li>
+                                                            <li className="productEdit_xb--control-item d-item">
+                                                                <div className="productEdit_xb--control-link">
+                                                                    <span className="ic">
+                                                                        <img src={control2} alt="Tạo bản nháp" />
+                                                                    </span>
+                                                                    <p className="note-sm cl-text">
+                                                                        Tạo bản nháp
+                                                                    </p>
+                                                                </div>
+                                                            </li>
+                                                            <li className="productEdit_xb--control-item d-item">
+                                                                <div className="productEdit_xb--control-link">
+                                                                    <span className="ic">
+                                                                        <img src={control3} alt="Xóa" />
+                                                                    </span>
+                                                                    <p className="note-sm cl-text">
+                                                                        Xóa
+                                                                    </p>
+                                                                </div>
+                                                            </li>
+                                                        </>
+                                                }
+
+                                            </ul>
                                         </div>
-                                        <ul className="productEdit_xb--control-list d-wrap">
-                                            {
-                                                loading
-                                                    ?
-                                                    <div className="skeleton"></div>
-                                                    :
-                                                    <>
-                                                        <li className="productEdit_xb--control-item d-item">
-                                                            <div className="productEdit_xb--control-link">
-                                                                <span className="ic">
-                                                                    <img src={control1} alt="Nhân bản" />
-                                                                </span>
-                                                                <p className="note-sm cl-text">
-                                                                    Nhân bản
-                                                                </p>
-                                                            </div>
-                                                        </li>
-                                                        <li className="productEdit_xb--control-item d-item">
-                                                            <div className="productEdit_xb--control-link">
-                                                                <span className="ic">
-                                                                    <img src={control2} alt="Tạo bản nháp" />
-                                                                </span>
-                                                                <p className="note-sm cl-text">
-                                                                    Tạo bản nháp
-                                                                </p>
-                                                            </div>
-                                                        </li>
-                                                        <li className="productEdit_xb--control-item d-item">
-                                                            <div className="productEdit_xb--control-link">
-                                                                <span className="ic">
-                                                                    <img src={control3} alt="Xóa" />
-                                                                </span>
-                                                                <p className="note-sm cl-text">
-                                                                    Xóa
-                                                                </p>
-                                                            </div>
-                                                        </li>
-                                                    </>
-                                            }
-
-                                        </ul>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                <PopupUpdateImage showedChangeAva={showedChangeAva} setShowedChangeAva={setShowedChangeAva} idAva={idAva} setIdAva={setIdAva} tabActived={tabActived} setTabActived={setTabActived} setAvatarProduct={setAvatarProduct} refetchProductCt={refetchProductCt} id={id} />
+                <PopupUpdateAlbums showedChangeAlbums={showedChangeAlbums} setShowedChangeAlbums={setShowedChangeAlbums} tabActived={tabActived} setTabActived={setTabActived} listAlbumId={listAlbumId} idProAlbum={idProAlbum} setIdProAlbum={setIdProAlbum} id={id} refetchProductCt={refetchProductCt} data={data} />
             </div>
-            <PopupUpdateImage showedChangeAva={showedChangeAva} setShowedChangeAva={setShowedChangeAva} idAva={idAva} setIdAva={setIdAva} tabActived={tabActived} setTabActived={setTabActived} setAvatarProduct={setAvatarProduct} refetchProductCt={refetchProductCt} id={id} />
-            <PopupUpdateAlbums showedChangeAlbums={showedChangeAlbums} setShowedChangeAlbums={setShowedChangeAlbums} tabActived={tabActived} setTabActived={setTabActived} listAlbumId={listAlbumId} idProAlbum={idProAlbum} setIdProAlbum={setIdProAlbum} id={id} refetchProductCt={refetchProductCt} data={data} />
-        </div>
+        </>
     );
 };
 

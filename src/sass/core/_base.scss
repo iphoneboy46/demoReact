@@ -965,6 +965,7 @@
                 object-fit: contain;
             }
             .note-sm {
+                font-size: 1.6rem;
                 display: -webkit-box;
                 -webkit-line-clamp: 1;
                 -webkit-box-orient: vertical;
@@ -995,6 +996,8 @@
             z-index: 5;
             .box-select-list {
                 padding-left: var(--columnContent12);
+                overflow-y: unset;
+                max-height: unset;
             }
         }
         &-cs {
@@ -1040,7 +1043,7 @@
             }
             .note-sm {
                 display: flex;
-                align-items: center;
+                align-items: start;
                 column-gap: 0.2rem;
             }
         }
@@ -1202,6 +1205,7 @@
             background: transparent;
             position: relative;
             margin-top: 0.1rem;
+            flex-shrink: 0;
             &::before {
                 content: "";
                 width: 100%;
@@ -1297,7 +1301,6 @@
             max-width: 80% !important;
             right: 0 !important;
             left: unset !important;
-            ;
         }
     }
     
@@ -1316,3 +1319,7 @@
     .css-9jq23d {
         text-transform: capitalize;
     }
+    
+    // .css-13cymwt-control {
+    //     min-height: 4rem !important;
+    // }

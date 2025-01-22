@@ -54,22 +54,22 @@ require_once( get_template_directory() . '/__autoload.php' );
 
 
 
-add_action('init', function() {
-    register_taxonomy( 'product_tag', 'product', [
-        'labels'  => [
-            'name'              => __( 'Product Tags', 'your-textdomain' ),
-            'singular_name'     => __( 'Product Tag', 'your-textdomain' ),
-            'menu_name'         => __( 'Product Tags', 'your-textdomain' ),
-        ],
-        'show_in_graphql' => true,  // Đảm bảo hiển thị trong GraphQL
-        'graphql_single_name' => 'productTag',  // Tên duy nhất trong GraphQL
-        'graphql_plural_name' => 'productTags', // Tên số nhiều trong GraphQL
-        'rewrite' => [
-            'slug' => 'product-tags',  // Slug URL nếu cần
-            'with_front' => false,
-        ],
-    ]);
-});
+// add_action('init', function() {
+//     register_taxonomy( 'product_tag', 'product', [
+//         'labels'  => [
+//             'name'              => __( 'Product Tags', 'your-textdomain' ),
+//             'singular_name'     => __( 'Product Tag', 'your-textdomain' ),
+//             'menu_name'         => __( 'Product Tags', 'your-textdomain' ),
+//         ],
+//         'show_in_graphql' => true,  // Đảm bảo hiển thị trong GraphQL
+//         'graphql_single_name' => 'productTag',  // Tên duy nhất trong GraphQL
+//         'graphql_plural_name' => 'productTags', // Tên số nhiều trong GraphQL
+//         'rewrite' => [
+//             'slug' => 'product-tags',  // Slug URL nếu cần
+//             'with_front' => false,
+//         ],
+//     ]);
+// });
 
 add_action('graphql_register_types', function () {
     // Đăng ký mutation addTagsToProduct
@@ -275,131 +275,43 @@ add_action('graphql_register_types', function () {
 //////////////////////////////////////////////
 
 
-// add_action( 'graphql_register_types', function() {
-//     register_graphql_field( 'RootQuery', 'productAttributes', [
-//         'type'        => [ 'list_of' => 'AttributeTaxonomy' ],
-//         'description' => __( 'Retrieve all product attribute taxonomies', 'your-text-domain' ),
-//         'resolve'     => function() {
-//             // Get all registered product attributes
-//             $attribute_taxonomies = wc_get_attribute_taxonomies();
+add_action('graphql_register_types', function () {
+    register_graphql_field('ProductCategory', 'level', [
+        'type' => 'Int',
+        'description' => 'The hierarchical level of the category.',
+        'resolve' => function ($category) {
+            // Khởi tạo cấp độ
+            $level = 0;
 
-//             $result = [];
+            // Giải mã parentId từ Base64
+            $parent_id = null;
+            if (isset($category->parentId)) {
+                // Giải mã Base64
+                $decoded = base64_decode($category->parentId);
 
-//             if ( ! empty( $attribute_taxonomies ) ) {
-//                 foreach ( $attribute_taxonomies as $taxonomy ) {
-//                     $result[] = [
-//                         'name'        => $taxonomy->attribute_name,
-//                         'label'       => $taxonomy->attribute_label,
-//                         'slug'        => wc_attribute_taxonomy_name( $taxonomy->attribute_name ),
-//                         'type'        => $taxonomy->attribute_type,
-//                     ];
-//                 }
-//             }
+                // Kiểm tra nếu chuỗi giải mã đúng định dạng (term:<id>)
+                if (strpos($decoded, 'term:') === 0) {
+                    $parent_id = intval(str_replace('term:', '', $decoded));
+                }
+            }
 
-//             return $result;
-//         },
-//     ]);
+            // Kiểm tra và tính toán cấp độ nếu có danh mục cha
+            while ($parent_id) {
+                $level++; // Tăng cấp độ
 
-//     register_graphql_object_type( 'AttributeTaxonomy', [
-//         'description' => __( 'Product attribute taxonomy', 'your-text-domain' ),
-//         'fields'      => [
-//             'name' => [
-//                 'type'        => 'String',
-//                 'description' => __( 'The name of the attribute taxonomy', 'your-text-domain' ),
-//             ],
-//             'label' => [
-//                 'type'        => 'String',
-//                 'description' => __( 'The label of the attribute taxonomy', 'your-text-domain' ),
-//             ],
-//             'slug' => [
-//                 'type'        => 'String',
-//                 'description' => __( 'The slug of the attribute taxonomy', 'your-text-domain' ),
-//             ],
-//             'type' => [
-//                 'type'        => 'String',
-//                 'description' => __( 'The type of the attribute taxonomy', 'your-text-domain' ),
-//             ],
-//         ],
-//     ]);
-// });
+                // Lấy thông tin danh mục cha từ parent_id
+                $parent_term = get_term_by('id', $parent_id, 'product_cat');
 
+                // Nếu không tìm thấy parent hoặc lỗi, thoát vòng lặp
+                if (!$parent_term || is_wp_error($parent_term)) {
+                    break;
+                }
 
-// add_action( 'graphql_register_types', function() {
-//     register_graphql_field( 'RootQuery', 'productAttributes', [
-//         'type'        => [ 'list_of' => 'AttributeTaxonomy' ],
-//         'description' => __( 'Retrieve all product attribute taxonomies', 'your-text-domain' ),
-//         'resolve'     => function() {
-//             $attribute_taxonomies = wc_get_attribute_taxonomies(); // Lấy tất cả attribute taxonomies
+                // Lấy ID của danh mục cha tiếp theo
+                $parent_id = $parent_term->parent;
+            }
 
-//             $result = [];
-
-//             if ( ! empty( $attribute_taxonomies ) ) {
-//                 foreach ( $attribute_taxonomies as $taxonomy ) {
-//                     // Lấy thông tin chi tiết về attribute
-//                     $attribute = wc_get_attribute( $taxonomy->attribute_id );
-
-//                     // Lấy options từ terms
-//                     $terms = get_terms( [
-//                         'taxonomy' => wc_attribute_taxonomy_name( $taxonomy->attribute_name ),
-//                         'hide_empty' => false,
-//                     ] );
-
-//                     // Chuyển danh sách terms thành array options
-//                     $options = [];
-//                     if ( ! is_wp_error( $terms ) && ! empty( $terms ) ) {
-//                         foreach ( $terms as $term ) {
-//                             $options[] = $term->name; // Lấy name của term làm option
-//                         }
-//                     }
-
-//                     $result[] = [
-//                         'name'     => $taxonomy->attribute_name,
-//                         'label'    => $taxonomy->attribute_label,
-//                         'slug'     => wc_attribute_taxonomy_name( $taxonomy->attribute_name ),
-//                         'type'     => $taxonomy->attribute_type,
-//                         'variation'=> (bool) $attribute->is_variation,
-//                         'visible'  => (bool) $attribute->is_visible,
-//                         'options'  => $options, // Trả về các options đã lấy từ terms
-//                     ];
-//                 }
-//             }
-
-//             return $result;
-//         },
-//     ]);
-
-//     register_graphql_object_type( 'AttributeTaxonomy', [
-//         'description' => __( 'Product attribute taxonomy', 'your-text-domain' ),
-//         'fields'      => [
-//             'name' => [
-//                 'type'        => 'String',
-//                 'description' => __( 'The name of the attribute taxonomy', 'your-text-domain' ),
-//             ],
-//             'label' => [
-//                 'type'        => 'String',
-//                 'description' => __( 'The label of the attribute taxonomy', 'your-text-domain' ),
-//             ],
-//             'slug' => [
-//                 'type'        => 'String',
-//                 'description' => __( 'The slug of the attribute taxonomy', 'your-text-domain' ),
-//             ],
-//             'type' => [
-//                 'type'        => 'String',
-//                 'description' => __( 'The type of the attribute taxonomy', 'your-text-domain' ),
-//             ],
-//             'variation' => [
-//                 'type'        => 'Boolean',
-//                 'description' => __( 'Is this attribute used for variations?', 'your-text-domain' ),
-//             ],
-//             'visible' => [
-//                 'type'        => 'Boolean',
-//                 'description' => __( 'Is this attribute visible on the product page?', 'your-text-domain' ),
-//             ],
-//             'options' => [
-//                 'type'        => [ 'list_of' => 'String' ],
-//                 'description' => __( 'Available options for this attribute', 'your-text-domain' ),
-//             ],
-//         ],
-//     ]);
-// });
-
+            return $level; // Trả về cấp độ tính toán
+        },
+    ]);
+});

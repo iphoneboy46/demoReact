@@ -469,12 +469,7 @@ const PopupUpdateImage = ({ showedChangeAva, setShowedChangeAva, idAva, setIdAva
 
 
 
-    const [selectedDate, setSelectedDate] = useState(null);  // Trạng thái lưu trữ ngày chọn
-
-    // Hàm xử lý sự kiện chọn tháng và năm
-    const handleChange = (date) => {
-        setSelectedDate(date);
-    };
+ 
 
 
     return (

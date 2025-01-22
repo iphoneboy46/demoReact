@@ -1,4 +1,6 @@
 import Layout from "../components/Layout/Layout";
+import Attributes from "../pages/Attribute/Attributes";
+import AttributeValue from "../pages/Attribute/AttributeValue";
 import Category from "../pages/Category/Category";
 import Client from "../pages/Client/Client";
 import Client2 from "../pages/Client2/Client2";
@@ -9,6 +11,7 @@ import Product from "../pages/Product/Product";
 import ProductCt from "../pages/Product/ProductCt";
 import Forgot from "../pages/Sign/Forgot";
 import SignIn from "../pages/Sign/SignIn";
+import Tags from "../pages/Tags/Tags";
 import Variant from "../pages/Variant/Variant";
 
 
@@ -63,8 +66,29 @@ const publicRoutes = [
     protected: true, // Yêu cầu đăng nhập
   },
   {
-    path: "/category",
+    path: "/product/categorys",
     components: Category,
+    layout:Layout,
+    exact: false,
+    protected: true, // Yêu cầu đăng nhập
+  },
+  {
+    path: "/product/tags",
+    components: Tags,
+    layout:Layout,
+    exact: false,
+    protected: true, // Yêu cầu đăng nhập
+  },
+  {
+    path: "/product/attributes",
+    components: Attributes,
+    layout:Layout,
+    exact: false,
+    protected: true, // Yêu cầu đăng nhập
+  },
+  {
+    path: "/product/attributes/:id/:name/:slug",
+    components: AttributeValue,
     layout:Layout,
     exact: false,
     protected: true, // Yêu cầu đăng nhập

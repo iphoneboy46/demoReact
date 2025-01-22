@@ -37,7 +37,7 @@ const Select2Component = ({ options, onChange, value, isSearchable }) => {
     return (
         <select ref={selectRef} value={value} onChange={() => { }} className="select2 form-item-op">
             {options.map((option, index) => (
-                <option key={index} value={option.value}>
+                <option key={index} value={option.value} disabled={option.isDisabled}>
                     {option.label}
                 </option>
             ))}

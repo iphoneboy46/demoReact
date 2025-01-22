@@ -7,15 +7,29 @@ import { UPDATE_PRODUCT_STATUS } from '../../Query/update';
 import { toast } from 'react-toastify';
 import { ScaleLoader } from 'react-spinners';
 import { ThemeContext } from '../../App';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import edit from "../../assets/images/edit.png"
 import { Tooltip } from 'react-tooltip';
 
 const ProductTable = ({ list, changeBl, selectedValueSl, valueSearch, setListCheckBoxPro, listCheckBoxPro, setSelectedValueHd, setSelectedValueHd2 }) => {
+    const navigate = useNavigate(); // Hook nằm bên trong component
+
     const [page, setPage] = useState(() => {
         // Lấy giá trị page từ localStorage khi khởi tạo state
         return Number(localStorage.getItem("pagePagi")) || 0;
     });
+
+    const location = useLocation();
+
+    useEffect(() => {
+        return () => {
+            // Xóa localStorage khi rời khỏi trang
+            localStorage.setItem("pagePagi", 0);
+        };
+    }, [location.pathname]);
+
+
+    console.log(page)
     const [totalPages, setTotalPages] = useState(0);  // Tổng số trang (tính một lần)
     const [loadingStatus, setLoadingStatus] = useState(false);
     const { setTotalProduct, setTotalProductAo, setTotalProductDraft, setTotalProductTrash } = useContext(ThemeContext)
@@ -125,10 +139,13 @@ const ProductTable = ({ list, changeBl, selectedValueSl, valueSearch, setListChe
 
     //khi danh muc thay doi
     useEffect(() => {
-        setPage(0);
+        setPage(0 || Number(localStorage.getItem("pagePagi")));
         refetch({ offset: 0, size });
 
-    }, [quantityCategories, statusPro, idCategories, selectedValueSl, valueSearch, refetch, size])
+        console.log("ádasdsa")
+
+    }, [quantityCategories, statusPro, idCategories, selectedValueSl, valueSearch])
+
 
 
 
@@ -140,6 +157,9 @@ const ProductTable = ({ list, changeBl, selectedValueSl, valueSearch, setListChe
         localStorage.setItem("pagePagi", selected); // Lưu vào localStorage
         setPage(Number(localStorage.getItem("pagePagi"))); // Cập nhật state
         refetch({ offset: selected * size, size }); // Gọi lại API với offset mới
+
+
+        navigate(`?${localStorage.getItem('idCategories') !== "undefined" ? "idCategories=" + localStorage.getItem('idCategories') : ""}${Number(localStorage.getItem('quantityCategories')) !== -1 ? "&quantityCategories=" + localStorage.getItem('quantityCategories') : ""}${localStorage.getItem('statusPro') !== "null" ? "&status=" + localStorage.getItem('statusPro') : ""}${localStorage.getItem('typePro') !== "null" ? "&type=" + localStorage.getItem('typePro') : ""}${localStorage.getItem('statusPro') !== "null" ? "&post_type=" + localStorage.getItem('statusPro') : ""}${localStorage.getItem('valueSearch') !== "" ? "&paramSearch=" + localStorage.getItem('valueSearch') : ""}${localStorage.getItem('pagePagi') !== "" ? "&page=" + (Number(localStorage.getItem('pagePagi')) + 1) : ""} `);
     };
 
 
@@ -336,6 +356,7 @@ const ProductTable = ({ list, changeBl, selectedValueSl, valueSearch, setListChe
         if (e.target.checked) {
             const table = document.querySelector(".product_table")
             const items = table.querySelectorAll(".product_table--item")
+            console.log(items)
             items.forEach((item) => {
                 item.querySelector(".boxCk input").checked = true;
             });

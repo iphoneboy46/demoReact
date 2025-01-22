@@ -11,6 +11,7 @@
 # production
 /build
 /wp-content
+/dashboard
 
 # misc
 .DS_Store

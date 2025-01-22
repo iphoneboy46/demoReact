@@ -131,7 +131,7 @@
             @include fz-14;
         }
         &::placeholder {
-            color: #A7B1BF;
+            color: #808080;
             @include fz-16;
             @include max(800px) {
                 @include fz-14;

@@ -1,10 +1,18 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { Helmet } from 'react-helmet'
 
 const Order = () => {
+
   return (
-    <div>
+    <>
+      <Helmet>
+        <title>Đơn hàng</title>
+      </Helmet>
+      <div>
         <h1>Order</h1>
-    </div>
+      </div>
+    </>
+
   )
 }
 

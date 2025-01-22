@@ -9,6 +9,7 @@ import logotg from "../../assets/images/logotg.png"
 import { toast } from 'react-toastify'
 import axios from 'axios'
 import { ClipLoader } from 'react-spinners'
+import { Helmet } from 'react-helmet'
 
 const Forgot = () => {
     const navigate = useNavigate();
@@ -27,10 +28,10 @@ const Forgot = () => {
                         position: "top-left",  // Hoặc "bottom-left" để đặt thông báo ở dưới cùng
                         autoClose: 500,       // Thời gian thông báo sẽ tự động biến mất (ms)
                     });
-                    setTimeout(()=>{
+                    setTimeout(() => {
                         navigate("/signin");
 
-                    },[1000])
+                    }, [1000])
                 } else {
                     setSubmitting(false)
                     const errorMessage = response.data.message || "Đã xảy ra lỗi khi gửi email. Vui lòng thử lại.";
@@ -57,103 +58,108 @@ const Forgot = () => {
     });
 
     return (
-        <div className="sign">
-            <div className="sign_wrap">
-                <div className="sign_lf">
-                    <div className="sign_lf--wrap">
-                        <div className="sign_lf--img">
-                            <img src={lgbn} alt="" />
-                        </div>
-                    </div>
-                </div>
-                <div className="sign_rt">
-                    <div className="sign_rt--wrap">
-                        <div className="sign_rt--top">
-                            <div className="sign_rt--title">
-                                <span className="ic">
-                                    <img src={logoMona} alt="" />
-                                </span>
-                                <p className="title-sm fw-6 cl-text">Mona Media</p>
+        <>
+            <Helmet>
+                <title>Quên mật khẩu</title>
+            </Helmet>
+            <div className="sign">
+                <div className="sign_wrap">
+                    <div className="sign_lf">
+                        <div className="sign_lf--wrap">
+                            <div className="sign_lf--img">
+                                <img src={lgbn} alt="" />
                             </div>
                         </div>
-                        <div className="sign_rt--center">
-                            <p className="note-lg fw-6 cl-text"> Nhập email để lấy lại mật khẩu
-                            </p>
-                            <div className="sign_form">
-                                <Formik
-                                    initialValues={initialValues}
-                                    validationSchema={validationSchema}
-                                    onSubmit={(values, { setSubmitting }) => {
-                                        handleSubmitForgot(values, { setSubmitting })
-                                    }}
-                                >
-                                    {({ isSubmitting }) => (
-                                        <Form>
-                                            <div className="sign_form--wrap">
-                                                <div className="sign_form--list">
-                                                    <div className="sign_form--item">
-                                                        <label className="form-item">
-                                                            <p className="form-item-lb">Email</p>
-                                                            <span className="form-item-wrap">
-                                                                <Field className="form-item-ip" type="email" name="email" placeholder="Nhập email" value={undefined} />
-                                                            </span>
-                                                            <ErrorMessage name="email" component="div" className="form-item-error" />
-                                                        </label>
-                                                    </div>
-                                                    <div className="sign_form--item">
-                                                        <div className="sign_form--control">
-                                                            <div className="sign_form--control-rt">
-                                                                <Link to="/signin" className='cl-pri note-sm'>Quay lại</Link>
+                    </div>
+                    <div className="sign_rt">
+                        <div className="sign_rt--wrap">
+                            <div className="sign_rt--top">
+                                <div className="sign_rt--title">
+                                    <span className="ic">
+                                        <img src={logoMona} alt="" />
+                                    </span>
+                                    <p className="title-sm fw-6 cl-text">Mona Media</p>
+                                </div>
+                            </div>
+                            <div className="sign_rt--center">
+                                <p className="note-lg fw-6 cl-text"> Nhập email để lấy lại mật khẩu
+                                </p>
+                                <div className="sign_form">
+                                    <Formik
+                                        initialValues={initialValues}
+                                        validationSchema={validationSchema}
+                                        onSubmit={(values, { setSubmitting }) => {
+                                            handleSubmitForgot(values, { setSubmitting })
+                                        }}
+                                    >
+                                        {({ isSubmitting }) => (
+                                            <Form>
+                                                <div className="sign_form--wrap">
+                                                    <div className="sign_form--list">
+                                                        <div className="sign_form--item">
+                                                            <label className="form-item">
+                                                                <p className="form-item-lb">Email</p>
+                                                                <span className="form-item-wrap">
+                                                                    <Field className="form-item-ip" type="email" name="email" placeholder="Nhập email" value={undefined} />
+                                                                </span>
+                                                                <ErrorMessage name="email" component="div" className="form-item-error" />
+                                                            </label>
+                                                        </div>
+                                                        <div className="sign_form--item">
+                                                            <div className="sign_form--control">
+                                                                <div className="sign_form--control-rt">
+                                                                    <Link to="/signin" className='cl-pri note-sm'>Quay lại</Link>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div className="sign_form--btns">
-                                                    <div className="sign_form--btn">
-                                                        <button className={`btn ${isSubmitting ? "loadBtn" : ""}`} type="submit" >
-                                                            <span className="btn-text">
-                                                                Gữi
-                                                            </span>
+                                                    <div className="sign_form--btns">
+                                                        <div className="sign_form--btn">
+                                                            <button className={`btn ${isSubmitting ? "loadBtn" : ""}`} type="submit" >
+                                                                <span className="btn-text">
+                                                                    Gữi
+                                                                </span>
+                                                                {
+                                                                    isSubmitting
+                                                                        ?
+                                                                        <span className="btn-loading">
+                                                                            <ClipLoader color="#7405ca" size={50} />
+                                                                        </span>
+                                                                        :
+                                                                        ""
+                                                                }
+                                                            </button>
                                                             {
-                                                                isSubmitting
-                                                                    ?
-                                                                    <span className="btn-loading">
-                                                                        <ClipLoader color="#7405ca" size={50} />
-                                                                    </span>
-                                                                    :
-                                                                    ""
+                                                                errorMessage.length > 0 &&
+                                                                <div className="sign_form--error">
+                                                                    <p className="note-sm fw-6 cl-red">{errorMessage}</p>
+                                                                </div>
                                                             }
-                                                        </button>
-                                                        {
-                                                            errorMessage.length > 0 &&
-                                                            <div className="sign_form--error">
-                                                                <p className="note-sm fw-6 cl-red">{errorMessage}</p>
-                                                            </div>
-                                                        }
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </Form>
-                                    )}
+                                            </Form>
+                                        )}
 
-                                </Formik>
+                                    </Formik>
 
+                                </div>
                             </div>
-                        </div>
-                        <div className="sign_rt--bottom">
-                            <div className="sign_rt--bottom-lf">
-                                <Link to="https://mona.media/" target='_blank' className='sign_rt--bottom-link'>
-                                    <img src={logotg} alt="" />
-                                </Link>
-                            </div>
-                            <div className="sign_rt--bottom-rt">
-                                <p className="note-mn">@MonaMedia 2024</p>
+                            <div className="sign_rt--bottom">
+                                <div className="sign_rt--bottom-lf">
+                                    <Link to="https://mona.media/" target='_blank' className='sign_rt--bottom-link'>
+                                        <img src={logotg} alt="" />
+                                    </Link>
+                                </div>
+                                <div className="sign_rt--bottom-rt">
+                                    <p className="note-mn">@MonaMedia 2024</p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </>
     )
 }
 

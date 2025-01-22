@@ -1,10 +1,16 @@
 import React from 'react'
+import { Helmet } from 'react-helmet'
 
 const Client = () => {
     return (
-        <div>
-            <h1>Client</h1>
-        </div>
+        <>
+            <Helmet>
+                <title>Khách hàng</title>
+            </Helmet>
+            <div>
+                <h1>Client</h1>
+            </div>
+        </>
     )
 }
 

@@ -12,6 +12,8 @@ const Layout = ({ children }) => {
     const handleMenu = () => {
         setMenu(!menu)
     }
+   
+    
 
     useEffect(() => {
         const siteBar = document.querySelector(".siteBar");
@@ -29,20 +31,39 @@ const Layout = ({ children }) => {
 
             list.style.maxHeight = total + "px";
 
+
+
+
         }
+
+
     }, [menu])
+
+
+    const handleLeave = () => {
+        const menuItemDropdowns = document.querySelectorAll(".menu-item.dropdown")
+        menuItemDropdowns.forEach((menuItemDropdown)=>{
+            const menuList = menuItemDropdown.querySelector(".menu-list");
+            menuList.style.display = "none";
+        })
+
+    }
+
+
 
 
     return (
         <div className="layoutMain">
 
             <div className="layoutMain_wrap">
-                <div className={`layoutMain_lf ${menu ? "actived" : ""}`}>
+                <div className={`layoutMain_lf ${menu ? "actived" : ""}`} onMouseLeave={()=>{
+                    handleLeave()
+                }}>
                     <div className="layoutMain_btn" onClick={handleMenu}>
                         <FontAwesomeIcon icon={faAngleRight} />
                     </div>
                     <div className="layoutMain_lf--wrap">
-                        <SiteBar />
+                        <SiteBar  />
                     </div>
                 </div>
                 <div className="layoutMain_rt">
